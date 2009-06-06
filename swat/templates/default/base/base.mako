@@ -1,3 +1,4 @@
+<%namespace name="menu" file="/default/component/menu.mako" />
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
@@ -35,11 +36,11 @@
     </div>
 </%def>
 
-<%def name="top()">
+<%def name="header()">
     <div id="swat-top">
 	${self.samba_logo()}  
 	${self.server_name()}
-        ${self.top_menu()}
+        ${menu.top()}
 	${self.goto_box()}
 	
 	<div class="clear-both"></div>
@@ -50,18 +51,8 @@
     <a href="dashboard.html"><img class="samba-logo samba-logo-interior" src="default/images/samba-logo.png" alt="Samba Logo" title="Samba - Opening Windows to a Wider World" /></a>
 </%def>
 
-<%def name="top_menu()">
-    <ul id="swat-top-nav" class="useful-links">
-	<li><a href="dashboard.html">dashboard</a></li>
-	<li><a href="#">help</a></li>
-	<li><a href="#">context help</a></li>
-	<li><a href="#">about</a></li>
-	<li><a href="index.html">logout</a></li>
-    </ul>
-</%def>
-
 <%def name="server_name()">
-    <h1 class="server-name title-icon down">Vandelay Industries</h1>
+    <h1 class="server-name title-icon ${h.get_samba_server_status()}">Vandelay Industries</h1>
 </%def>
 
 <%def name="goto_box()">
@@ -69,4 +60,4 @@
 	<label title="Filter Icons" for="filter-items-textbox">Filter: </label>
 	<input id="filter-items-textbox" name="item_filter" type="text" />
     </div>
-</%def>
+</%def>s

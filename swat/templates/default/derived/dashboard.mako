@@ -2,7 +2,7 @@
 
 <div class="swat-content dashboard round-2px">
     
-    ${parent.top()}
+    ${parent.header()}
     
     <div id="swat-main-area">   
 	<ul id="breadcrumb" class="breadcrumb-trail">
