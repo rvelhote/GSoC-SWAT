@@ -19,6 +19,11 @@ def make_map():
     map.connect('/error/{action}/{id}', controller='error')
 
     # CUSTOM ROUTES HERE
+    
+    #
+    #   Default root for Application
+    #
+    map.connect('/', controller='dashboard', action='index')
 
     map.connect('/{controller}/{action}')
     map.connect('/{controller}/{action}/{id}')
