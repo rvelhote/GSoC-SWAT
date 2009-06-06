@@ -21,23 +21,64 @@ def get_samba_server_status():
     
     return "up"
 
-def get_top_menu_items():
-    """ Gets the menu items attributed to the top section of SWAT. In the
+def get_menu(type):
+    """ Gets the menu items attributed to a certain menu type. In the
     future these items will be snatched from an XML or other type of
-    configuration file.
+    configuration file but for now they are statically configures
     
     Returns a List containing n dictionary items with the link properties
-    (name and link)
+    (name and link) of the selected menu
     
     """
     
-    dashboard_url = url_for(controller = 'dashboard', action = 'index')
-    login_url = url_for(controller = 'login', action = 'index')
-    
-    items = [{"name" : "dashboard", "link" : dashboard_url}]
-    items.append({"name" : "general help", "link" : url_for()});
-    items.append({"name" : "context help", "link" : url_for()});
-    items.append({"name" : "about", "link" : url_for()});
-    items.append({"name" : "logout", "link" : login_url});
+    if type == "top":
+	dashboard_url = url_for(controller = 'dashboard', action = 'index')
+	login_url = url_for(controller = 'login', action = 'logout')
+	
+	items = [{"name" : "dashboard", "link" : dashboard_url}]
+	items.append({"name" : "general help", "link" : url_for()})
+	items.append({"name" : "context help", "link" : url_for()})
+	items.append({"name" : "about", "link" : url_for()})
+	items.append({"name" : "logout", "link" : login_url})
     
     return items
+
+def get_widget_area_configuration(type):
+    """ Gets the layout type for the area defines as type. Theoratically the
+    layout will be specified in a configuration will. It will contain the
+    number of columns in one row (display) and the names of the controllers
+    that will be in that row. With the controller name, another file will be
+    accessed with the configuration options for that specific controller.
+    
+    If all goes according to plan, there will be two dashboard type areas. One
+    will be the Main Dashboard (Point of Entry for SWAT) and the other one will
+    be an Administration Dashboard.
+    
+    Returns the layout for the specified area.
+    
+    """
+    
+    config = []
+    
+    if len(type) > 0:    
+	config = [{'display' : 2, 'names' : ['share', 'account']},
+		    {'display' : 2, 'names' : ['printer', 'help']},
+		    {'display' : 1, 'names' : ['administration']}]
+
+    return config
+
+def get_widget_configuration(controller_name):
+    config = {}
+    
+    if len(type) > 0:
+	if controller_name == 'share':
+	    pass
+	
+	elif controller_name == 'account':
+	    pass
+	
+	elif controller_name:
+	    pass
+	
+    
+    return config

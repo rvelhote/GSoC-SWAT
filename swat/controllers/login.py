@@ -9,8 +9,8 @@ log = logging.getLogger(__name__)
 
 class LoginController(BaseController):
 
-    def index(self):
-        # Return a rendered template
-        #return render('/login.mako')
-        # or, return a response
-        return 'Hello World'
+    def login(self):
+        pass
+    
+    def logout(self):
+        pass
