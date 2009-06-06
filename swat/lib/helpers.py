@@ -68,17 +68,26 @@ def get_widget_area_configuration(type):
     return config
 
 def get_widget_configuration(controller_name):
-    config = {}
+    config = None
     
-    if len(type) > 0:
-	if controller_name == 'share':
-	    pass
-	
-	elif controller_name == 'account':
-	    pass
-	
-	elif controller_name:
-	    pass
+    if controller_name == 'share':
+	config = {'title_bar' : {'title' : 'Share Management',
+				'title_link' : '',
+				'title_icon' : 'folders.png',
+				'title_link_title' :
+					'Go to the Share Management Area'},
+	    
+		'actions' : [{'title' : 'add share',
+			    'link' : '',
+			    'link_title' : 'Add a Share',
+			    'icon' : 'folder-plus.png',
+			    'icon_alt' : 'Add Share Icon'}]}
+    
+    elif controller_name == 'account':
+	pass
+    
+    elif controller_name:
+	pass
 	
     
     return config
