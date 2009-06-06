@@ -31,15 +31,19 @@ def get_menu(type):
     
     """
     
-    if type == "top":
-	dashboard_url = url_for(controller = 'dashboard', action = 'index')
-	login_url = url_for(controller = 'login', action = 'logout')
-	
-	items = [{"name" : "dashboard", "link" : dashboard_url}]
-	items.append({"name" : "general help", "link" : url_for()})
-	items.append({"name" : "context help", "link" : url_for()})
-	items.append({"name" : "about", "link" : url_for()})
-	items.append({"name" : "logout", "link" : login_url})
+    available_menus = ['top']
+    items = None
+    
+    if type is not None and len(type) > 0:
+	if type in available_menus:
+	    dashboard_url = url_for(controller = 'dashboard', action = 'index')
+	    login_url = url_for(controller = 'login', action = 'logout')
+	    
+	    items = [{"name" : "dashboard", "link" : dashboard_url}]
+	    items.append({"name" : "general help", "link" : url_for()})
+	    items.append({"name" : "context help", "link" : url_for()})
+	    items.append({"name" : "about", "link" : url_for()})
+	    items.append({"name" : "logout", "link" : login_url})
     
     return items
 
@@ -60,9 +64,10 @@ def get_widget_area_configuration(type):
     
     config = None
     
-    config = [{'display' : 2, 'names' : ['share', 'account']},
-		{'display' : 2, 'names' : ['printer', 'help']},
-		{'display' : 1, 'names' : ['administration']}]
+    if type is not None and len(type) > 0:
+	config = [{'display' : 2, 'names' : ['share', 'account']},
+		    {'display' : 2, 'names' : ['printer', 'help']},
+		    {'display' : 1, 'names' : ['administration']}]
 
     return config
 
@@ -79,17 +84,21 @@ def get_widget_configuration(controller_name):
     
     config = None
     
-    if controller_name == 'share':
-	config = {'title_bar' : {'title' : 'Share Management',
-				'title_link' : '',
-				'title_icon' : 'folders.png',
-				'title_link_title' :
-					'Go to the Share Management Area'},
-	    
-		'actions' : [{'title' : 'add share',
-			    'link' : '',
-			    'link_title' : 'Add a Share',
-			    'icon' : 'folder-plus.png',
-			    'icon_alt' : 'Add Share Icon'}]}
+    if type is not None and len(controller_name) > 0:
+	if controller_name == 'share':
+	    config = {'title_bar' : {'title' : 'Share Management',
+				    'title_link' : '',
+				    'title_icon' : 'folders.png',
+				    'title_link_title' :
+					    'Go to the Share Management Area'},
+		
+		    'actions' : [{'title' : 'add share',
+				'link' : '',
+				'link_title' : 'Add a Share',
+				'icon' : 'folder-plus.png',
+				'icon_alt' : 'Add Share Icon'}]}
     
     return config
+
+def get_swat_messages():
+    return None

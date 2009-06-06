@@ -21,7 +21,9 @@ def make_map():
     # CUSTOM ROUTES HERE
     
     #
-    #   Default root for Application
+    #   Default root for Application.
+    #   For now it's marked as the dashboard because I'm not implementing the
+    #   login right away.
     #
     map.connect('/', controller='dashboard', action='index')
 

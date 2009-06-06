@@ -4,4 +4,4 @@ class TestDashboardController(TestController):
 
     def test_index(self):
         response = self.app.get(url(controller='dashboard', action='index'))
-        # Test response...
+        assert "Samba Web Administration Tool" in response

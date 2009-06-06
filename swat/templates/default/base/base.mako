@@ -1,13 +1,26 @@
 <%namespace name="menu" file="/default/component/menu.mako" />
+<%namespace name="messages" file="/default/component/messages.mako" />
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <title>${self.title()}</title>
-	${next.head()}
+        <title>${self.page_title()}</title>
+	${next.head_tags()}
     </head>
     
     <body>
-	${self.body()}
+	<div class="swat-content dashboard round-2px">
+	    
+	    ${self.header()}
+	    
+	    <div id="swat-main-area">   
+		${menu.breadcrumb()}
+		${messages.write(c.messages)}
+		${self.body()}
+	    </div>
+	    
+	    <div class="clear-both"></div>
+	</div>
+	
 	${next.footer()}
     </body>
 </html>
@@ -15,14 +28,14 @@
 <%doc>
 Base Page Title
 </%doc>
-<%def name="title()">
+<%def name="page_title()">
     Samba Web Administration Tool
 </%def>
 
 <%doc>
 Head Tags
 </%doc>
-<%def name="head()">
+<%def name="head_tags()">
     <link rel="shortcut icon" href="default/images/favicon.ico" />
     
     ${h.javascript_link(h.url_for('/default/js/mootools-core-nc.js'))}
