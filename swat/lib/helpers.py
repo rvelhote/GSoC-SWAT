@@ -19,7 +19,7 @@ def get_samba_server_status():
     
     """
     
-    return "up"
+    return "down"
 
 def get_menu(type):
     """ Gets the menu items attributed to a certain menu type. In the
@@ -58,16 +58,25 @@ def get_widget_area_configuration(type):
     
     """
     
-    config = []
+    config = None
     
-    if len(type) > 0:    
-	config = [{'display' : 2, 'names' : ['share', 'account']},
-		    {'display' : 2, 'names' : ['printer', 'help']},
-		    {'display' : 1, 'names' : ['administration']}]
+    config = [{'display' : 2, 'names' : ['share', 'account']},
+		{'display' : 2, 'names' : ['printer', 'help']},
+		{'display' : 1, 'names' : ['administration']}]
 
     return config
 
 def get_widget_configuration(controller_name):
+    """ Configuration options for a specific controller's widget. Just like the
+    layout configuration it's hardcoded for now. If all goes according to plan
+    each controller will have a set of specifications in a configuration file
+    that will indicate which items and tasks will be present at the dashboard
+    
+    Returns the Widget's configuration for the controller specified in the
+    parameter
+    
+    """
+    
     config = None
     
     if controller_name == 'share':
@@ -82,12 +91,5 @@ def get_widget_configuration(controller_name):
 			    'link_title' : 'Add a Share',
 			    'icon' : 'folder-plus.png',
 			    'icon_alt' : 'Add Share Icon'}]}
-    
-    elif controller_name == 'account':
-	pass
-    
-    elif controller_name:
-	pass
-	
     
     return config

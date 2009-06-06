@@ -14,7 +14,7 @@
 		    <div class="widget round-2px">
 			<div class="title-bar">
 			    <h2 class="title-icon" style="background-image:url('default/images/icons/${controller_config['title_bar']['title_icon']}')"><a href="${controller_config['title_bar']['title_link']}" title="${controller_config['title_bar']['title_link_title']}">${controller_config['title_bar']['title']}</a></h2>
-			
+
 			    <ul>                                
 				<li><a href="${controller_config['title_bar']['title_link']}" title="${controller_config['title_bar']['title_link']}"><img src="default/images/icons/arrow-000-small.png" alt="Right Arrow Icon" /></a></li>                                
 			    </ul>
