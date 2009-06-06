@@ -10,7 +10,4 @@ log = logging.getLogger(__name__)
 class DashboardController(BaseController):
 
     def index(self):
-        # Return a rendered template
-        #return render('/dashboard.mako')
-        # or, return a response
-        return 'Hello World'
+        return render('/default/derived/dashboard.mako')

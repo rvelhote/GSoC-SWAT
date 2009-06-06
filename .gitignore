@@ -1,2 +1,3 @@
 *.kpf
 *.pyc
+*.mako.py
