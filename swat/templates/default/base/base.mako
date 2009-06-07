@@ -14,7 +14,11 @@
 	    
 	    <div id="swat-main-area">   
 		${menu.breadcrumb()}
-		${messages.write(c.messages)}
+		
+		% if hasattr(c, "messages"):
+		    ${messages.write(c.messages)}
+		% endif
+		
 		${self.body()}
 	    </div>
 	    
@@ -75,7 +79,7 @@ Header Part. Contains items that will be in all pages except login
 Samba Logo
 </%doc>
 <%def name="samba_logo()">
-    <a href="dashboard.html"><img class="samba-logo samba-logo-interior" src="default/images/samba-logo.png" alt="Samba Logo" title="Samba - Opening Windows to a Wider World" /></a>
+    <a href="${h.url_for(controller = 'dashboard')}"><img class="samba-logo samba-logo-interior" src="/default/images/samba-logo.png" alt="Samba Logo" title="Samba - Opening Windows to a Wider World" /></a>
 </%def>
 
 <%doc>Server Name + Server Status Icon</%doc>

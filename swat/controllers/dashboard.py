@@ -76,20 +76,20 @@ class DashboardController(BaseController):
         if len(controller_name) > 0:
             if controller_name == 'share':
                 config = {  'title_bar' : {'title' : 'Share Management',
-                                        'title_link' : url_for(controller = controller_name, action = 'add'),
+                                        'title_link' : url_for(controller = controller_name),
                                         'title_icon' : 'folders.png',
                                         'title_link_title' :
                                                 'Go to the Share Management Area'},
                     
                             'actions' : [{'title' : 'add share',
-                                        'link' : '',
+                                        'link' : url_for(controller = controller_name, action = 'add'),
                                         'link_title' : 'Add a Share',
                                         'icon' : 'folder-plus.png',
                                         'icon_alt' : 'Add Share Icon'},
                                 
                                 
                                         {'title' : 'list shares',
-                                        'link' : '',
+                                        'link' : url_for(controller = controller_name),
                                         'link_title' : 'List All Shares',
                                         'icon' : 'folders-stack.png',
                                         'icon_alt' : 'List Shares Icon'}]}

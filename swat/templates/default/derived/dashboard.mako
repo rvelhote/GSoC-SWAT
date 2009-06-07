@@ -1,7 +1,7 @@
 <%inherit file="/default/base/base.mako" />
 <%namespace name="widget" file="/default/component/widget.mako" />
 
-${widget.paint(c.layout)}
+${widget.write_layout(c.layout)}
 
 <%doc></%doc>
 <%def name="page_title()">

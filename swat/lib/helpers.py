@@ -9,17 +9,28 @@ available to Controllers. This module is available to templates as 'h'.
 from webhelpers.html.tags import stylesheet_link, javascript_link
 from routes import url_for
 
+import commands
+
 def get_samba_server_status():
     """ Gets the current Samba4 status to be used in the CSS class name for the
     top template in the Server Name area.
     
     The icon will indicate if Samba's current status is up or down.
     
+    At the moment it uses a very quick way to do it. It just checks if the
+    process 'samba' has a pid with 'pidof'. Probably not very portable but it
+    works for now :)
+    
     Returns a string "up" or "down" 
     
     """
     
-    return "down"
+    status = "down"
+    
+    if len(commands.getoutput("pidof samba")) > 0:
+	status = "up"
+	
+    return status
 
 def get_available_menus():
     """ Gets all available menus in SWAT. There will be a configuration file to
@@ -59,6 +70,10 @@ def get_menu(type):
     
     return items
 
-
-def get_swat_messages():
-    return None
+def get_toolbar_items(controller):
+    if controller is None or len(controller) <= 0:
+	controller = request.environ['pylons.routes_dict']['controller']
+	
+    toolbar_items = []
+    
+    return toolbar_items

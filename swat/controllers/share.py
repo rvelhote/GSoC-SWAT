@@ -10,7 +10,4 @@ log = logging.getLogger(__name__)
 class ShareController(BaseController):
 
     def index(self):
-        # Return a rendered template
-        #return render('/share.mako')
-        # or, return a response
-        return 'Hello World'
+        return render('/default/derived/share.mako')
