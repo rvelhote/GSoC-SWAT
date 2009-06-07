@@ -101,3 +101,7 @@ jump to a controller/action that the user types in
 	<input id="filter-items-textbox" name="item_filter" type="text" />
     </div>
 </%def>
+
+<%def name="action_title(text)">
+    <h2 class="module-title">${text}</h2>
+</%def>

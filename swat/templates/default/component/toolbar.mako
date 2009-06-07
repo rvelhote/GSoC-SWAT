@@ -16,6 +16,6 @@
 	    % endif
 	</ul>
 	
-	<div class="clear-both"/>
+	<div class="clear-both"></div>
     </div>
 </%def>

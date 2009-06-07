@@ -13,11 +13,17 @@ class ShareController(BaseController):
     Will handle all operations concerning Shares in SWAT
     
     """
-    def index(self):
+    def list(self):
         """ Point of entry. """
+        c.friendly_controller = 'Share Management'
+        c.friendly_action = 'List'
+        
         return render('/default/derived/share.mako')
         
     def add(self):
+        c.friendly_controller = 'Share Management'
+        c.friendly_action = 'Add New Share'
+        
         return render('/default/derived/add-share.mako')
     
     def add_assistant(self):

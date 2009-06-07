@@ -122,7 +122,7 @@ def get_links_for(type, controller_name='', action=''):
     if controller_name == 'share':
 	if type == 'dashboard':
 	    config = {  'title_bar' : {'title' : 'Share Management',
-			'title_link' : url_for(controller = controller_name),
+			'title_link' : url_for(controller = controller_name, action = 'list'),
 			'title_icon' : 'folders.png', 'title_link_title' :
 					    'Go to the Share Management Area'},
 
@@ -133,7 +133,7 @@ def get_links_for(type, controller_name='', action=''):
 				    'icon_alt' : 'Add Share Icon'},
 
 				    {'title' : 'list shares',
-				    'link' : url_for(controller = controller_name),
+				    'link' : url_for(controller = controller_name, action = 'list'),
 				    'link_title' : 'List All Shares',
 				    'icon' : 'folders-stack.png',
 				    'icon_alt' : 'List Shares Icon'},

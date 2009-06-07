@@ -10,9 +10,15 @@ log = logging.getLogger(__name__)
 
 class DashboardController(BaseController):
 
-    def index(self, type = 'main'):
-        c.messages = []
-        c.dashboard_type = type
+    def index(self):
+        c.dashboard_type = 'main'
+        c.friendly_controller = 'Dashboard'
+        
+        return render('/default/derived/dashboard.mako')
+        
+    def advanced(self):
+        c.dashboard_type = 'advanced'
+        c.friendly_controller = 'Advanced Administration'
         
         return render('/default/derived/dashboard.mako')
             

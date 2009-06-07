@@ -12,30 +12,53 @@
 </%def>
 
 <%def name="breadcrumb()">
+    <%
+    
+    controller_name = request.environ['pylons.routes_dict']['controller']
+    action_name = request.environ['pylons.routes_dict']['action']
+    
+    %>
+
     <ul id="breadcrumb" class="breadcrumb-trail">
 	<li>
 	    &raquo;&nbsp;
-	    <a href="${h.url_for(controller = 'dashboard')}">Dashboard</a>
+
+	    % if controller_name != "dashboard" or (controller_name == "dashboard" and action_name != 'index'):
+		<a href="${h.url_for(controller = 'dashboard')}">Dashboard</a>
+	    % else:
+		Dashboard
+	    % endif
 	</li>
 	
-	% if len(request.environ['pylons.routes_dict']['controller']) > 0:	
-	    <li>
-		&raquo;&nbsp;
-		
-		% if request.environ['pylons.routes_dict']['action'] != "index" and len(request.environ['pylons.routes_dict']['action']) > 0:
-		    <a href="${h.url_for(controller = request.environ['pylons.routes_dict']['controller'])}">
-		        ${request.environ['pylons.routes_dict']['controller']}
-		    </a>
+	<li>
+	    &raquo;&nbsp;
+	    
+	    % if len(action_name) > 0:
+		<a href="${h.url_for(controller = controller_name, action = action_name)}">
+		    % if hasattr(c, "friendly_controller"):
+			${c.friendly_controller}
+		    % else:
+			${controller_name}
+		    % endif
+		</a>
+	    % else:
+		% if hasattr(c, "friendly_controller"):
+		    ${c.friendly_controller}
 		% else:
-		    ${request.environ['pylons.routes_dict']['controller']}
+		    ${controller_name}
 		% endif
-
-	    </li>
-	% endif
+	    % endif
+	</li>
 	
-	% if request.environ['pylons.routes_dict']['action'] != "index" and len(request.environ['pylons.routes_dict']['action']) > 0:
-	    <li>&raquo;&nbsp;${request.environ['pylons.routes_dict']['action']}</li>
-	% endif
-	
+	<li>
+	    &raquo;&nbsp;
+	    
+	    % if hasattr(c, "friendly_action"):
+		${c.friendly_action}
+	    % else:
+		${action_name}
+	    % endif
+	</li>
     </ul>
 </%def>
+
