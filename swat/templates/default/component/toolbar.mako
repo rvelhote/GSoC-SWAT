@@ -1,19 +1,19 @@
-<%def name="write(controller)">
+<%def name="write(controller, action='')">
     <div id="task-toolbar">
 	<ul class="task-toolbar">
-	    <li>
-		<a class="item-icon-link" title="Add a Share" href="create_share.html">
-		    <img alt="Add Share Icon" src="/default/images/icons/folder-plus.png"/>
-		    <span>add share</span>
-		</a>
-	    </li>
-
-	    <li>
-		<a class="item-icon-link" title="Add a Share using the Assistant" href="create_share.html">
-		    <img alt="Add Share Assistant Icon" src="/default/images/icons/wand.png"/>
-		    <span>add share assistant</span>
-		</a>
-	    </li>                        
+	    
+	    <% link_list = h.get_links_for("toolbar", controller, action) %>
+	    
+	    % if link_list is not None and len(link_list) > 0:	    
+		% for link in link_list['actions']:
+		    <li>
+			<a class="item-icon-link" title="${link['link_title']}" href="${link['link']}">
+			    <img alt="${link['icon_alt']}" src="/default/images/icons/${link['icon']}"/>
+			    <span>${link['title']}</span>
+			</a>
+		    </li>
+		% endfor
+	    % endif
 	</ul>
 	
 	<div class="clear-both"/>

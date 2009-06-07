@@ -13,7 +13,10 @@
 
 <%def name="breadcrumb()">
     <ul id="breadcrumb" class="breadcrumb-trail">
-	<li>&raquo;&nbsp;Dashboard</li>
+	<li>
+	    &raquo;&nbsp;
+	    <a href="${h.url_for(controller = 'dashboard')}">Dashboard</a>
+	</li>
 	
 	% if len(request.environ['pylons.routes_dict']['controller']) > 0:	
 	    <li>
