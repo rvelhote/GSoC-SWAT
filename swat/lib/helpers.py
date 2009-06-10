@@ -42,8 +42,16 @@ class ControllerConfiguration:
     be read at the controller's initialization method.
     
     """
-    
     def __init__(self, controller=None, action=None):
+	""" Set the controller and action for the specified item and fetch the
+	necessary information.
+	
+	The information that retrieved from a controller's configuration is:
+	- Dashboard Items: The items that will apear in the dashboard
+	- Toolbar Items: The items that will appear in an action's toolbar
+	- Information: General Information regarding the Controller.
+	
+	"""
 	self._controller = controller \
 			or request.environ['pylons.routes_dict']['controller']
 			
@@ -52,19 +60,33 @@ class ControllerConfiguration:
 	
 	self._dashboard_items = self.__dashboard(self._controller)
 	self._toolbar_items = self.__toolbar(self._controller, self._action)
-	
 	self._information = self.__information(self._controller, self._action)
 	
     def get_dashboard_items(self):
+	""" Returns the Dashboard Items specified for this Controller """
 	return self._dashboard_items
     
     def get_toolbar_items(self):
+	""" Returns the Toolbar Items specifoed for this Controller """
 	return self._toolbar_items
     
     def get_information(self):
+	""" Returns general information about this controller """
 	return self._information
     
     def __information(self, controller, action):
+	""" The controller's information is divided into two areas. The
+	controller's base data and information about each of the actions it
+	implements.
+	
+	This information is used to set the Page Tile and the Breadcrumb trail
+	for example
+	
+	Returns a Dictionary with two keys whose values contain another
+	dictionary with the required info.
+	
+	"""
+	
 	controller_info = {}
 	action_info = {}
 	
@@ -91,9 +113,11 @@ class ControllerConfiguration:
 	return info
     
     def get_controller_info(self, key):
+	""" Returns a specific value from the controller info dictionary """
 	return self._information['controller'][key]
 	
     def get_action_info(self, key):
+	""" Returns a specific value from the action info dictionary """
 	return self._information['action'][key]
 
     def __toolbar(self, controller, action):
@@ -115,7 +139,7 @@ class ControllerConfiguration:
 				'link_title' : 'Add a Share using the Assistant',
 				'icon' : 'wand.png',
 				'icon_alt' : 'Add Share Assistant Icon'}]}
-    
+
 	    elif action == 'add':
 		config = {'actions' : [{'title' : 'switch to assistant',
 				'link' : url_for(controller = controller, action = 'add_assistant'),
@@ -142,7 +166,7 @@ class ControllerConfiguration:
 				'icon_alt' : 'Cancel Icon'}]}
 
 	return config
-    
+
     def __dashboard(self, controller):
 	""" Configuration options for a specific controller's widget. Just like
 	the layout configuration it's hardcoded for now. If all goes according

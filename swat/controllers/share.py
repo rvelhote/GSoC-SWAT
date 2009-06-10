@@ -16,7 +16,6 @@ class ShareController(BaseController):
     """
     
     def __init__(self):
-
         c.controller_config = ControllerConfiguration()
     
     def index(self):        
