@@ -6,7 +6,7 @@ from pylons.controllers.util import abort, redirect_to
 from swat.lib.base import BaseController, render
 from routes import url_for
 
-from swat.lib.helpers import DashboardConfiguration
+from swat.lib.helpers import ControllerConfiguration, DashboardConfiguration
 
 log = logging.getLogger(__name__)
 
@@ -14,6 +14,8 @@ class DashboardController(BaseController):
     
     def __init__(self):
         type = request.environ['pylons.routes_dict']['action']
+        
+        c.controller_config = ControllerConfiguration()
         c.dashboard_config = DashboardConfiguration(type)
 
     def index(self):
@@ -28,3 +30,5 @@ class DashboardController(BaseController):
         """
         return render('/default/derived/dashboard.mako')
             
+    def goto(self):
+        pass

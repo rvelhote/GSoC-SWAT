@@ -6,7 +6,8 @@ available to Controllers. This module is available to templates as 'h'.
 # Import helpers as desired, or define your own, ie:
 #from webhelpers.html.tags import checkbox, password
 
-from webhelpers.html.tags import stylesheet_link, javascript_link
+from webhelpers.html.tags import *
+
 from routes import url_for
 from pylons import request
 
@@ -181,8 +182,6 @@ class ControllerConfiguration:
 	
 	config = {}
 	
-	print controller
-
 	if controller == 'share':
 	    config = {  'title_bar' : {'title' : 'Share Management',
 			'title_link' : url_for(controller = controller),

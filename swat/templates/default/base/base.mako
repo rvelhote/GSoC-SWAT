@@ -75,11 +75,11 @@ Header Part. Contains items that will be in all pages except login
     </div>
 </%def>
 
-<%doc>
-Samba Logo
-</%doc>
+<%doc>Samba Logo</%doc>
 <%def name="samba_logo()">
-    <a href="${h.url_for(controller = 'dashboard')}"><img class="samba-logo samba-logo-interior" src="/default/images/samba-logo.png" alt="Samba Logo" title="Samba - Opening Windows to a Wider World" /></a>
+    <a href="${h.url_for(controller = 'dashboard')}">
+	<img class="samba-logo samba-logo-interior" src="/default/images/samba-logo.png" alt="Samba Logo" title="Samba - Opening Windows to a Wider World" />
+    </a>
 </%def>
 
 <%doc>Server Name + Server Status Icon</%doc>
@@ -96,10 +96,14 @@ It was mainly an idea I got from CPanel. It will know be a filterbox that will
 jump to a controller/action that the user types in
 </%doc>
 <%def name="goto_box()">
-    <div class="filter-items">
-	<label title="Go directly to" for="goto-items-textbox">Goto: </label>
-	<input id="goto-items-textbox" name="goto_filter" type="text" />
-    </div>
+
+    ${h.form(h.url_for(controller='dashboard', action='goto'), method='get')}
+	<div class="filter-items">
+	    <label title="Go directly to" for="goto-items-textbox">Goto: </label>
+	    ${h.text('where', '', id = 'goto-items-textbox')}
+	</div>
+    ${h.end_form()}
+    
 </%def>
 
 <%def name="action_title(text)">
