@@ -5,15 +5,21 @@ from pylons.controllers.util import abort, redirect_to
 
 from swat.lib.base import BaseController, render
 
+from swat.lib.helpers import BreadcrumbTrail, ControllerConfiguration, DashboardConfiguration
+
 log = logging.getLogger(__name__)
 
 class ShareController(BaseController):
-    """ Share Management controller
-    
-    Will handle all operations concerning Shares in SWAT
+    """ Share Management controller Will handle all operations concerning
+    Shares in SWAT.
     
     """
-    def list(self):
+    
+    def __init__(self):
+
+        c.controller_config = ControllerConfiguration()
+    
+    def index(self):        
         """ Point of entry. """
         c.friendly_controller = 'Share Management'
         c.friendly_action = 'List'

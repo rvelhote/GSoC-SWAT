@@ -6,18 +6,20 @@ from pylons.controllers.util import abort, redirect_to
 from swat.lib.base import BaseController, render
 from routes import url_for
 
+from swat.lib.helpers import BreadcrumbTrail, ControllerConfiguration, DashboardConfiguration
+
 log = logging.getLogger(__name__)
 
 class DashboardController(BaseController):
+    
+    def __init__(self):
+        c.dashboard_type = request.environ['pylons.routes_dict']['action']
+        c.dashboard_config = DashboardConfiguration(c.dashboard_type)
 
     def index(self):
-        c.dashboard_type = 'main'
-        c.friendly_controller = 'Dashboard'
-        
         return render('/default/derived/dashboard.mako')
         
     def advanced(self):
-        c.dashboard_type = 'advanced'
         c.friendly_controller = 'Advanced Administration'
         
         return render('/default/derived/dashboard.mako')

@@ -97,8 +97,8 @@ jump to a controller/action that the user types in
 </%doc>
 <%def name="goto_box()">
     <div class="filter-items">
-	<label title="Filter Icons" for="filter-items-textbox">Filter: </label>
-	<input id="filter-items-textbox" name="item_filter" type="text" />
+	<label title="Go directly to" for="goto-items-textbox">Goto: </label>
+	<input id="goto-items-textbox" name="goto_filter" type="text" />
     </div>
 </%def>
 

@@ -1,14 +1,11 @@
-<%def name="write_layout(type)">
-
-    <% layout = h.get_dashboard_configuration(type) %>
-
-    % for row in layout:
+<%def name="write_layout(dashboard)">
+    % for row in dashboard.get_layout():
 	<div class="dashboard-row col${row['display']}">
 	    % for name in row['names']:
-		<% links_list = h.get_links_for('dashboard', name) %>
+		<% item_list = dashboard.get_item(name).get_dashboard_items() %>
 
-		% if links_list is not None:
-		    <% write_widget(links_list) %>
+		% if len(item_list) > 0:
+		    <% write_widget(item_list) %>
 		% endif
 	    % endfor
 	</div>

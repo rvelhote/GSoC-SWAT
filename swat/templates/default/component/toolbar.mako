@@ -1,8 +1,7 @@
 <%def name="write(controller, action='')">
     <div id="task-toolbar">
 	<ul class="task-toolbar">
-	    
-	    <% link_list = h.get_links_for("toolbar", controller, action) %>
+	    <% link_list = c.controller_config.get_toolbar_items() %>
 	    
 	    % if link_list is not None and len(link_list) > 0:	    
 		% for link in link_list['actions']:
