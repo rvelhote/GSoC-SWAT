@@ -9,7 +9,7 @@ available to Controllers. This module is available to templates as 'h'.
 from webhelpers.html.tags import *
 
 from routes import url_for
-from pylons import request
+from pylons import request, session
 
 class BreadcrumbTrail:
     """ Handles SWAT's Breadcrumb Trail.
@@ -333,7 +333,21 @@ class DashboardConfiguration:
 	"""
 	
 	return self._layout;
+    
+class SwatMessages:
+    def __init__(self):
+	self._items = []
+    
+    def add(self, text, type='cool'):
+	self._items.append({'text' : text, 'type' : type})
+	session.save()
+	
+    def clean(self):
+	del self._items[:]
+	session.save()
 
+    def get(self):
+	return self._items
 
 def get_samba_server_status():
     """ Gets the current Samba4 status to be used in the CSS class name for the
@@ -355,6 +369,8 @@ def get_samba_server_status():
 
     if len(commands.getoutput("pidof samba")) > 0:
 	status = "up"
+    else:
+	session['messages'].add("Samba is down!", "critical")
 	
     return status
 

@@ -15,8 +15,9 @@
 	    <div id="swat-main-area">   
 		${menu.breadcrumb()}
 		
-		% if hasattr(c, "messages"):
-		    ${messages.write(c.messages)}
+		% if session.has_key("messages"):
+		    ${messages.write(session['messages'].get())}
+		    <% session['messages'].clean() %>
 		% endif
 		
 		${self.body()}

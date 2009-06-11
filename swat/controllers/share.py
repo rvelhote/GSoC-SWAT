@@ -4,7 +4,7 @@ from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect_to
 
 from swat.lib.base import BaseController, render
-
+from pylons import app_globals as g
 from swat.lib.helpers import BreadcrumbTrail, ControllerConfiguration, DashboardConfiguration
 
 log = logging.getLogger(__name__)
