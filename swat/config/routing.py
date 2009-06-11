@@ -27,6 +27,8 @@ def make_map():
     #
     map.connect('/', controller='dashboard', action='index')
 
+    map.connect('/{controller}/{action}/{name}')
+
     map.connect('/{controller}/{action}')
     map.connect('/{controller}/{action}/{id}')
 

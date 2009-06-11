@@ -13,3 +13,14 @@ class Globals(object):
         'app_globals' variable
 
         """
+        import sys
+        
+        sys.path.append('/home/ric/libs')
+        sys.path.append('/home/ric/libs/samba')
+        sys.path.append('/home/ric/libs/samba/dcerpc')
+        
+        import samba3
+        import param
+        
+        self.samba = samba3.Samba3('/home/ric/samba-master/testdata/samba3/',
+                                   param.default_path())

@@ -30,12 +30,3 @@ class ShareController(BaseController):
     
     def add_assistant(self):
         pass
-    
-    def save(self):
-        pass
-    
-    def cancel(self):
-        pass
-    
-    def apply(self):
-        pass
