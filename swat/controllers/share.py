@@ -17,6 +17,9 @@ class ShareController(BaseController):
     
     def __init__(self):
         c.controller_config = ControllerConfiguration()
+        
+        c.breadcrumb = BreadcrumbTrail(c.controller_config)
+        c.breadcrumb.build()        
     
     def index(self):        
         """ Point of entry. """

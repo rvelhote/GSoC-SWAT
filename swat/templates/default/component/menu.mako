@@ -14,57 +14,35 @@
 <%def name="breadcrumb()">
     <%
     
-    controller_name = request.environ['pylons.routes_dict']['controller']
-    action_name = request.environ['pylons.routes_dict']['action']
+    items = c.breadcrumb.get()
+    split = []
     
     %>
+    
+    % if len(items) > 0:
+	<ul id="breadcrumb" class="breadcrumb-trail">
+	    <% split = items[:len(items) - 1] %>
 
-    <ul id="breadcrumb" class="breadcrumb-trail">
-	<li>
-	    &raquo;&nbsp;
-
-	    % if controller_name != "dashboard" or (controller_name == "dashboard" and action_name != 'index'):
-		<a href="${h.url_for(controller = 'dashboard')}">Dashboard</a>
-	    % else:
-		Dashboard
-	    % endif
-	</li>
-	
-	% if controller_name != "dashboard" or (controller_name == "dashboard" and action_name != 'index'):
-	
-	    <li>
-		&raquo;&nbsp;
-		
-		% if action_name != 'index' and len(action_name) > 0:
-		    <a href="${h.url_for(controller = controller_name)}">
-			% if hasattr(c, "friendly_controller"):
-			    ${c.friendly_controller}
-			% else:
-			    ${controller_name}
-			% endif
-		    </a>
-		% else:
-		    % if hasattr(c, "friendly_controller"):
-			${c.friendly_controller}
-		    % else:
-			${controller_name}
-		    % endif
-		% endif
-	    </li>
-	
-	% endif
-	
-	% if action_name != "index":
-	    <li>
-		&raquo;&nbsp;
-		
-		% if hasattr(c, "friendly_action"):
-		    ${c.friendly_action}
-		% else:
-		    ${action_name}
-		% endif
-	    </li>
-	% endif
-    </ul>
+	    % for item in split:
+		<% breadcrumb_item(item) %>
+	    % endfor
+	    
+	    <% split = items[len(items) - 1] %>
+	    <% breadcrumb_item(split, False) %>
+	</ul>
+    % endif
 </%def>
 
+<%def name="breadcrumb_item(item, with_link=True)">
+    <li>
+	&raquo;&nbsp;
+	
+	% if with_link == True:
+	    <a href="${item['link']}">${item['name']}</a>
+	% else:
+	    ${item['name']}
+	% endif
+
+	&nbsp;
+    </li>
+</%def>

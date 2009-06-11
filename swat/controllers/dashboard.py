@@ -6,7 +6,8 @@ from pylons.controllers.util import abort, redirect_to
 from swat.lib.base import BaseController, render
 from routes import url_for
 
-from swat.lib.helpers import ControllerConfiguration, DashboardConfiguration
+from swat.lib.helpers import ControllerConfiguration, DashboardConfiguration, \
+BreadcrumbTrail
 
 log = logging.getLogger(__name__)
 
@@ -17,6 +18,9 @@ class DashboardController(BaseController):
         
         c.controller_config = ControllerConfiguration()
         c.dashboard_config = DashboardConfiguration(type)
+
+        c.breadcrumb = BreadcrumbTrail(c.controller_config)
+        c.breadcrumb.build()
 
     def index(self):
         """ The default Dashboard. The entry point for SWAT """ 

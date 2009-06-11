@@ -12,12 +12,23 @@ from routes import url_for
 from pylons import request
 
 class BreadcrumbTrail:
-    """ Handles SWAT's Breadcrumb Trail.  """
+    """ Handles SWAT's Breadcrumb Trail.
     
-    def __init__(self):
+    The base structure for the Breadcrumb is:
+    
+    > Dashboard
+    > [Advanced]
+    > Current Controller if not Dashboard
+    > Current Action
+    
+    """
+    
+    def __init__(self, controller=None, dashboard_first=True):
 	self._items = []
+	self._controller = controller
+	self._dashboard_first = dashboard_first
     
-    def add(self, name, controller, action = ""):
+    def add(self, name, controller_name, action_name = ""):
 	""" Add an item to the Breadcrumb Trail
 	
 	name is a String with the items's name
@@ -28,8 +39,13 @@ class BreadcrumbTrail:
 	
 	"""
 	
-	pass
-    
+	if len(action_name) <= 0:
+	    action_name = "index"
+	    
+	self._items.append({'name' : name,
+			    'link' : url_for(controller = controller_name, \
+					       action = action_name)})
+
     def get(self):
 	""" Gets the current Breadcrumb Trail Dictionary. This should be used
 	in the Breadcrumb Trail's Mako def
@@ -38,6 +54,31 @@ class BreadcrumbTrail:
 	
 	return self._items
     
+    def get_is_dashboard_first(self):
+	return self._dashboard_first
+    
+    def set_is_dashboard_first(self, is_first=True):
+	self._dashboard_first = is_first
+
+    def build(self, controller=None):
+	
+	controller = controller or self._controller
+	
+	if self.get_is_dashboard_first() == True:
+	    self.add('Dashboard', "dashboard")
+	    
+	if controller.get_controller_info("is_advanced") == True:
+	    self.add("Advanced Dashboard", "dashboard", "advanced")
+	    
+	if controller.get_controller_info('name') != "dashboard":
+	    self.add(controller.get_controller_info('friendly_name'), \
+		     controller.get_controller_info('name'))
+
+	    if controller.get_action_info("name") != "index":
+		self.add(controller.get_action_info('friendly_name'),
+			 controller.get_controller_info('name'), \
+			 controller.get_action_info('name'))
+
 class ControllerConfiguration:
     """ Each controller will have a configuration file. That information will
     be read at the controller's initialization method.
@@ -93,21 +134,26 @@ class ControllerConfiguration:
 	
 	if controller == 'dashboard':
 	    controller_info = {'is_advanced' : False,
-			       'friendly_name' : 'Dashboard'}
+			       'friendly_name' : 'Dashboard',
+			       'name' : controller}
 	
 	    if action == 'index':
-		action_info = {'friendly_name' : 'Dashboard'}
+		action_info = {'friendly_name' : 'Dashboard',
+			       'name' : action}
 	
 	elif controller == 'share':
 	    controller_info = {'is_advanced' : False,
-			       'friendly_name' : 'Share Management'}
+			       'friendly_name' : 'Share Management',
+			       'name' : controller}
 	    
 	    if action == 'index':
 		action_info = {'friendly_name' : 'Share List',
-			       'page_title' : 'Share Management'}
+			       'page_title' : 'Share Management',
+			       'name' : action}
 	    elif action == 'add':
 		action_info = {'friendly_name' : 'Add New Share',
-			       'page_title' : 'Add New Share'}
+			       'page_title' : 'Add New Share',
+			       'name' : action}
 
 	info = {'controller' : controller_info, 'action' : action_info}
 
@@ -129,39 +175,46 @@ class ControllerConfiguration:
 	if controller == 'share':
 	    if action == 'index':
 		config = {'actions' : [{'title' : 'add share',
-				'link' : url_for(controller = controller, action = 'add'),
+				'link' : url_for(controller = controller,
+						 action = 'add'),
 				'link_title' : 'Add a Share',
 				'icon' : 'folder-plus.png',
 				'icon_alt' : 'Add Share Icon'},
 			
 			
 				{'title' : 'add share assistant',
-				'link' : url_for(controller = controller, action = 'add_assistant'),
+				'link' : url_for(controller = controller,
+						 action = 'add_assistant'),
 				'link_title' : 'Add a Share using the Assistant',
 				'icon' : 'wand.png',
 				'icon_alt' : 'Add Share Assistant Icon'}]}
 
 	    elif action == 'add':
 		config = {'actions' : [{'title' : 'switch to assistant',
-				'link' : url_for(controller = controller, action = 'add_assistant'),
+				'link' : url_for(controller = controller,
+						 action = 'add_assistant'),
 				'link_title' : 'Switch to Assistant View',
 				'icon' : 'wand.png',
 				'icon_alt' : 'Assistant Icon'},
     
 				{'title' : 'save',
-				'link' : url_for(controller = controller, action = 'save'),
+				'link' : url_for(controller = controller,
+						 action = 'save'),
 				'link_title' : 'Save Share Information',
 				'icon' : 'disk.png',
 				'icon_alt' : 'Save Share Icon'},
 				
 				{'title' : 'apply',
-				'link' : url_for(controller = controller, action = 'apply'),
-				'link_title' : 'Apply Changes and Return to this Page',
+				'link' : url_for(controller = controller,
+						 action = 'apply'),
+				'link_title' : 'Apply Changes and \
+							Return to this Page',
 				'icon' : 'disk-arrow.png',
 				'icon_alt' : 'Apply Changes Icon'},
 				 
 				{'title' : 'cancel',
-				'link' : url_for(controller = controller, action = 'cancel'),
+				'link' : url_for(controller = controller,
+						 action = 'cancel'),
 				'link_title' : 'Cancel Share Creation',
 				'icon' : 'minus-circle.png',
 				'icon_alt' : 'Cancel Icon'}]}
@@ -189,7 +242,8 @@ class ControllerConfiguration:
 					    'Go to the Share Management Area'},
 
 			'actions' : [{'title' : 'add share',
-				    'link' : url_for(controller = controller, action = 'add'),
+				    'link' : url_for(controller = controller,
+						     action = 'add'),
 				    'link_title' : 'Add a Share',
 				    'icon' : 'folder-plus.png',
 				    'icon_alt' : 'Add Share Icon'},
@@ -201,8 +255,10 @@ class ControllerConfiguration:
 				    'icon_alt' : 'List Shares Icon'},
 				    
 				    {'title' : 'add share assistant',
-				    'link' : url_for(controller = controller, action = 'add_assistant'),
-				    'link_title' : 'Add a Share using the Assistant',
+				    'link' : url_for(controller = controller,
+						     action = 'add_assistant'),
+				    'link_title' : 'Add a Share using the \
+								    Assistant',
 				    'icon' : 'wand.png',
 				    'icon_alt' : 'Add Share Assistant Icon'}]}
     
@@ -330,7 +386,8 @@ def get_menu(type):
 	if type in get_available_menus():
 	    
 	    if type == "top":
-		dashboard_url = url_for(controller = 'dashboard', action = 'index')
+		dashboard_url = url_for(controller = 'dashboard',
+							    action = 'index')
 		login_url = url_for(controller = 'login', action = 'logout')
 		
 		items = [{"name" : "dashboard", "link" : dashboard_url}]
