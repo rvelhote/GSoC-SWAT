@@ -41,7 +41,7 @@ Base Page Title
 Head Tags
 </%doc>
 <%def name="head_tags()">
-    <link rel="shortcut icon" href="default/images/favicon.ico" />
+    <link rel="shortcut icon" href="/default/images/favicon.ico" />
     
     ${h.javascript_link(h.url_for('/default/js/mootools-core-nc.js'))}
     ${h.javascript_link(h.url_for('/default/js/swat-default.js'))}
@@ -57,7 +57,7 @@ Base Page Footer
 </%doc>
 <%def name="footer()">
     <div id="swat-footer">
-	<p>Samba Web Administration Tool :: HTML Prototype v1</p>
+	<p>Samba Web Administration Tool :: GSoC</p>
 	<p>Only Tested in Firefox for now! | <a title="Icons used in SWAT" href="http://www.pinvoke.com">Fugue Icons</a> | <a href="http://www.samba.org">Samba</a></p>
     </div>
 </%def>
@@ -84,9 +84,15 @@ Header Part. Contains items that will be in all pages except login
 </%def>
 
 <%doc>Server Name + Server Status Icon</%doc>
-<%def name="server_name()">
+<%def name="server_name()"><%
+    name = g.samba.get_conf().get_string("servername") or "" %>
+    
     <h1 class="server-name title-icon ${h.get_samba_server_status()}">
-	Vandelay Industries
+	% if len(name) > 0:
+	    ${name}
+	% else:
+	    Samba ${g.samba_version}
+	% endif
     </h1>
 </%def>
 

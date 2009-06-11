@@ -21,6 +21,9 @@ class Globals(object):
         
         import samba3
         import param
+        import samba
         
         self.samba = samba3.Samba3('/home/ric/samba-master/testdata/samba3/',
                                    param.default_path())
+        
+        self.samba_version = samba.version

@@ -55,7 +55,7 @@ ${share_table(g.samba.get_shares())}
 		% endif
 		
 		<tr class="${tr_class}">
-		    <td><input type="checkbox"/></td>
+		    <td><input name="select_share${i}" type="checkbox"/></td>
 		    <td>${i}</td>
 		    <td>${share}</td>
 		    <td>
