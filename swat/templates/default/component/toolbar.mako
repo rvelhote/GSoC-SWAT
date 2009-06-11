@@ -1,10 +1,8 @@
-<%def name="write(controller, action='')">
+<%def name="write(items)">
     <div id="task-toolbar">
 	<ul class="task-toolbar">
-	    <% item_list = c.controller_config.get_toolbar_items() %>
-	    
-	    % if len(item_list) > 0:	    
-		% for item in item_list['actions']:
+	    % if len(items) > 0:	    
+		% for item in items['actions']:
 		    <% write_item(item) %>
 		% endfor
 	    % endif

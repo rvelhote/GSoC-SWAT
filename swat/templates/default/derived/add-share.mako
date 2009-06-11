@@ -1,13 +1,8 @@
 <%inherit file="/default/base/base.mako" />
 <%namespace name="toolbar" file="/default/component/toolbar.mako" />
 
-% if hasattr(c, "friendly_action"):
-    ${parent.action_title(c.friendly_action)}
-% else:
-    request.environ['pylons.routes_dict']['action']
-% endif
-
-${toolbar.write(request.environ['pylons.routes_dict']['controller'], request.environ['pylons.routes_dict']['action'])}
+${parent.action_title(c.controller_config.get_action_info('page_title'))}
+${toolbar.write(c.controller_config.get_toolbar_items())}
 
 <%doc></%doc>
 <%def name="page_title()">

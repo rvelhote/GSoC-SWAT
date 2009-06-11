@@ -334,6 +334,7 @@ class DashboardConfiguration:
 	
 	return self._layout;
 
+
 def get_samba_server_status():
     """ Gets the current Samba4 status to be used in the CSS class name for the
     top template in the Server Name area.
