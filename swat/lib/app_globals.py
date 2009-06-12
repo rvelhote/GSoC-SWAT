@@ -19,11 +19,9 @@ class Globals(object):
         sys.path.append('/home/ric/libs/samba')
         sys.path.append('/home/ric/libs/samba/dcerpc')
         
-        import samba3
-        import param
-        import samba
+        import param, samba
         
-        self.samba = samba3.Samba3('/home/ric/samba-master/testdata/samba3/',
-                                   param.default_path())
+        self.samba_lp = param.LoadParm()
+        self.samba_lp.load_default()
         
         self.samba_version = samba.version

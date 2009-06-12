@@ -8,6 +8,10 @@ from swat.lib.base import BaseController, render
 log = logging.getLogger(__name__)
 
 class LoginController(BaseController):
+    
+    def __init__(self):
+        if not session.has_key("messages"):
+            session['messages'] = SwatMessages()
 
     def login(self):
         pass

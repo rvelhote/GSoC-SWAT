@@ -4,7 +4,7 @@
 ${parent.action_title(c.controller_config.get_action_info('page_title'))}
 ${toolbar.write(c.controller_config.get_toolbar_items())}
 
-${share_table(g.samba.get_shares())}
+${share_table(['test'])}
 
 <%doc></%doc>
 <%def name="page_title()">
@@ -39,16 +39,7 @@ ${share_table(g.samba.get_shares())}
 	    <% i = 1 %>
 	    
 	    % for share in shares:
-		% if share == "globals":
-		    <% continue %>
-		% endif
-		
-		<%
-		
-		info = shares.lp.get_section(share)
-		tr_class = ""
-		
-		%>
+		<% tr_class = '' %>
 		
 		% if i % 2 == 0:
 		    <% tr_class += " alternate-row " %>
@@ -59,15 +50,16 @@ ${share_table(g.samba.get_shares())}
 		    <td>${i}</td>
 		    <td>${share}</td>
 		    <td>
-			% if info.has_key('path'):
-			    ${info['path']}
+			
+			% if g.samba_lp.get('path', share) is not None:
+			    ${g.samba_lp.get('path', share)}
 			% else:
 			    No Path Defined
 			% endif
 		    </td>
 		    <td>
-			% if info.has_key('comment'):
-			    ${info['comment']}
+			% if g.samba_lp.get('comment', share):
+			    ${g.samba_lp.get('comment', share)}
 			% else:
 			    No Comment Defined
 			% endif

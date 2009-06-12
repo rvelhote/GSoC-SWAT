@@ -19,7 +19,10 @@ class ShareController(BaseController):
         c.controller_config = ControllerConfiguration()
         
         c.breadcrumb = BreadcrumbTrail(c.controller_config)
-        c.breadcrumb.build()        
+        c.breadcrumb.build()
+        
+        if not session.has_key("messages"):
+            session['messages'] = SwatMessages()        
     
     def index(self):        
         """ Point of entry. """

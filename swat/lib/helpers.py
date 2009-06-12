@@ -370,7 +370,8 @@ def get_samba_server_status():
     if len(commands.getoutput("pidof samba")) > 0:
 	status = "up"
     else:
-	session['messages'].add("Samba is down!", "critical")
+	if session.has_key("messages"):
+	    session['messages'].add("Samba is down!", "critical")
 	
     return status
 

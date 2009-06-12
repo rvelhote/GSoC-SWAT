@@ -21,9 +21,12 @@ class DashboardController(BaseController):
 
         c.breadcrumb = BreadcrumbTrail(c.controller_config)
         c.breadcrumb.build()
+        
+        if not session.has_key("messages"):
+            session['messages'] = SwatMessages()
 
     def index(self):
-        """ The default Dashboard. The entry point for SWAT """ 
+        """ The default Dashboard. The entry point for SWAT """
         return render('/default/derived/dashboard.mako')
         
     def advanced(self):
@@ -35,4 +38,4 @@ class DashboardController(BaseController):
         return render('/default/derived/dashboard.mako')
             
     def goto(self):
-        pass
+        redirect_to(controller = 'dashboard', action = 'index')
