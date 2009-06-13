@@ -297,7 +297,7 @@ class DashboardConfiguration:
 	self._layout = []
 	
 	self.load_layout(type)
-	self.load_layout_items()
+	self.load_layout_items(self.get_layout())
 		
     def load_layout(self, type='index'):
 	""" Loads the layout defined in type
@@ -331,6 +331,22 @@ class DashboardConfiguration:
 	for row in layout:
 	    for controller in row['names']:
 		self._items[controller] = ControllerConfiguration(controller)
+		
+    def get_item(self, name):
+	""" Gets a specific item from the items present in the Dashboard
+	Configuration.
+	
+	name is a String with the name of the item we want to fetch
+	
+	returns and object of type ControllerConfiguration
+	
+	"""
+	item = None
+	
+	if self._items.has_key(name) == True:
+	    item = self._items[name]
+	    
+	return item		
 
     def get_items(self):
 	""" Gets all the items present in the Dashboard Configuration. Each
@@ -341,17 +357,6 @@ class DashboardConfiguration:
 	
 	"""
 	return self._items;
-    
-    def get_item(self, name):
-	""" Gets a specific item from the items present in the Dashboard
-	Configuration.
-	
-	name is a String with the name of the item we want to fetch
-	
-	returns and object of type ControllerConfiguration
-	
-	"""
-	return self._items[name]
 
     def get_layout(self):
 	""" Gets the layout specified in the Dashboard configuration. The
@@ -369,6 +374,9 @@ class SwatMessages:
 	self._items = []
     
     def add(self, text, type='cool'):
+	if len(type) == 0:
+	    type = 'cool'
+	    
 	self._items.append({'text' : text, 'type' : type})
 	
     def clean(self):
@@ -377,10 +385,13 @@ class SwatMessages:
     def get(self):
 	return self._items
     
+    def __len__(self):
+	return len(self._items)
+    
     def any(self):
 	has_any = False
 	
-	if len(self.get()) > 0:
+	if len(self._items) > 0:
 	    has_any = True
 	    
 	return has_any

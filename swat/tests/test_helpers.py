@@ -38,4 +38,42 @@ class TestDashboardConfiguration():
     def test_load_layout_bad(self):
 	self.dash_obj.load_layout('bad-index')
 	assert len(self.dash_obj.get_layout()) == 0
+
+    def test_get_item_empty(self):
+	assert self.dash_obj.get_item('') is None
+	
+    def test_get_item_invalid(self):
+	assert self.dash_obj.get_item('invalid-item') is None
+	
+    def test_get_item_good(self):
+	assert isinstance(self.dash_obj.get_item('share'), ControllerConfiguration)
+
+class TestSwatMessages():
+    def __init__(self):
+	self.m = SwatMessages()
+	
+    def test_add(self):
+	type = 'cool'
+	text = 'test message'
+	
+	self.m.add(text, type)
+	assert self.m.any() == True
+	
+    def test_clear(self):
+	type = 'cool'
+	text = 'test message'
+	
+	self.m.add(text, type)
+	self.m.clean()
+	assert self.m.any() == False
+	
+    def test_any(self):
+	type = 'cool'
+	text = 'test message'
+	
+	self.m.add(text, type)
+	assert self.m.any() == True
+	
+	self.m.clean()
+	assert self.m.any() == False	
 	
