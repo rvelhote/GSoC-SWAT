@@ -15,9 +15,9 @@ class Globals(object):
         """
         import sys
         
-        sys.path.append('/home/ric/libs')
-        sys.path.append('/home/ric/libs/samba')
-        sys.path.append('/home/ric/libs/samba/dcerpc')
+        sys.path.append('/usr/local/samba/lib/python2.6/site-packages')
+        sys.path.append('/usr/local/samba/lib/python2.6/site-packages/samba')
+        sys.path.append('/usr/local/samba/lib/python2.6/site-packages/samba/dcerpc')
         
         import param, samba
         
