@@ -7,7 +7,7 @@ from swat.lib.base import BaseController, render
 from routes import url_for
 
 from swat.lib.helpers import ControllerConfiguration, DashboardConfiguration, \
-BreadcrumbTrail, SwatMessages
+BreadcrumbTrail, SwatMessages, swat_messages
 
 log = logging.getLogger(__name__)
 
@@ -21,9 +21,6 @@ class DashboardController(BaseController):
 
         c.breadcrumb = BreadcrumbTrail(c.controller_config)
         c.breadcrumb.build()
-        
-        if not session.has_key("messages"):
-            session['messages'] = SwatMessages()
 
     def index(self):
         """ The default Dashboard. The entry point for SWAT """
@@ -38,4 +35,5 @@ class DashboardController(BaseController):
         return render('/default/derived/dashboard.mako')
             
     def goto(self):
+        messages.add("goto!")
         redirect_to(controller = 'dashboard', action = 'index')

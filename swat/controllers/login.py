@@ -5,6 +5,9 @@ from pylons.controllers.util import abort, redirect_to
 
 from swat.lib.base import BaseController, render
 
+from swat.lib.helpers import ControllerConfiguration, DashboardConfiguration, \
+BreadcrumbTrail, SwatMessages
+
 log = logging.getLogger(__name__)
 
 class LoginController(BaseController):

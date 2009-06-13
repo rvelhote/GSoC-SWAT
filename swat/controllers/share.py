@@ -5,7 +5,9 @@ from pylons.controllers.util import abort, redirect_to
 
 from swat.lib.base import BaseController, render
 from pylons import app_globals as g
-from swat.lib.helpers import BreadcrumbTrail, ControllerConfiguration, DashboardConfiguration
+
+from swat.lib.helpers import ControllerConfiguration, DashboardConfiguration, \
+BreadcrumbTrail, SwatMessages
 
 log = logging.getLogger(__name__)
 
@@ -20,9 +22,6 @@ class ShareController(BaseController):
         
         c.breadcrumb = BreadcrumbTrail(c.controller_config)
         c.breadcrumb.build()
-        
-        if not session.has_key("messages"):
-            session['messages'] = SwatMessages()        
     
     def index(self):        
         """ Point of entry. """

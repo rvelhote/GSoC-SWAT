@@ -1,4 +1,6 @@
 from swat.tests import *
+from swat.lib.helpers import ControllerConfiguration, DashboardConfiguration, \
+BreadcrumbTrail, SwatMessages
 
 class TestLoginController(TestController):
 

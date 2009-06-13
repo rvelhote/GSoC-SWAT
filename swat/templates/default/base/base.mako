@@ -9,15 +9,14 @@
     
     <body>
 	<div class="swat-content dashboard round-2px">
-	    
 	    ${self.header()}
 	    
 	    <div id="swat-main-area">   
 		${menu.breadcrumb()}
 		
-		% if session.has_key("messages"):
-		    ${messages.write(session['messages'].get())}
-		    <% session['messages'].clean() %>
+		% if h.swat_messages.any():
+		    ${messages.write(h.swat_messages.get())}
+		    <% h.swat_messages.clean() %>
 		% endif
 		
 		${self.body()}
@@ -85,9 +84,13 @@ Header Part. Contains items that will be in all pages except login
 
 <%doc>Server Name + Server Status Icon</%doc>
 <%def name="server_name()"><%
-    name = g.samba_lp.get("server name") or "" %>
+    name = g.samba_lp.get("server name") or ""
+    status = h.get_samba_server_status() or "down"
     
-    <h1 class="server-name title-icon ${h.get_samba_server_status()}">
+    if status == "down":
+	h.swat_messages.add("Samba is down!", "critical") %>
+    
+    <h1 class="server-name title-icon ${status}">
 	% if len(name) > 0:
 	    ${name}
 	% else:
