@@ -84,7 +84,7 @@ class ControllerConfiguration:
     be read at the controller's initialization method.
     
     """
-    def __init__(self, controller=None, action=None):
+    def __init__(self, controller=None, action='index'):
 	""" Set the controller and action for the specified item and fetch the
 	necessary information.
 	
@@ -94,11 +94,8 @@ class ControllerConfiguration:
 	- Information: General Information regarding the Controller.
 	
 	"""
-	self._controller = controller \
-			or request.environ['pylons.routes_dict']['controller']
-			
-	self._action = action \
-			    or request.environ['pylons.routes_dict']['action']
+	self._controller = controller or ""
+	self._action = action or ""
 	
 	self._dashboard_items = self.__dashboard(self._controller)
 	self._toolbar_items = self.__toolbar(self._controller, self._action)
@@ -161,11 +158,21 @@ class ControllerConfiguration:
     
     def get_controller_info(self, key):
 	""" Returns a specific value from the controller info dictionary """
-	return self._information['controller'][key]
+	value = ""
+	
+	if self._information['controller'].has_key(key):
+	    value = self._information['controller'][key]
+	    
+	return value
 	
     def get_action_info(self, key):
 	""" Returns a specific value from the action info dictionary """
-	return self._information['action'][key]
+	value = ""
+	
+	if self._information['action'].has_key(key):
+	    value = self._information['action'][key]
+	    
+	return value
 
     def __toolbar(self, controller, action):
 	""" Gets the Toolbar items for the current controller's action """
@@ -286,16 +293,38 @@ class DashboardConfiguration:
 	one will be an Administration Dashboard.
 	
 	"""
-	
 	self._items = {}
 	self._layout = []
-
-    	if type is None or type == 'index':
+	
+	self.load_layout(type)
+	self.load_layout_items()
+		
+    def load_layout(self, type):
+	""" Loads the layout defined in type
+	
+	All content is loaded into self._layout so you will need to access it
+	with the getters
+	
+	"""
+	if type is None or len(type) == 0:
+	    type = 'index'
+	
+	if type == 'index':
 	    self._layout = [{'display' : 2, 'names' : ['share', 'account']},
 			    {'display' : 2, 'names' : ['printer', 'help']},
 			    {'display' : 1, 'names' : ['administration']}]
 
-	for row in self.get_layout():
+    def load_layout_items(self, layout=None):
+	""" Loads the Items present in the layout.
+	
+	All content is loaded into self._items so you will need to access it
+	with the getters
+	
+	"""
+	if layout is None:
+	    layout = self.get_layout()
+	
+	for row in layout:
 	    for controller in row['names']:
 		self._items[controller] = ControllerConfiguration(controller)
 
@@ -307,7 +336,6 @@ class DashboardConfiguration:
 	name
 	
 	"""
-	
 	return self._items;
     
     def get_item(self, name):
@@ -319,7 +347,6 @@ class DashboardConfiguration:
 	returns and object of type ControllerConfiguration
 	
 	"""
-	
 	return self._items[name]
 
     def get_layout(self):
@@ -331,7 +358,6 @@ class DashboardConfiguration:
 	returns a List containing n Dictionaries describing the layout
 	
 	"""
-	
 	return self._layout;
     
 class SwatMessages:

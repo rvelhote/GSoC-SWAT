@@ -14,9 +14,10 @@ log = logging.getLogger(__name__)
 class DashboardController(BaseController):
     
     def __init__(self):
+        me = request.environ['pylons.routes_dict']['controller']
         type = request.environ['pylons.routes_dict']['action']
 
-        c.controller_config = ControllerConfiguration()
+        c.controller_config = ControllerConfiguration(me)
         c.dashboard_config = DashboardConfiguration(type)
 
         c.breadcrumb = BreadcrumbTrail(c.controller_config)

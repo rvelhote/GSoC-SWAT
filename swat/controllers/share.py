@@ -18,7 +18,8 @@ class ShareController(BaseController):
     """
 
     def __init__(self):
-        c.controller_config = ControllerConfiguration()
+        me = request.environ['pylons.routes_dict']['controller']
+        c.controller_config = ControllerConfiguration(me)
         
         c.breadcrumb = BreadcrumbTrail(c.controller_config)
         c.breadcrumb.build()
