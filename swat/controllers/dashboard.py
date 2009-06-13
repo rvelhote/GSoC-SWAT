@@ -36,5 +36,4 @@ class DashboardController(BaseController):
         return render('/default/derived/dashboard.mako')
             
     def goto(self):
-        messages.add("goto!")
         redirect_to(controller = 'dashboard', action = 'index')

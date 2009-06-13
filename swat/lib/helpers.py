@@ -299,16 +299,18 @@ class DashboardConfiguration:
 	self.load_layout(type)
 	self.load_layout_items()
 		
-    def load_layout(self, type):
+    def load_layout(self, type='index'):
 	""" Loads the layout defined in type
 	
 	All content is loaded into self._layout so you will need to access it
 	with the getters
 	
 	"""
+	self._layout = []
+	
 	if type is None or len(type) == 0:
 	    type = 'index'
-	
+
 	if type == 'index':
 	    self._layout = [{'display' : 2, 'names' : ['share', 'account']},
 			    {'display' : 2, 'names' : ['printer', 'help']},
@@ -321,6 +323,8 @@ class DashboardConfiguration:
 	with the getters
 	
 	"""
+	self._items = {}
+	
 	if layout is None:
 	    layout = self.get_layout()
 	
