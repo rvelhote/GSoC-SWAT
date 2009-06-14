@@ -33,7 +33,10 @@ class DashboardController(BaseController):
         type = request.environ['pylons.routes_dict']['action']
 
         c.controller_config = ControllerConfiguration(me)
-        c.dashboard_config = DashboardConfiguration(type)
+        c.controller_config.setup()
+
+        c.dashboard_config = DashboardConfiguration()
+        c.dashboard_config.load_config(type)
 
         c.breadcrumb = BreadcrumbTrail(c.controller_config)
         c.breadcrumb.build()

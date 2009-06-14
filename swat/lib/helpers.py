@@ -35,12 +35,12 @@ class BreadcrumbTrail:
     
     """
     
-    def __init__(self, controller=None, dashboard_first=True):
+    def __init__(self, controller, dashboard_first=True):
 	self._items = []
 	self._controller = controller
 	self._dashboard_first = dashboard_first
     
-    def add(self, name, controller_name, action_name = ""):
+    def add(self, name, controller_name, action_name = "index"):
 	""" Add an item to the Breadcrumb Trail
 	
 	name is a String with the items's name
@@ -49,11 +49,7 @@ class BreadcrumbTrail:
 	
 	This function will store a dictionary with the above information
 	
-	"""
-	
-	if len(action_name) <= 0:
-	    action_name = "index"
-	    
+	"""	    
 	self._items.append({'name' : name,
 			    'link' : url_for(controller = controller_name, \
 					       action = action_name)})
@@ -73,7 +69,6 @@ class BreadcrumbTrail:
 	self._dashboard_first = is_first
 
     def build(self, controller=None):
-	
 	controller = controller or self._controller
 	
 	if self.get_is_dashboard_first() == True:
@@ -96,7 +91,7 @@ class ControllerConfiguration:
     be read at the controller's initialization method.
     
     """
-    def __init__(self, controller=None, action='index'):
+    def __init__(self, controller, action='index'):
 	""" Set the controller and action for the specified item and fetch the
 	necessary information.
 	
@@ -106,12 +101,20 @@ class ControllerConfiguration:
 	- Information: General Information regarding the Controller.
 	
 	"""
-	self._controller = controller or ""
-	self._action = action or ""
+	self._controller = controller
+	self._action = action
 	
-	self._dashboard_items = self.__dashboard(self._controller)
-	self._toolbar_items = self.__toolbar(self._controller, self._action)
-	self._information = self.__information(self._controller, self._action)
+    def setup(self, controller='', action=''):
+	
+	if len(controller) == 0:
+	    controller = self._controller
+	    
+	if len(action) == 0:
+	    action = self._action
+
+	self._dashboard_items = self.setup_dashboard(controller)
+	self._toolbar_items = self.setup_toolbar(controller, action)
+	self._information = self.setup_information(controller, action)
 	
     def get_dashboard_items(self):
 	""" Returns the Dashboard Items specified for this Controller """
@@ -125,7 +128,26 @@ class ControllerConfiguration:
 	""" Returns general information about this controller """
 	return self._information
     
-    def __information(self, controller, action):
+    
+    def get_controller_info(self, key):
+	""" Returns a specific value from the controller info dictionary """
+	value = ""
+	
+	if self._information['controller'].has_key(key):
+	    value = self._information['controller'][key]
+	    
+	return value
+	
+    def get_action_info(self, key):
+	""" Returns a specific value from the action info dictionary """
+	value = ""
+	
+	if self._information['action'].has_key(key):
+	    value = self._information['action'][key]
+	    
+	return value    
+    
+    def setup_information(self, controller, action):
 	""" The controller's information is divided into two areas. The
 	controller's base data and information about each of the actions it
 	implements.
@@ -167,26 +189,8 @@ class ControllerConfiguration:
 	info = {'controller' : controller_info, 'action' : action_info}
 
 	return info
-    
-    def get_controller_info(self, key):
-	""" Returns a specific value from the controller info dictionary """
-	value = ""
-	
-	if self._information['controller'].has_key(key):
-	    value = self._information['controller'][key]
-	    
-	return value
-	
-    def get_action_info(self, key):
-	""" Returns a specific value from the action info dictionary """
-	value = ""
-	
-	if self._information['action'].has_key(key):
-	    value = self._information['action'][key]
-	    
-	return value
 
-    def __toolbar(self, controller, action):
+    def setup_toolbar(self, controller, action):
 	""" Gets the Toolbar items for the current controller's action """
 	
 	config = {}
@@ -240,7 +244,7 @@ class ControllerConfiguration:
 
 	return config
 
-    def __dashboard(self, controller):
+    def setup_dashboard(self, controller):
 	""" Configuration options for a specific controller's widget. Just like
 	the layout configuration it's hardcoded for now. If all goes according
 	to plan each controller will have a set of specifications in a
@@ -292,7 +296,7 @@ class DashboardConfiguration:
     are present
     
     """
-    def __init__(self, type='index'):
+    def __init__(self):
 	""" Sets the layout options for the area defined as type. Theoratically
 	the layout will be specified in a configuration will. It will contain
 	the number of columns in one row (display) and the names of the
@@ -308,6 +312,7 @@ class DashboardConfiguration:
 	self._items = {}
 	self._layout = []
 	
+    def load_config(self, type='index'):
 	self.load_layout(type)
 	self.load_layout_items(self.get_layout())
 		
@@ -343,6 +348,7 @@ class DashboardConfiguration:
 	for row in layout:
 	    for controller in row['names']:
 		self._items[controller] = ControllerConfiguration(controller)
+		self._items[controller].setup()
 		
     def get_item(self, name):
 	""" Gets a specific item from the items present in the Dashboard
@@ -381,7 +387,7 @@ class DashboardConfiguration:
 	"""
 	return self._layout;
     
-class SwatMessages:
+class SwatMessages:    
     def __init__(self):
 	self._items = []
     
@@ -460,15 +466,35 @@ def get_menu(type):
     
     if type is not None and len(type) > 0:
 	if type in get_available_menus():
-	    if type == "top":
-		dashboard_url = url_for(controller = 'dashboard',
-							    action = 'index')
-		login_url = url_for(controller = 'login', action = 'logout')
-		
-		items = [{"name" : "dashboard", "link" : dashboard_url}]
-		items.append({"name" : "general help", "link" : url_for()})
-		items.append({"name" : "context help", "link" : url_for()})
-		items.append({"name" : "about", "link" : url_for()})
-		items.append({"name" : "logout", "link" : login_url})
+	    get_info("menu", type)
 
     return items
+
+#
+# SWAT Data
+#
+def get_info(type, name, area=''):
+    #
+    # Type: Menu
+    #
+    if type == 'menu':
+	if name == "top":
+	    items = []
+	    
+	    dashboard_url = url_for(controller = 'dashboard', action = 'index')
+	    login_url = url_for(controller = 'login', action = 'logout')
+	    
+	    items.append({"name" : "dashboard", "link" : dashboard_url})
+	    items.append({"name" : "general help", "link" : url_for()})
+	    items.append({"name" : "context help", "link" : url_for()})
+	    items.append({"name" : "about", "link" : url_for()})
+	    items.append({"name" : "logout", "link" : login_url})
+
+    #
+    # Type: Controller
+    #
+
+    return items
+    
+    
+    

@@ -28,8 +28,7 @@ log = logging.getLogger(__name__)
 class LoginController(BaseController):
     
     def __init__(self):
-        if not session.has_key("messages"):
-            session['messages'] = SwatMessages()
+        pass
 
     def login(self):
         pass

@@ -38,57 +38,96 @@ def test_get_samba_server_status():
 								"up" or "down"'
 
 class TestDashboardConfiguration():
-    def __init__(self):
-	self.dash_obj = DashboardConfiguration('index')
+    def setUp(self):
+	self.d = DashboardConfiguration()
+
+    def tearDown(self):
+	pass
 
     def test_layout_keys(self):
-	layout = self.dash_obj.get_layout()
+	self.d.load_layout('index')
+	layout = self.d.get_layout()
+
 	for row in layout:
 	    assert row.has_key('display') and row.has_key('names') == True
 	
     def test_load_layout_good(self):
-	self.dash_obj.load_layout('index')
-	assert len(self.dash_obj.get_layout()) > 0
+	self.d.load_layout('index')
+	layout = self.d.get_layout()
+	assert len(layout) > 0
 	
     def test_load_layout_bad(self):
-	self.dash_obj.load_layout('bad-index')
-	assert len(self.dash_obj.get_layout()) == 0
+	self.d.load_layout('bad-index')
+	layout = self.d.get_layout()
+	assert len(layout) == 0
 
     def test_get_item_empty(self):
-	assert self.dash_obj.get_item('') is None
+	self.d.load_layout('index')
+	layout = self.d.get_layout()
+	
+	self.d.load_layout_items(layout)
+	assert self.d.get_item('') is None
 	
     def test_get_item_invalid(self):
-	assert self.dash_obj.get_item('invalid-item') is None
+	self.d.load_layout('index')
+	layout = self.d.get_layout()
+	
+	self.d.load_layout_items(layout)	
+	assert self.d.get_item('invalid-item') is None
 	
     def test_get_item_good(self):
-	assert isinstance(self.dash_obj.get_item('share'), ControllerConfiguration)
+	self.d.load_layout('index')
+	layout = self.d.get_layout()
+	
+	self.d.load_layout_items(layout)	
+	assert isinstance(self.d.get_item('share'), ControllerConfiguration)
 
 class TestSwatMessages():
-    def __init__(self):
+    
+    def setUp(self):
 	self.m = SwatMessages()
+
+    def tearDown(self):
+	pass
 	
     def test_add(self):
-	type = 'cool'
-	text = 'test message'
-	
-	self.m.add(text, type)
+	self.m.add('test message', 'cool')
 	assert self.m.any() == True
 	
     def test_clear(self):
-	type = 'cool'
-	text = 'test message'
-	
-	self.m.add(text, type)
+	self.m.add('test message', 'cool')
 	self.m.clean()
 	assert self.m.any() == False
 	
     def test_any(self):
-	type = 'cool'
-	text = 'test message'
-	
-	self.m.add(text, type)
+	self.m.add('test message', 'cool')
 	assert self.m.any() == True
 	
 	self.m.clean()
-	assert self.m.any() == False	
+	assert self.m.any() == False
+	
+class TestBreadcrumbTrail():
+    def setUp(self):
+	self.c = ControllerConfiguration('share')
+	self.b = self.new_instance()
+
+    def new_instance(self):
+	return BreadcrumbTrail(self.c)
+	
+    def test_add(self):
+	self.b = self.new_instance()
+	self.b.add('bread', 'share', 'index')
+	
+	items = self.b.get()
+	assert len(items) > 0
+	
+    def test_build(self):
+	self.b = self.new_instance()
+	self.b.build()
+	
+	items = self.b.get()
+	
+	assert len(items) > 0
+	assert items[0].has_key('name')
+	assert items[0]['name'] == 'item'
 	
