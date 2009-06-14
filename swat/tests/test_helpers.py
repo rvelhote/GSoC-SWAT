@@ -14,28 +14,24 @@
 # You should have received a copy of the GNU General Public License
 # 
 from swat.lib.helpers import *
-from pylons import session
-from nose import with_setup
-    
-def test_get_menu_empty_type():
-    type = ""
-    assert len(get_menu(type)) == 0, 'When there is no type it should return an\
-								    empty list'
 
-def test_get_menu_valid_type():
-    type = "top"
-    assert len(get_menu(type)) > 0, 'Length of the  returned list should be > 0'
-    
+class TestMenu():
+    def test_get_menu_empty_type(self):
+	type = ""
+	assert len(get_menu(type)) == 0, 'When there is no type it should return an empty list'
 
-def test_get_menu_invalid_type():
-    type = "vandelayindustries"
-    assert len(get_menu(type)) == 0, 'When the menu doesn\'t exist an empty\
-							list should be returned'
+    def test_get_menu_valid_type(self):
+	type = "top"
+	assert len(get_menu(type)) > 0, 'Length of the  returned list should be > 0'
 
-def test_get_samba_server_status():
-    assert get_samba_server_status() == "up" or \
-	    get_samba_server_status() == "down", 'Status should always be\
-								"up" or "down"'
+    def test_get_menu_invalid_type(self):
+	type = "vandelayindustries"
+	assert len(get_menu(type)) == 0, 'When the menu doesn\'t exist an empty list should be returned'
+
+class TestSambaServerStatus():
+    def test_get_samba_server_status(self):
+	status = get_samba_server_status()
+        assert status == "up" or status == "down", 'Status should always be "up" or "down"'
 
 class TestDashboardConfiguration():
     def setUp(self):
@@ -129,7 +125,29 @@ class TestBreadcrumbTrail():
 	
 	items = self.b.get()
 	
-	assert len(items) > 0	
+	assert len(items) > 0
+		
 	for i in items:
 	    assert i.has_key('name') and i.has_key('link')
+
+class TestControllerConfiguration():
+    def setUp(self):
+	self.c = 'share'
+	self.a = 'index'
+	self.conf = None
+
+    def new_config_instance(self):
+	return ControllerConfiguration(self.c, self.a)
+
+    def test_configuration_setup(self):
+	self.conf = self.new_config_instance()
+	self.conf.setup()
+
+    def test_setup_information(self):
+	self.conf = self.new_config_instance()
+	
+	self.conf.setup_information(self.c, self.a)
+	info = self.conf.get_information()
+	
+	assert len(info) > 0
 	

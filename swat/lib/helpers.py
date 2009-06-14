@@ -112,9 +112,9 @@ class ControllerConfiguration:
 	if len(action) == 0:
 	    action = self._action
 
-	self._dashboard_items = self.setup_dashboard(controller)
-	self._toolbar_items = self.setup_toolbar(controller, action)
-	self._information = self.setup_information(controller, action)
+	self.setup_dashboard(controller)
+	self.setup_toolbar(controller, action)
+	self.setup_information(controller, action)
 	
     def get_dashboard_items(self):
 	""" Returns the Dashboard Items specified for this Controller """
@@ -188,7 +188,7 @@ class ControllerConfiguration:
 
 	info = {'controller' : controller_info, 'action' : action_info}
 
-	return info
+	self._information = info
 
     def setup_toolbar(self, controller, action):
 	""" Gets the Toolbar items for the current controller's action """
@@ -198,7 +198,7 @@ class ControllerConfiguration:
 	if controller == 'share':
 	    config = get_info_on('controller', 'toolbar', controller, action)
 
-	return config
+	self._toolbar_items = config
 
     def setup_dashboard(self, controller):
 	""" Configuration options for a specific controller's widget. Just like
@@ -217,7 +217,7 @@ class ControllerConfiguration:
 	if controller == 'share':
 	    config = get_info_on('controller', 'dashboard', controller)
 
-	return config
+	self._dashboard_items = config
 
 class DashboardConfiguration:
     """ Description about the Dashboard's configuration and its items. The
