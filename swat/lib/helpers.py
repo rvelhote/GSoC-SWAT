@@ -132,7 +132,7 @@ class ControllerConfiguration:
     def get_controller_info(self, key):
 	""" Returns a specific value from the controller info dictionary """
 	value = ""
-	
+
 	if self._information['controller'].has_key(key):
 	    value = self._information['controller'][key]
 	    
@@ -162,7 +162,7 @@ class ControllerConfiguration:
 	
 	controller_info = {}
 	action_info = {}
-	
+
 	if controller == 'dashboard':
 	    controller_info = {'is_advanced' : False,
 			       'friendly_name' : 'Dashboard',
@@ -196,51 +196,7 @@ class ControllerConfiguration:
 	config = {}
 	
 	if controller == 'share':
-	    if action == 'index':
-		config = {'actions' : [{'title' : 'add share',
-				'link' : url_for(controller = controller,
-						 action = 'add'),
-				'link_title' : 'Add a Share',
-				'icon' : 'folder-plus.png',
-				'icon_alt' : 'Add Share Icon'},
-			
-			
-				{'title' : 'add share assistant',
-				'link' : url_for(controller = controller,
-						 action = 'add_assistant'),
-				'link_title' : 'Add a Share using the Assistant',
-				'icon' : 'wand.png',
-				'icon_alt' : 'Add Share Assistant Icon'}]}
-
-	    elif action == 'add':
-		config = {'actions' : [{'title' : 'switch to assistant',
-				'link' : url_for(controller = controller,
-						 action = 'add_assistant'),
-				'link_title' : 'Switch to Assistant View',
-				'icon' : 'wand.png',
-				'icon_alt' : 'Assistant Icon'},
-    
-				{'title' : 'save',
-				'link' : url_for(controller = controller,
-						 action = 'save'),
-				'link_title' : 'Save Share Information',
-				'icon' : 'disk.png',
-				'icon_alt' : 'Save Share Icon'},
-				
-				{'title' : 'apply',
-				'link' : url_for(controller = controller,
-						 action = 'apply'),
-				'link_title' : 'Apply Changes and \
-							Return to this Page',
-				'icon' : 'disk-arrow.png',
-				'icon_alt' : 'Apply Changes Icon'},
-				 
-				{'title' : 'cancel',
-				'link' : url_for(controller = controller,
-						 action = 'cancel'),
-				'link_title' : 'Cancel Share Creation',
-				'icon' : 'minus-circle.png',
-				'icon_alt' : 'Cancel Icon'}]}
+	    config = get_info_on('controller', 'toolbar', controller, action)
 
 	return config
 
@@ -259,32 +215,8 @@ class ControllerConfiguration:
 	config = {}
 	
 	if controller == 'share':
-	    config = {  'title_bar' : {'title' : 'Share Management',
-			'title_link' : url_for(controller = controller),
-			'title_icon' : 'folders.png', 'title_link_title' :
-					    'Go to the Share Management Area'},
+	    config = get_info_on('controller', 'dashboard', controller)
 
-			'actions' : [{'title' : 'add share',
-				    'link' : url_for(controller = controller,
-						     action = 'add'),
-				    'link_title' : 'Add a Share',
-				    'icon' : 'folder-plus.png',
-				    'icon_alt' : 'Add Share Icon'},
-
-				    {'title' : 'list shares',
-				    'link' : url_for(controller = controller),
-				    'link_title' : 'List All Shares',
-				    'icon' : 'folders-stack.png',
-				    'icon_alt' : 'List Shares Icon'},
-				    
-				    {'title' : 'add share assistant',
-				    'link' : url_for(controller = controller,
-						     action = 'add_assistant'),
-				    'link_title' : 'Add a Share using the \
-								    Assistant',
-				    'icon' : 'wand.png',
-				    'icon_alt' : 'Add Share Assistant Icon'}]}
-    
 	return config
 
 class DashboardConfiguration:
@@ -324,14 +256,9 @@ class DashboardConfiguration:
 	
 	"""
 	self._layout = []
-	
-	if type is None or len(type) == 0:
-	    type = 'index'
 
 	if type == 'index':
-	    self._layout = [{'display' : 2, 'names' : ['share', 'account']},
-			    {'display' : 2, 'names' : ['printer', 'help']},
-			    {'display' : 1, 'names' : ['administration']}]
+	    self._layout = get_info_on('dashboard', type)
 
     def load_layout_items(self, layout=None):
 	""" Loads the Items present in the layout.
@@ -439,15 +366,6 @@ def get_samba_server_status():
 
     return status
 
-def get_available_menus():
-    """ Gets all available menus in SWAT. There will be a configuration file to
-    specify all of this information but for now it's all static.
-    
-    Returns a list containing all the available menus for the application.
-    
-    """
-    return ['top']
-
 def get_menu(type):
     """ Gets the menu items attributed to a certain menu type. In the
     future these items will be snatched from an XML or other type of
@@ -463,24 +381,25 @@ def get_menu(type):
     """
     
     items = []
-    
+
     if type is not None and len(type) > 0:
-	if type in get_available_menus():
-	    get_info("menu", type)
+	items = get_info_on('menu', type)
 
     return items
 
 #
 # SWAT Data
 #
-def get_info(type, name, area=''):
+def get_info_on(type, area, name='', action=''):
+    items = []
+    
     #
     # Type: Menu
     #
     if type == 'menu':
-	if name == "top":
-	    items = []
-	    
+	items = []
+	
+	if area == "top":
 	    dashboard_url = url_for(controller = 'dashboard', action = 'index')
 	    login_url = url_for(controller = 'login', action = 'logout')
 	    
@@ -493,8 +412,98 @@ def get_info(type, name, area=''):
     #
     # Type: Controller
     #
+    if type == 'controller':
+
+	#
+	# Dashboard Information on this Controller
+	#
+	if area == 'dashboard':
+	    if name == 'share':
+		items = {'title_bar' : {'title' : 'Share Management',
+			'title_link' : url_for(controller = name),
+			'title_icon' : 'folders.png', 'title_link_title' :
+					    'Go to the Share Management Area'},
+
+			'actions' : [{'title' : 'add share',
+				    'link' : url_for(controller = name,
+							 action = 'add'),
+				    'link_title' : 'Add a Share',
+				    'icon' : 'folder-plus.png',
+				    'icon_alt' : 'Add Share Icon'},
+
+				    {'title' : 'list shares',
+				    'link' : url_for(controller = name),
+				    'link_title' : 'List All Shares',
+				    'icon' : 'folders-stack.png',
+				    'icon_alt' : 'List Shares Icon'},
+					
+				    {'title' : 'add share assistant',
+				    'link' : url_for(controller = name,
+						    action = 'add_assistant'),
+				    'link_title' : 'Add a Share using the \
+								    Assistant',
+				    'icon' : 'wand.png',
+				    'icon_alt' : 'Add Share Assistant Icon'}]}
+	
+	#
+	# Toolbar Items Information on this Controller
+	#
+	elif area == 'toolbar':
+	    if name == 'share':
+		if action == 'index':
+		    items = {'actions' : [{'title' : 'add share',
+			    'link' : url_for(controller = name, action = 'add'),
+			    'link_title' : 'Add a Share',
+			    'icon' : 'folder-plus.png',
+			    'icon_alt' : 'Add Share Icon'},
+
+			    {'title' : 'add share assistant',
+			    'link' : url_for(controller = name, action = 'add_assistant'),
+			    'link_title' : 'Add a Share using the Assistant',
+			    'icon' : 'wand.png',
+			    'icon_alt' : 'Add Share Assistant Icon'}]}
+		
+		if action == 'add':
+		    items = {'actions' : [{'title' : 'switch to assistant',
+			    'link' : url_for(controller = name, action = 'add_assistant'),
+			    'link_title' : 'Switch to Assistant View',
+			    'icon' : 'wand.png',
+			    'icon_alt' : 'Assistant Icon'},
+
+			    {'title' : 'save',
+			    'link' : url_for(controller = name, action = 'save'),
+			    'link_title' : 'Save Share Information',
+			    'icon' : 'disk.png',
+			    'icon_alt' : 'Save Share Icon'},
+			    
+			    {'title' : 'apply',
+			    'link' : url_for(controller = name, action = 'apply'),
+			    'link_title' : 'Apply Changes and \
+						    Return to this Page',
+			    'icon' : 'disk-arrow.png',
+			    'icon_alt' : 'Apply Changes Icon'},
+			     
+			    {'title' : 'cancel',
+			    'link' : url_for(controller = name, action = 'cancel'),
+			    'link_title' : 'Cancel Share Creation',
+			    'icon' : 'minus-circle.png',
+			    'icon_alt' : 'Cancel Icon'}]}		    
+	
+	#
+	# General Controller information
+	#
+	elif area == 'information':
+	    pass
+    
+    #
+    # Type: Dashboard
+    #
+    if type == 'dashboard':
+	items = []
+	
+	if area == 'index':
+	    items = [{'display' : 2, 'names' : ['share', 'account']},
+		    {'display' : 2, 'names' : ['printer', 'help']},
+		    {'display' : 1, 'names' : ['administration']}]
 
     return items
-    
-    
-    

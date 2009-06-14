@@ -109,6 +109,8 @@ class TestSwatMessages():
 class TestBreadcrumbTrail():
     def setUp(self):
 	self.c = ControllerConfiguration('share')
+	self.c.setup()
+	
 	self.b = self.new_instance()
 
     def new_instance(self):
@@ -127,7 +129,7 @@ class TestBreadcrumbTrail():
 	
 	items = self.b.get()
 	
-	assert len(items) > 0
-	assert items[0].has_key('name')
-	assert items[0]['name'] == 'item'
+	assert len(items) > 0	
+	for i in items:
+	    assert i.has_key('name') and i.has_key('link')
 	

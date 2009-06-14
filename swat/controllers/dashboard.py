@@ -32,7 +32,7 @@ class DashboardController(BaseController):
         me = request.environ['pylons.routes_dict']['controller']
         type = request.environ['pylons.routes_dict']['action']
 
-        c.controller_config = ControllerConfiguration(me)
+        c.controller_config = ControllerConfiguration(me, type)
         c.controller_config.setup()
 
         c.dashboard_config = DashboardConfiguration()
