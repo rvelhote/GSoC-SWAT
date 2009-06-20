@@ -127,8 +127,7 @@ class ControllerConfiguration:
     def get_information(self):
 	""" Returns general information about this controller """
 	return self._information
-    
-    
+
     def get_controller_info(self, key):
 	""" Returns a specific value from the controller info dictionary """
 	value = ""

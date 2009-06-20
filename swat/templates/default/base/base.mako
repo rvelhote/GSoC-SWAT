@@ -38,7 +38,7 @@
 		
 		${self.body()}
 	    </div>
-	    
+
 	    <div class="clear-both"></div>
 	</div>
 	
@@ -50,7 +50,7 @@
 Base Page Title
 </%doc>
 <%def name="page_title()">
-    Samba Web Administration Tool
+    ${_('Samba Web Administration Tool')}
 </%def>
 
 <%doc>
@@ -73,8 +73,8 @@ Base Page Footer
 </%doc>
 <%def name="footer()">
     <div id="swat-footer">
-	<p>Samba Web Administration Tool :: GSoC</p>
-	<p>Only Tested in Firefox for now! | <a title="Icons used in SWAT" href="http://www.pinvoke.com">Fugue Icons</a> | <a href="http://www.samba.org">Samba</a></p>
+	<p>${_('Samba Web Administration Tool')}</p>
+	<p>${_('Only Tested in Firefox for now')} | <a title="${_('Icons used in SWAT')}" href="http://www.pinvoke.com">${_('Fugue Icons')}</a> | <a href="http://www.samba.org">${_('Samba')}</a></p>
     </div>
 </%def>
 
@@ -95,7 +95,7 @@ Header Part. Contains items that will be in all pages except login
 <%doc>Samba Logo</%doc>
 <%def name="samba_logo()">
     <a href="${h.url_for(controller = 'dashboard')}">
-	<img class="samba-logo samba-logo-interior" src="/default/images/samba-logo.png" alt="Samba Logo" title="Samba - Opening Windows to a Wider World" />
+	<img class="samba-logo samba-logo-interior" src="/default/images/samba-logo.png" alt="${_('Samba Logo')}" title="${_('Samba - Opening Windows to a Wider World')}" />
     </a>
 </%def>
 
@@ -105,7 +105,7 @@ Header Part. Contains items that will be in all pages except login
     status = h.get_samba_server_status() or "down"
     
     if status == "down":
-	h.swat_messages.add("Samba is down!", "critical") %>
+	h.swat_messages.add(_('Samba is down!'), "critical") %>
     
     <h1 class="server-name title-icon ${status}">
 	% if len(name) > 0:
@@ -126,7 +126,7 @@ jump to a controller/action that the user types in
 
     ${h.form(h.url_for(controller='dashboard', action='goto'), method='get')}
 	<div class="filter-items">
-	    <label title="Go directly to" for="goto-items-textbox">Goto: </label>
+	    <label title="${_('Go directly to...')}" for="goto-items-textbox">${_('Goto')}: </label>
 	    ${h.text('where', '', id = 'goto-items-textbox')}
 	</div>
     ${h.end_form()}

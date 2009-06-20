@@ -1,0 +1,51 @@
+# Translations template for swat.
+# Copyright (C) 2009 ORGANIZATION
+# This file is distributed under the same license as the swat project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: swat 0.1\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2009-06-20 17:15+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 0.9.4\n"
+
+#: swat/templates/default/base/base.mako:76
+msgid "Samba Web Administration Tool"
+msgstr ""
+
+#: swat/templates/default/base/base.mako:77
+msgid "Only Tested in Firefox for now"
+msgstr ""
+
+#: swat/templates/default/base/base.mako:77
+msgid "Icons used in SWAT"
+msgstr ""
+
+#: swat/templates/default/base/base.mako:98
+msgid "Samba Logo"
+msgstr ""
+
+#: swat/templates/default/base/base.mako:98
+msgid "Samba - Opening Windows to a Wider World"
+msgstr ""
+
+#: swat/templates/default/base/base.mako:108
+msgid "Samba is down!"
+msgstr ""
+
+#: swat/templates/default/base/base.mako:129
+msgid "Go directly to..."
+msgstr ""
+
+#: swat/templates/default/base/base.mako:129
+msgid "Goto"
+msgstr ""
+
