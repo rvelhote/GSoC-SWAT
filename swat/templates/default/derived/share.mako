@@ -29,15 +29,15 @@ ${share_table(['test'])}
 </%def>
 
 <%def name="share_table(shares)">
-    <table summary="List of Shares for Samba Server: Vandelay Industries" class="list" id="share-list">
+    <table summary="${_('List of Shares for the current Samba Server')}" class="list" id="share-list">
 	<thead>
 	    <tr>
-		<td><input type="checkbox" id="check-all"/></td>
-		<td>#</td>
-		<td>Name</td>
-		<td>Path</td>
-		<td>Comment</td>
-		<td> </td>
+		<td><input title="${_('Check All Items')}" type="checkbox" id="check-all"/></td>
+		<td>${_('#')}</td>
+		<td>${_('Name')}</td>
+		<td>${_('Path')}</td>
+		<td>${_('Comment')}</td>
+		<td></td>
 	    </tr>
 	</thead>
 	
@@ -45,7 +45,7 @@ ${share_table(['test'])}
 	    <tr>
 		<td colspan="6">		    
 		    <div class="pagination">
-			<p class="number-pages">${len(shares)} Shares Total</p>
+			<p class="number-pages">${_('%d Shares Total' % len(shares))}</p>
 		    </div>
 		</td>
 	    </tr>
@@ -71,14 +71,14 @@ ${share_table(['test'])}
 			% if g.samba_lp.get('path', share) is not None:
 			    ${g.samba_lp.get('path', share)}
 			% else:
-			    No Path Defined
+			    ${_('No Path Defined')}
 			% endif
 		    </td>
 		    <td>
 			% if g.samba_lp.get('comment', share):
 			    ${g.samba_lp.get('comment', share)}
 			% else:
-			    No Comment Defined
+			    ${_('No Comment Defined')}
 			% endif
 		    </td>
 		    <td>
@@ -93,11 +93,11 @@ ${share_table(['test'])}
     </table>
 </%def>
     
-<%def name="quick_tasks(name, is_disabled)">
+<%def name="quick_tasks(name, is_disabled=False)">
     <ul class="quick-tasks">
-	<li><a href="${h.url_for(action = 'edit', name = name)}" title="Edit Share"><img src="/default/images/icons/folder-pencil.png" alt="Edit Share Icon"/></a></li>
-	<li><a href="${h.url_for(action = 'remove', name = name)}" title="Remove Share"><img src="/default/images/icons/folder-minus.png" alt="Remove Share Icon"/></a></li>
-	<li><a href="${h.url_for(action = 'copy', name = name)}" title="Copy this Share"><img src="/default/images/icons/folders-plus.png" alt="Copy Share Icon"/></a></li>
-	<li><a href="${h.url_for(action = 'toggle', name = name)}" title="Enable this Share"><img src="/default/images/icons/switch-plus.png" alt="Enable Share Icon"/></a></li>
+	<li><a href="${h.url_for(action = 'edit', name = name)}" title="${_('Edit Share')}"><img src="/default/images/icons/folder-pencil.png" alt="${_('Edit Share Icon')}"/></a></li>
+	<li><a href="${h.url_for(action = 'remove', name = name)}" title="${_('Remove Share')}"><img src="/default/images/icons/folder-minus.png" alt="${_('Remove Share Icon')}"/></a></li>
+	<li><a href="${h.url_for(action = 'copy', name = name)}" title="${_('Copy this Share')}"><img src="/default/images/icons/folders-plus.png" alt="${_('Copy Share Icon')}"/></a></li>
+	<li><a href="${h.url_for(action = 'toggle', name = name)}" title="${_('Enable this Share')}"><img src="/default/images/icons/switch-plus.png" alt="${_('Enable Share Icon')}"/></a></li>
     </ul>
 </%def>

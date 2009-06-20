@@ -21,7 +21,7 @@ available to Controllers. This module is available to templates as 'h'.
 from webhelpers.html.tags import *
 
 from routes import url_for
-from pylons import request
+from pylons import request, app_globals as g
 
 class BreadcrumbTrail:
     """ Handles SWAT's Breadcrumb Trail.
@@ -31,7 +31,7 @@ class BreadcrumbTrail:
     > Dashboard
     > [Advanced]
     > Current Controller if not Dashboard
-    > Current Action
+    > Current Action if not index
     
     """
     

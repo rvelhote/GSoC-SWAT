@@ -23,6 +23,6 @@ ${toolbar.write(c.controller_config.get_toolbar_items())}
 
 <%doc></%doc>
 <%def name="page_title()">
-    ${parent.page_title()} :: Dashboard
+    ${parent.page_title()} :: ${c.controller_config.get_action_info('page_title')}
 </%def>
 
