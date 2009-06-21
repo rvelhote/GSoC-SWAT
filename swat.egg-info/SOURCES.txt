@@ -83,12 +83,15 @@ swat/public/default/images/icons/wand.png
 swat/public/default/js/mootools-core-nc.js
 swat/public/default/js/swat-default.js
 swat/templates/default/base/base.mako
+swat/templates/default/base/conteudo.yaml
 swat/templates/default/component/menu.mako
 swat/templates/default/component/messages.mako
+swat/templates/default/component/share-form.mako
 swat/templates/default/component/toolbar.mako
 swat/templates/default/component/widget.mako
 swat/templates/default/derived/add-share.mako
 swat/templates/default/derived/dashboard.mako
+swat/templates/default/derived/edit-share.mako
 swat/templates/default/derived/share.mako
 swat/tests/__init__.py
 swat/tests/test_helpers.py
