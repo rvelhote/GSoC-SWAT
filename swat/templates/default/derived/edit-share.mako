@@ -22,7 +22,7 @@
 ${parent.action_title(c.controller_config.get_action_info('page_title'))}
 ${toolbar.write(c.controller_config.get_toolbar_items())}
 
-${share_form.write()}
+${share_form.write(c.share_name)}
 
 <%doc></%doc>
 <%def name="page_title()">

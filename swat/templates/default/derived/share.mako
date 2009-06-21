@@ -68,15 +68,15 @@ ${share_table(['test'])}
 		    <td>${share}</td>
 		    <td>
 			
-			% if g.samba_lp.get('path', share) is not None:
-			    ${g.samba_lp.get('path', share)}
+			% if c.samba_lp.get('path', share) is not None:
+			    ${c.samba_lp.get('path', share)}
 			% else:
 			    ${_('No Path Defined')}
 			% endif
 		    </td>
 		    <td>
-			% if g.samba_lp.get('comment', share):
-			    ${g.samba_lp.get('comment', share)}
+			% if c.samba_lp.get('comment', share):
+			    ${c.samba_lp.get('comment', share)}
 			% else:
 			    ${_('No Comment Defined')}
 			% endif

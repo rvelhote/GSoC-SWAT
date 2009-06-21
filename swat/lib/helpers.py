@@ -184,6 +184,10 @@ class ControllerConfiguration:
 		action_info = {'friendly_name' : 'Add New Share',
 			       'page_title' : 'Add New Share',
 			       'name' : action}
+	    elif action == 'edit':
+		action_info = {'friendly_name' : 'Edit Share',
+			       'page_title' : 'Edit a Share',
+			       'name' : action}
 
 	info = {'controller' : controller_info, 'action' : action_info}
 
@@ -487,7 +491,7 @@ def get_info_on(type, area, name='', action=''):
 			    'link_title' : 'Cancel Share Creation',
 			    'icon' : 'minus-circle.png',
 			    'icon_alt' : 'Cancel Icon'}]}
-		    
+
 		if action == 'edit':
 		    items = {'actions' : [{'title' : 'switch to assistant',
 			    'link' : url_for(controller = name, action = 'add_assistant'),

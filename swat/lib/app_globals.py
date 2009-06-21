@@ -19,9 +19,5 @@ class Globals(object):
         sys.path.append('/usr/local/samba/lib/python2.6/site-packages/samba')
         sys.path.append('/usr/local/samba/lib/python2.6/site-packages/samba/dcerpc')
         
-        import param, samba
-        
-        self.samba_lp = param.LoadParm()
-        self.samba_lp.load_default()
-        
+        import samba
         self.samba_version = samba.version

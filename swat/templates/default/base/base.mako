@@ -101,7 +101,7 @@ Header Part. Contains items that will be in all pages except login
 
 <%doc>Server Name + Server Status Icon</%doc>
 <%def name="server_name()"><%
-    name = g.samba_lp.get("server name") or ""
+    name = c.samba_lp.get("server name") or ""
     status = h.get_samba_server_status() or "down"
     
     if status == "down":

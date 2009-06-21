@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # 
 import logging
+import param
 
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect_to
@@ -40,6 +41,9 @@ class DashboardController(BaseController):
 
         c.breadcrumb = BreadcrumbTrail(c.controller_config)
         c.breadcrumb.build()
+        
+        c.samba_lp = param.LoadParm()
+        c.samba_lp.load_default()        
 
     def index(self):
         """ The default Dashboard. The entry point for SWAT """

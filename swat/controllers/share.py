@@ -14,15 +14,13 @@
 # You should have received a copy of the GNU General Public License
 # 
 import logging
+import param
 
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect_to
-
 from swat.lib.base import BaseController, render
-from pylons import app_globals as g
-
 from swat.lib.helpers import ControllerConfiguration, DashboardConfiguration, \
-BreadcrumbTrail, SwatMessages
+BreadcrumbTrail, swat_messages
 
 log = logging.getLogger(__name__)
 
@@ -41,6 +39,9 @@ class ShareController(BaseController):
         
         c.breadcrumb = BreadcrumbTrail(c.controller_config)
         c.breadcrumb.build()
+        
+        c.samba_lp = param.LoadParm()
+        c.samba_lp.load_default()
     
     def index(self):        
         """ Point of entry. """
@@ -53,7 +54,12 @@ class ShareController(BaseController):
         pass
     
     def edit(self, name):
+        c.share_name = name
         return render('/default/derived/edit-share.mako')
         
     def save(self, name):
         pass
+    
+    def cancel(self):
+        swat_messages.add("Canceled Share Add/Edit", "warning")
+        redirect_to(controller='share')
