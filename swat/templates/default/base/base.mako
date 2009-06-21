@@ -94,7 +94,7 @@ Header Part. Contains items that will be in all pages except login
 
 <%doc>Samba Logo</%doc>
 <%def name="samba_logo()">
-    <a href="${h.url_for(controller = 'dashboard')}">
+    <a href="${h.url_for(controller = 'dashboard', action='index')}">
 	<img class="samba-logo samba-logo-interior" src="/default/images/samba-logo.png" alt="${_('Samba Logo')}" title="${_('Samba - Opening Windows to a Wider World')}" />
     </a>
 </%def>

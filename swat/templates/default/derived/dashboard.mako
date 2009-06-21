@@ -47,10 +47,10 @@ and the title bar.</%doc>
 <%def name="write_widget(controller)">
     <div class="widget round-2px">
 	<div class="title-bar">
-	    <h2 class="title-icon" style="background-image:url('default/images/icons/${controller['title_bar']['title_icon']}')"><a href="${controller['title_bar']['title_link']}" title="${controller['title_bar']['title_link_title']}">${controller['title_bar']['title']}</a></h2>
+	    <h2 class="title-icon" style="background-image:url('/default/images/icons/${controller['title_bar']['title_icon']}')"><a href="${controller['title_bar']['title_link']}" title="${controller['title_bar']['title_link_title']}">${controller['title_bar']['title']}</a></h2>
 
 	    <ul>                                
-		<li><a href="${controller['title_bar']['title_link']}" title="${controller['title_bar']['title_link']}"><img src="default/images/icons/arrow-000-small.png" alt="Right Arrow Icon" /></a></li>                                
+		<li><a href="${controller['title_bar']['title_link']}" title="${controller['title_bar']['title_link']}"><img src="/default/images/icons/arrow-000-small.png" alt="Right Arrow Icon" /></a></li>                                
 	    </ul>
 	</div>
 
@@ -59,7 +59,7 @@ and the title bar.</%doc>
 		% for action in controller['actions']:
 		    <li>
 			<a href="${action['link']}" title="${action['link_title']}" class="item-icon-link">
-			    <img src="default/images/icons/${action['icon']}" alt="${action['icon_alt']}" />
+			    <img src="/default/images/icons/${action['icon']}" alt="${action['icon_alt']}" />
 			    <span>${action['title']}</span>
 			</a>
 		    </li>

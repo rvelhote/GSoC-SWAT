@@ -407,9 +407,9 @@ def get_info_on(type, area, name='', action=''):
 	    login_url = url_for(controller = 'login', action = 'logout')
 	    
 	    items.append({"name" : "dashboard", "link" : dashboard_url})
-	    items.append({"name" : "general help", "link" : url_for()})
-	    items.append({"name" : "context help", "link" : url_for()})
-	    items.append({"name" : "about", "link" : url_for()})
+	    items.append({"name" : "general help", "link" : url_for('/')})
+	    items.append({"name" : "context help", "link" : url_for('/')})
+	    items.append({"name" : "about", "link" : url_for('/')})
 	    items.append({"name" : "logout", "link" : login_url})
 
     #
@@ -423,7 +423,7 @@ def get_info_on(type, area, name='', action=''):
 	if area == 'dashboard':
 	    if name == 'share':
 		items = {'title_bar' : {'title' : 'Share Management',
-			'title_link' : url_for(controller = name),
+			'title_link' : url_for(controller = name, action='index'),
 			'title_icon' : 'folders.png', 'title_link_title' :
 					    'Go to the Share Management Area'},
 
@@ -435,7 +435,7 @@ def get_info_on(type, area, name='', action=''):
 				    'icon_alt' : 'Add Share Icon'},
 
 				    {'title' : 'list shares',
-				    'link' : url_for(controller = name),
+				    'link' : url_for(controller = name, action='index'),
 				    'link_title' : 'List All Shares',
 				    'icon' : 'folders-stack.png',
 				    'icon_alt' : 'List Shares Icon'},

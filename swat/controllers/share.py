@@ -19,6 +19,7 @@ import param
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect_to
 from swat.lib.base import BaseController, render
+
 from swat.lib.helpers import ControllerConfiguration, DashboardConfiguration, \
 BreadcrumbTrail, swat_messages
 
@@ -60,6 +61,8 @@ class ShareController(BaseController):
     def save(self, name):
         pass
     
-    def cancel(self):
-        swat_messages.add("Canceled Share Add/Edit", "warning")
-        redirect_to(controller='share')
+    def cancel(self, name=''):
+        message = "Cancelled Share editing. No changes were saved!"
+        swat_messages.add(message, "warning")
+            
+        redirect_to(controller='share', action='index')

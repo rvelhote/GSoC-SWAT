@@ -10,7 +10,7 @@ from routes import Mapper
 def make_map():
     """Create, configure and return the routes Mapper"""
     map = Mapper(directory=config['pylons.paths']['controllers'],
-                 always_scan=config['debug'])
+                 always_scan=config['debug'], explicit=True)
     map.minimization = False
 
     # The ErrorController route (handles 404/500 error pages); it should
@@ -19,7 +19,7 @@ def make_map():
     map.connect('/error/{action}/{id}', controller='error')
 
     # CUSTOM ROUTES HERE
-    
+
     #
     #   Default root for Application.
     #   For now it's marked as the dashboard because I'm not implementing the
@@ -28,6 +28,6 @@ def make_map():
     map.connect('/', controller='dashboard', action='index')
 
     map.connect('/{controller}/{action}')
-    map.connect('/{controller}/{action}/{name}')
+    map.connect('share_action', '/share/{action}/{name}', controller='share')
 
     return map

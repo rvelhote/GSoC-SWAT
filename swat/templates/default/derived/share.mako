@@ -93,11 +93,11 @@ ${share_table(['test'])}
     </table>
 </%def>
     
-<%def name="quick_tasks(name, is_disabled=False)">
+<%def name="quick_tasks(share_name, is_disabled=False)">
     <ul class="quick-tasks">
-	<li><a href="${h.url_for(action = 'edit', name = name)}" title="${_('Edit Share')}"><img src="/default/images/icons/folder-pencil.png" alt="${_('Edit Share Icon')}"/></a></li>
-	<li><a href="${h.url_for(action = 'remove', name = name)}" title="${_('Remove Share')}"><img src="/default/images/icons/folder-minus.png" alt="${_('Remove Share Icon')}"/></a></li>
-	<li><a href="${h.url_for(action = 'copy', name = name)}" title="${_('Copy this Share')}"><img src="/default/images/icons/folders-plus.png" alt="${_('Copy Share Icon')}"/></a></li>
-	<li><a href="${h.url_for(action = 'toggle', name = name)}" title="${_('Enable this Share')}"><img src="/default/images/icons/switch-plus.png" alt="${_('Enable Share Icon')}"/></a></li>
+	<li><a href="${h.url_for('share_action', action = 'edit', name = share_name)}" title="${_('Edit Share')}"><img src="/default/images/icons/folder-pencil.png" alt="${_('Edit Share Icon')}"/></a></li>
+	<li><a href="${h.url_for('share_action', action = 'remove', name = share_name)}" title="${_('Remove Share')}"><img src="/default/images/icons/folder-minus.png" alt="${_('Remove Share Icon')}"/></a></li>
+	<li><a href="${h.url_for('share_action', action = 'copy', name = share_name)}" title="${_('Copy this Share')}"><img src="/default/images/icons/folders-plus.png" alt="${_('Copy Share Icon')}"/></a></li>
+	<li><a href="${h.url_for('share_action', action = 'toggle', name = share_name)}" title="${_('Enable this Share')}"><img src="/default/images/icons/switch-plus.png" alt="${_('Enable Share Icon')}"/></a></li>
     </ul>
 </%def>
