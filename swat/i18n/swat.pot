@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: swat 0.1\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2009-06-20 17:15+0100\n"
+"POT-Creation-Date: 2009-06-21 11:37+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.4\n"
 
+#: swat/templates/default/base/base.mako:53
 #: swat/templates/default/base/base.mako:76
 msgid "Samba Web Administration Tool"
 msgstr ""
@@ -27,6 +28,14 @@ msgstr ""
 
 #: swat/templates/default/base/base.mako:77
 msgid "Icons used in SWAT"
+msgstr ""
+
+#: swat/templates/default/base/base.mako:77
+msgid "Fugue Icons"
+msgstr ""
+
+#: swat/templates/default/base/base.mako:77
+msgid "Samba"
 msgstr ""
 
 #: swat/templates/default/base/base.mako:98
@@ -47,5 +56,74 @@ msgstr ""
 
 #: swat/templates/default/base/base.mako:129
 msgid "Goto"
+msgstr ""
+
+#: swat/templates/default/derived/share.mako:32
+msgid "List of Shares for the current Samba Server"
+msgstr ""
+
+#: swat/templates/default/derived/share.mako:35
+msgid "Check All Items"
+msgstr ""
+
+#: swat/templates/default/derived/share.mako:36
+msgid "#"
+msgstr ""
+
+#: swat/templates/default/derived/share.mako:37
+msgid "Name"
+msgstr ""
+
+#: swat/templates/default/derived/share.mako:38
+msgid "Path"
+msgstr ""
+
+#: swat/templates/default/derived/share.mako:39
+msgid "Comment"
+msgstr ""
+
+#: swat/templates/default/derived/share.mako:48
+#, python-format
+msgid "%d Shares Total"
+msgstr ""
+
+#: swat/templates/default/derived/share.mako:74
+msgid "No Path Defined"
+msgstr ""
+
+#: swat/templates/default/derived/share.mako:81
+msgid "No Comment Defined"
+msgstr ""
+
+#: swat/templates/default/derived/share.mako:98
+msgid "Edit Share"
+msgstr ""
+
+#: swat/templates/default/derived/share.mako:98
+msgid "Edit Share Icon"
+msgstr ""
+
+#: swat/templates/default/derived/share.mako:99
+msgid "Remove Share"
+msgstr ""
+
+#: swat/templates/default/derived/share.mako:99
+msgid "Remove Share Icon"
+msgstr ""
+
+#: swat/templates/default/derived/share.mako:100
+msgid "Copy this Share"
+msgstr ""
+
+#: swat/templates/default/derived/share.mako:100
+msgid "Copy Share Icon"
+msgstr ""
+
+#: swat/templates/default/derived/share.mako:101
+msgid "Enable this Share"
+msgstr ""
+
+#: swat/templates/default/derived/share.mako:101
+msgid "Enable Share Icon"
 msgstr ""
 

@@ -486,7 +486,33 @@ def get_info_on(type, area, name='', action=''):
 			    'link' : url_for(controller = name, action = 'cancel'),
 			    'link_title' : 'Cancel Share Creation',
 			    'icon' : 'minus-circle.png',
-			    'icon_alt' : 'Cancel Icon'}]}		    
+			    'icon_alt' : 'Cancel Icon'}]}
+		    
+		if action == 'edit':
+		    items = {'actions' : [{'title' : 'switch to assistant',
+			    'link' : url_for(controller = name, action = 'add_assistant'),
+			    'link_title' : 'Switch to Assistant View',
+			    'icon' : 'wand.png',
+			    'icon_alt' : 'Assistant Icon'},
+
+			    {'title' : 'save',
+			    'link' : url_for(controller = name, action = 'save'),
+			    'link_title' : 'Save Share Information',
+			    'icon' : 'disk.png',
+			    'icon_alt' : 'Save Share Icon'},
+			    
+			    {'title' : 'apply',
+			    'link' : url_for(controller = name, action = 'apply'),
+			    'link_title' : 'Apply Changes and \
+						    Return to this Page',
+			    'icon' : 'disk-arrow.png',
+			    'icon_alt' : 'Apply Changes Icon'},
+			     
+			    {'title' : 'cancel',
+			    'link' : url_for(controller = name, action = 'cancel'),
+			    'link_title' : 'Cancel Share Creation',
+			    'icon' : 'minus-circle.png',
+			    'icon_alt' : 'Cancel Icon'}]}
 	
 	#
 	# General Controller information

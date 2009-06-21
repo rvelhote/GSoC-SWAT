@@ -1,6 +1,6 @@
 <%doc>
 #
-# Add Share Mako Template file for SWAT
+# Edit Share Mako Template file for SWAT
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,4 +28,3 @@ ${share_form.write()}
 <%def name="page_title()">
     ${parent.page_title()} :: ${c.controller_config.get_action_info('page_title')}
 </%def>
-
