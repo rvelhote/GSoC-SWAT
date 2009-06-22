@@ -9,8 +9,11 @@ log = logging.getLogger(__name__)
 
 class AuthenticationController(BaseController):
 
-    def index(self):
-        # Return a rendered template
-        #return render('/authentication.mako')
-        # or, return a response
-        return 'Hello World'
+    def login(self):
+        return render('/default/base/login-screen.mako')
+    
+    def logout(self):
+        redirect_to(controller = 'authentication', action = 'login')
+        
+    def do(self):
+        redirect_to(controller = 'dashboard', action = 'index')

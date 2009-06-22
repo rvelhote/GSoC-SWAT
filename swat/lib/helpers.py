@@ -404,7 +404,7 @@ def get_info_on(type, area, name='', action=''):
 	
 	if area == "top":
 	    dashboard_url = url_for(controller = 'dashboard', action = 'index')
-	    login_url = url_for(controller = 'login', action = 'logout')
+	    login_url = url_for(controller = 'authentication', action = 'logout')
 	    
 	    items.append({"name" : "dashboard", "link" : dashboard_url})
 	    items.append({"name" : "general help", "link" : url_for('/')})
