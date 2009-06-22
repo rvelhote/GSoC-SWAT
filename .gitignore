@@ -2,3 +2,5 @@
 *.pyc
 *.mako.py
 data/*
+build/*
+dist/*
