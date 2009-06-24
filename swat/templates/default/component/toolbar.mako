@@ -19,7 +19,7 @@
     <div id="task-toolbar">
 	<ul class="task-toolbar">
 	    % if len(items) > 0:	    
-		% for item in items['actions']:
+		% for item in items['actions'].values():
 		    <% write_item(item) %>
 		% endfor
 	    % endif
@@ -30,10 +30,13 @@
 </%def>
     
 <%def name="write_item(item)">
+
+    <% link = h.url_for(controller = c.controller_config.get_controller(), action = item['link']['action']) %>
+    
     <li>
-	<a class="item-icon-link" title="${item['link_title']}" href="${item['link']}">
-	    <img alt="${item['icon_alt']}" src="/default/images/icons/${item['icon']}"/>
-	    <span>${item['title']}</span>
+	<a class="item-icon-link" title="${item['link']['title']}" href="${link}">
+	    <img alt="${item['image']['alt']}" src="/default/images/icons/${item['image']['name']}"/>
+	    <span>${item['link']['name']}</span>
 	</a>
     </li>
 </%def>

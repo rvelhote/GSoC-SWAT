@@ -22,7 +22,7 @@ dashboard:
         #
         # Action: Add Share
         #
-        _add_share:
+        1-add_share:
 
             link:
                 name: 'add share'
@@ -36,7 +36,7 @@ dashboard:
         #
         # Action: List Share
         #
-        __list_share:
+        2-list_share:
 
             link:
                 name: 'list shares'
@@ -50,7 +50,7 @@ dashboard:
         #
         # Action: Add Assistant
         #
-        _add_assistant:
+        3-add_assistant:
 
             link:
                 name: 'add share assistant'
@@ -76,7 +76,7 @@ toolbar:
             #
             # Add Share
             #
-            add_share:
+            1-add_share:
                 link:
                     name: 'add share'
                     title: 'Add a Share'
@@ -89,7 +89,7 @@ toolbar:
             #
             # Add Share using the Assistant
             #
-            add_assistant:
+            2-add_assistant:
                 link:
                     name: 'add share assistant'
                     title: 'Add a Share using the Assistant'
