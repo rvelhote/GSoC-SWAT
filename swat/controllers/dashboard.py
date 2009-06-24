@@ -34,7 +34,6 @@ class DashboardController(BaseController):
         type = request.environ['pylons.routes_dict']['action']
 
         c.controller_config = ControllerConfiguration(me, type)
-        c.controller_config.setup()
 
         c.dashboard_config = DashboardConfiguration()
         c.dashboard_config.load_config(type)
@@ -43,7 +42,7 @@ class DashboardController(BaseController):
         c.breadcrumb.build()
         
         c.samba_lp = param.LoadParm()
-        c.samba_lp.load_default()        
+        c.samba_lp.load_default()
 
     def index(self):
         """ The default Dashboard. The entry point for SWAT """

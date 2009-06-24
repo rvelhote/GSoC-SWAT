@@ -23,6 +23,8 @@ from webhelpers.html.tags import *
 from routes import url_for
 from pylons import request, app_globals as g
 
+import yaml
+
 class BreadcrumbTrail:
     """ Handles SWAT's Breadcrumb Trail.
     
@@ -103,192 +105,220 @@ class ControllerConfiguration:
 	"""
 	self._controller = controller
 	self._action = action
-	
-    def setup(self, controller='', action=''):
-	
-	if len(controller) == 0:
-	    controller = self._controller
-	    
-	if len(action) == 0:
-	    action = self._action
+        self.__yaml = {}
 
-	self.setup_dashboard(controller)
-	self.setup_toolbar(controller, action)
-	self.setup_information(controller, action)
-	
-    def get_dashboard_items(self):
-	""" Returns the Dashboard Items specified for this Controller """
-	return self._dashboard_items
-    
-    def get_toolbar_items(self):
-	""" Returns the Toolbar Items specifoed for this Controller """
-	return self._toolbar_items
-    
+        file_exists = False
+
+        try:
+            stream = open('/home/ric/SWAT/pylons/swat/swat/config/yaml/%s.yaml' % (controller), 'r')
+        except IOError:
+            file_exists = False
+        else:
+            file_exists = True
+
+        if file_exists:        
+            self.__yaml = yaml.safe_load(stream)
+            stream.close()
+
     def get_information(self):
 	""" Returns general information about this controller """
-	return self._information
+        information = {}
+        
+        if self.__yaml.has_key('information'):
+            information = self.__yaml['information']
+        
+	return information
 
     def get_controller_info(self, key):
 	""" Returns a specific value from the controller info dictionary """
-	value = ""
+	information = self.get_information()
+        value = ''
 
-	if self._information['controller'].has_key(key):
-	    value = self._information['controller'][key]
+	if information.has_key('controller'):
+            if information['controller'].has_key(key):
+                value = information['controller'][key]
 	    
 	return value
 	
     def get_action_info(self, key):
 	""" Returns a specific value from the action info dictionary """
-	value = ""
-	
-	if self._information['action'].has_key(key):
-	    value = self._information['action'][key]
+	information = self.get_information()
+        value = ''
+
+	if information.has_key('action'):
+            if information['action'].has_key(key):
+                value = information['action'][key]
 	    
-	return value    
+	return value
     
-    def setup_information(self, controller, action):
-	""" The controller's information is divided into two areas. The
-	controller's base data and information about each of the actions it
-	implements.
-	
-	This information is used to set the Page Tile and the Breadcrumb trail
-	for example
-	
-	Returns a Dictionary with two keys whose values contain another
-	dictionary with the required info.
-	
-	"""
-	
-	controller_info = {}
-	action_info = {}
+    def get_dashboard_items(self):
+	""" Returns the Dashboard Items specified for this Controller """
+	items = {}
+        
+        if self.__yaml.has_key('dashboard'):
+            items = self.__yaml['dashboard']
+            
+        return items
 
-	if controller == 'dashboard':
-	    controller_info = {'is_advanced' : False,
-			       'friendly_name' : 'Dashboard',
-			       'name' : controller}
-	
-	    if action == 'index':
-		action_info = {'friendly_name' : 'Dashboard',
-			       'name' : action}
-	
-	elif controller == 'share':
-	    controller_info = {'is_advanced' : False,
-			       'friendly_name' : 'Share Management',
-			       'name' : controller}
-	    
-	    if action == 'index':
-		action_info = {'friendly_name' : 'Share List',
-			       'page_title' : 'Share Management',
-			       'name' : action}
-	    elif action == 'add':
-		action_info = {'friendly_name' : 'Add New Share',
-			       'page_title' : 'Add New Share',
-			       'name' : action}
-	    elif action == 'edit':
-		action_info = {'friendly_name' : 'Edit Share',
-			       'page_title' : 'Edit a Share',
-			       'name' : action}
+#    def setup(self, controller='', action=''):
+#	
+#	if len(controller) == 0:
+#	    controller = self._controller
+#	    
+#	if len(action) == 0:
+#	    action = self._action
+#
+#	self.setup_dashboard(controller)
+#	self.setup_toolbar(controller, action)
+#	self.setup_information(controller, action)
+#	
+#    def get_dashboard_items(self):
+#	""" Returns the Dashboard Items specified for this Controller """
+#	return self._dashboard_items
+#
+#    def get_toolbar_items(self):
+#	""" Returns the Toolbar Items specifoed for this Controller """
+#	return self._toolbar_items
+#
+#    def get_information(self):
+#	""" Returns general information about this controller """
+#	return self._information
+#
+#    def get_controller_info(self, key):
+#	""" Returns a specific value from the controller info dictionary """
+#	value = ""
+#
+#	if self._information['controller'].has_key(key):
+#	    value = self._information['controller'][key]
+#	    
+#	return value
+#	
+#    def get_action_info(self, key):
+#	""" Returns a specific value from the action info dictionary """
+#	value = ""
+#	
+#	if self._information['action'].has_key(key):
+#	    value = self._information['action'][key]
+#	    
+#	return value    
+#    
+#    def setup_information(self, controller, action):
+#	""" The controller's information is divided into two areas. The
+#	controller's base data and information about each of the actions it
+#	implements.
+#	
+#	This information is used to set the Page Tile and the Breadcrumb trail
+#	for example
+#	
+#	Returns a Dictionary with two keys whose values contain another
+#	dictionary with the required info.
+#	
+#	"""
+#	
+#	controller_info = {}
+#	action_info = {}
 
-	info = {'controller' : controller_info, 'action' : action_info}
-
-	self._information = info
-
-    def setup_toolbar(self, controller, action):
-	""" Gets the Toolbar items for the current controller's action """
-	
-	config = {}
-	
-	if controller == 'share':
-	    config = get_info_on('controller', 'toolbar', controller, action)
-
-	self._toolbar_items = config
-
-    def setup_dashboard(self, controller):
-	""" Configuration options for a specific controller's widget. Just like
-	the layout configuration it's hardcoded for now. If all goes according
-	to plan each controller will have a set of specifications in a
-	configuration file that will indicate which items and tasks will be
-	present at the dashboard.
-	
-	Returns the Widget's configuration for the controller specified in the
-	parameter
-	
-	"""
-	
-	config = {}
-	
-	if controller == 'share':
-	    config = get_info_on('controller', 'dashboard', controller)
-
-	self._dashboard_items = config
+	#if controller == 'dashboard':
+	#    controller_info = {'is_advanced' : False,
+	#		       'friendly_name' : 'Dashboard',
+	#		       'name' : controller}
+	#
+	#    if action == 'index':
+	#	action_info = {'friendly_name' : 'Dashboard',
+	#		       'name' : action}
+	#
+	#elif controller == 'share':
+	#    controller_info = {'is_advanced' : False,
+	#		       'friendly_name' : 'Share Management',
+	#		       'name' : controller}
+	#    
+	#    if action == 'index':
+	#	action_info = {'friendly_name' : 'Share List',
+	#		       'page_title' : 'Share Management',
+	#		       'name' : action}
+	#    elif action == 'add':
+	#	action_info = {'friendly_name' : 'Add New Share',
+	#		       'page_title' : 'Add New Share',
+	#		       'name' : action}
+	#    elif action == 'edit':
+	#	action_info = {'friendly_name' : 'Edit Share',
+	#		       'page_title' : 'Edit a Share',
+	#		       'name' : action}
+#        
+#        if self.__yaml.has_key('information'):
+#            print self.__yaml['information']['controller']
+#
+#	info = {'controller' : controller_info, 'action' : action_info}
+#
+#	self._information = info
+#
+#    def setup_toolbar(self, controller, action):
+#	""" Gets the Toolbar items for the current controller's action """
+#	
+#	config = {}
+#	
+#	if controller == 'share':
+#	    config = get_info_on('controller', 'toolbar', controller, action)
+#
+#	self._toolbar_items = config
+#
+#    def setup_dashboard(self, controller):
+#	""" Configuration options for a specific controller's widget. Just like
+#	the layout configuration it's hardcoded for now. If all goes according
+#	to plan each controller will have a set of specifications in a
+#	configuration file that will indicate which items and tasks will be
+#	present at the dashboard.
+#	
+#	Returns the Widget's configuration for the controller specified in the
+#	parameter
+#	
+#	"""
+#	
+#	config = {}
+#	
+#	if controller == 'share':
+#	    config = get_info_on('controller', 'dashboard', controller)
+#
+#	self._dashboard_items = config
 
 class DashboardConfiguration:
-    """ Description about the Dashboard's configuration and its items. The
-    main members are:
-    
-    Items: Each controller will have a bunch of items. They will be stored here
-    Layout: Information about the Dashboard's layout and the controllers that
-    are present
-    
-    """
     def __init__(self):
-	""" Sets the layout options for the area defined as type. Theoratically
-	the layout will be specified in a configuration will. It will contain
-	the number of columns in one row (display) and the names of the
-	controllers that will be in that row. With the controller name, another
-	file will be accessed with the configuration options for that specific
-	controller.
-	
-	If all goes according to plan, there will be two dashboard type areas.
-	One will be the Main Dashboard (Point of Entry for SWAT) and the other
-	one will be an Administration Dashboard.
-	
-	"""
-	self._items = {}
-	self._layout = []
-	
+        self.__items = {}
+        self.__layout = []
+        self.__yaml = {}
+        
+        file_exists = False
+
+        try:
+            stream = open('/home/ric/SWAT/pylons/swat/swat/config/yaml/dashboard.yaml', 'r')
+        except IOError:
+            file_exists = False
+        else:
+            file_exists = True
+
+        if file_exists:        
+            self.__yaml = yaml.safe_load(stream)
+            stream.close()
+        
     def load_config(self, type='index'):
-	self.load_layout(type)
-	self.load_layout_items(self.get_layout())
-		
-    def load_layout(self, type='index'):
-	""" Loads the layout defined in type
-	
-	All content is loaded into self._layout so you will need to access it
-	with the getters
-	
-	"""
-	self._layout = []
+	self.__load_layout(type)
+	self.__load_layout_items(self.get_layout())
 
-	if type == 'index':
-	    self._layout = get_info_on('dashboard', type)
+    def __load_layout(self, type='index'):
+        if self.__yaml.has_key(type):
+            self._layout = self.__yaml[type]
 
-    def load_layout_items(self, layout=None):
-	""" Loads the Items present in the layout.
-	
-	All content is loaded into self._items so you will need to access it
-	with the getters
-	
-	"""
+    def __load_layout_items(self, layout=None):
 	self._items = {}
 	
 	if layout is None:
 	    layout = self.get_layout()
-	
+
 	for row in layout:
 	    for controller in row['names']:
 		self._items[controller] = ControllerConfiguration(controller)
-		self._items[controller].setup()
 		
     def get_item(self, name):
-	""" Gets a specific item from the items present in the Dashboard
-	Configuration.
-	
-	name is a String with the name of the item we want to fetch
-	
-	returns and object of type ControllerConfiguration
-	
-	"""
 	item = None
 	
 	if self._items.has_key(name) == True:
@@ -297,26 +327,11 @@ class DashboardConfiguration:
 	return item		
 
     def get_items(self):
-	""" Gets all the items present in the Dashboard Configuration. Each
-	items is a widget.
-	
-	returns a Dictionary of all items with the key being the controller's
-	name
-	
-	"""
-	return self._items;
+	return self._items
 
     def get_layout(self):
-	""" Gets the layout specified in the Dashboard configuration. The
-	layout is defined by a 'display' which indicated the number os columns
-	in a row and 'names' which indicate which controllers and actions will
-	be present in the dashboard for that controller
-	
-	returns a List containing n Dictionaries describing the layout
-	
-	"""
-	return self._layout;
-    
+	return self._layout
+
 class SwatMessages:    
     def __init__(self):
 	self._items = []

@@ -32,10 +32,10 @@ information (DashboardConfiguration object)</%doc>
     % for row in dashboard.get_layout():
 	<div class="dashboard-row col${row['display']}">
 	    % for name in row['names']:
-		<% item_list = dashboard.get_item(name).get_dashboard_items() %>
+		<% items = dashboard.get_item(name).get_dashboard_items() %>
 
-		% if len(item_list) > 0:
-		    <% write_widget(item_list) %>
+		% if len(items) > 0:
+		    <% write_widget(name, items) %>
 		% endif
 	    % endfor
 	</div>
@@ -44,23 +44,28 @@ information (DashboardConfiguration object)</%doc>
 
 <%doc>Writes the Controller's Widget data i.e. the actions it will perform
 and the title bar.</%doc>
-<%def name="write_widget(controller)">
+<%def name="write_widget(name, controller)"><%
+
+    link = h.url_for(controller = name, action = controller['title_bar']['link']['action']) %>
+
     <div class="widget round-2px">
 	<div class="title-bar">
-	    <h2 class="title-icon" style="background-image:url('/default/images/icons/${controller['title_bar']['title_icon']}')"><a href="${controller['title_bar']['title_link']}" title="${controller['title_bar']['title_link_title']}">${controller['title_bar']['title']}</a></h2>
+	    <h2 class="title-icon" style="background-image:url('/default/images/icons/${controller['title_bar']['image']['name']}')"><a href="${link}" title="${controller['title_bar']['link']['title']}">${controller['title_bar']['link']['name']}</a></h2>
 
 	    <ul>                                
-		<li><a href="${controller['title_bar']['title_link']}" title="${controller['title_bar']['title_link']}"><img src="/default/images/icons/arrow-000-small.png" alt="Right Arrow Icon" /></a></li>                                
+		<li><a href="${link}" title="${controller['title_bar']['link']['title']}"><img src="/default/images/icons/arrow-000-small.png" alt="Right Arrow Icon" /></a></li>                                
 	    </ul>
 	</div>
 
 	<div class="content">
 	    <ul class="widget-task-list">
-		% for action in controller['actions']:
+		% for action in controller['actions'].values():
+                    <% link =  h.url_for(controller = name, action = action['link']['action']) %>
+                    
 		    <li>
-			<a href="${action['link']}" title="${action['link_title']}" class="item-icon-link">
-			    <img src="/default/images/icons/${action['icon']}" alt="${action['icon_alt']}" />
-			    <span>${action['title']}</span>
+			<a href="${link}" title="${action['link']['title']}" class="item-icon-link">
+			    <img src="/default/images/icons/${action['image']['name']}" alt="${action['image']['alt']}" />
+			    <span>${action['link']['name']}</span>
 			</a>
 		    </li>
 		% endfor

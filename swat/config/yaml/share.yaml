@@ -1,0 +1,224 @@
+#
+# Dashboard Items
+#
+dashboard:
+    #
+    # Dashboard Title Bar Definition
+    #
+    title_bar:
+
+        link:
+            name: 'Share Management'
+            title: 'Go to the Share Management Area'
+            action: index
+
+        image: 
+            name: folders.png
+
+    #
+    # Dashboard Action List
+    #
+    actions:
+        #
+        # Action: Add Share
+        #
+        _add_share:
+
+            link:
+                name: 'add share'
+                title: 'Add a Share'
+                action: add
+
+            image:
+                name: folder-plus.png
+                alt: 'Add Share Icon'
+
+        #
+        # Action: List Share
+        #
+        __list_share:
+
+            link:
+                name: 'list shares'
+                title: 'List All Shares'
+                action: index
+
+            image:
+                name: folders-stack.png
+                alt: 'List Shares Icon'
+
+        #
+        # Action: Add Assistant
+        #
+        _add_assistant:
+
+            link:
+                name: 'add share assistant'
+                title: 'Add a Share using the Assistant'
+                action: add_assistant
+
+            image:
+                name: wand.png
+                alt: 'Add Share Assistant Icon'
+
+#
+# Toolbar Items
+#
+toolbar:
+    #
+    # Action: Index (List Shares)
+    #
+    index:
+        #
+        # List of Actions present in the Toolbar
+        #
+        actions:
+            #
+            # Add Share
+            #
+            add_share:
+                link:
+                    name: 'add share'
+                    title: 'Add a Share'
+                    action: add
+
+                image:
+                    name: folder-plus.png
+                    alt: 'Add Share Icon'
+
+            #
+            # Add Share using the Assistant
+            #
+            add_assistant:
+                link:
+                    name: 'add share assistant'
+                    title: 'Add a Share using the Assistant'
+                    action: add_assistant
+
+                image:
+                    name: wand.png
+                    alt: 'Add Share Assistant Icon'
+
+    #
+    #
+    #
+    add:
+        #
+        #
+        #
+        actions:
+            #
+            # Switch to Edit Mode using the Assistant
+            #
+            switch_to_assistant:
+                link:
+                    name: 'switch to assistant'
+                    title: 'Switch to Assistant View'
+                    action: edit_assistant
+                
+                image:
+                    name: wand.png
+                    alt: 'Add Share Assistant Icon'
+
+            #
+            # Save the current options
+            #
+            save:
+               link:
+                   name: 'save'
+                   title: 'Save Share Information'
+                   action: save
+               
+               image:
+                   name: disk.png
+                   alt: 'Save Share Icon'
+
+            #
+            # Save the current options but return
+            # to edit mode
+            #
+            apply:
+               link:
+                   name: 'apply'     
+                   title: 'Apply changes and return to this Page'
+                   action: apply
+               
+               image:
+                   name: disk-arrow.png
+                   alt: 'Apply Changes Icon'
+
+            #
+            # Save the current options but return
+            # to edit mode
+            #
+            cancel:
+               link:
+                   name: 'cancel'
+                   title: 'Cancel Share creation'
+                   action: cancel
+
+               image:
+                   name: minus-circle.png
+                   alt: 'Cancel Icon'
+
+    #
+    #
+    #
+    edit:
+        #
+        #
+        #
+        actions:
+            #
+            # Switch to Edit Mode using the Assistant
+            #
+            switch_to_assistant:
+                link:
+                    name: 'switch to assistant'
+                    title: 'Switch to Assistant View'
+                    action: edit_assistant
+                
+                image:
+                    name: wand.png
+                    alt: 'Add Share Assistant Icon'
+
+            #
+            # Save the current options
+            #
+            save:
+               link:
+                   name: 'save'
+                   title: 'Save Share Information'
+                   action: save
+               
+               image:
+                   name: disk.png
+                   alt: 'Save Share Icon'
+
+            #
+            # Save the current options but return
+            # to edit mode
+            #
+            apply:
+               link:
+                   name: 'apply'     
+                   title: 'Apply changes and return to this Page'
+                   action: apply
+               
+               image:
+                   name: disk-arrow.png
+                   alt: 'Apply Changes Icon'
+
+            #
+            # Save the current options but return
+            # to edit mode
+            #
+            cancel:
+               link:
+                   name: 'cancel'
+                   title: 'Cancel Share creation'
+                   action: cancel
+
+               image:
+                   name: minus-circle.png
+                   alt: 'Cancel Icon'

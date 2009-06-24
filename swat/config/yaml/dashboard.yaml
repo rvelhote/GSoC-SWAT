@@ -1,0 +1,29 @@
+information:
+    controller:
+        is_advanced: False
+        friendly_name: 'Dashboard'
+    
+    actions:
+        index:
+            friendly_name: 'Dashboard'
+
+#
+# Main Dashboard
+#
+index:
+    -
+        display: 2
+        names:
+            - share
+            - account
+
+    -
+        display: 2
+        names:
+            - printer
+            - help
+            
+    -
+        display: 1
+        names:
+            - advanced
