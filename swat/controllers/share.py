@@ -20,6 +20,8 @@ from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect_to
 from swat.lib.base import BaseController, render
 
+from pylons.templating import render_mako_def
+
 from swat.lib.helpers import ControllerConfiguration, DashboardConfiguration, \
 BreadcrumbTrail, swat_messages
 
@@ -35,7 +37,9 @@ class ShareController(BaseController):
         me = request.environ['pylons.routes_dict']['controller']
         action = request.environ['pylons.routes_dict']['action']
         
-        if action != 'cancel' and action != 'save':
+        allowed = ('index', 'add', 'edit', 'add_assistant')
+        
+        if action in allowed:
             c.controller_config = ControllerConfiguration(me, action)
             
             c.breadcrumb = BreadcrumbTrail(c.controller_config)
@@ -58,11 +62,25 @@ class ShareController(BaseController):
         c.share_name = name
         return render('/default/derived/edit-share.mako')
         
-    def save(self, name):
-        pass
+    def save(self):
+        message = "Share Information was Saved"
+        swat_messages.add(message)
+            
+        redirect_to(controller='share', action='index')
+        
+    def apply(self):
+        message = "Share Information was Saved"
+        swat_messages.add(message)
+            
+        redirect_to(controller='share', action='edit', name='test')
     
     def cancel(self, name=''):
         message = "Cancelled Share editing. No changes were saved!"
         swat_messages.add(message, "warning")
             
         redirect_to(controller='share', action='index')
+        
+    def path(self):
+        path = request.params.get('path', '/')
+        return render_mako_def('/default/component/popups.mako', 'select_path', \
+                               current=path)

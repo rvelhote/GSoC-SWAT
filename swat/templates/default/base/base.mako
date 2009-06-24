@@ -65,6 +65,9 @@ Head Tags
     ${h.stylesheet_link(h.url_for('/default/css/reset-fonts-yui.css'))}
     ${h.stylesheet_link(h.url_for('/default/css/swat-default.css'))}
     
+    ${h.stylesheet_link(h.url_for('/default/css/smoothbox.css'))}
+    ${h.javascript_link(h.url_for('/default/js/smoothbox.js'))}
+    
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </%def>
 

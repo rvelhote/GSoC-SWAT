@@ -33,6 +33,8 @@
 			<p class="option-help">${_("Sets the path to the directory provided by a file share or used by a printer share. Set automatically in [homes] share to user\'s home directory, otherwise defaults to  /tmp. Honors the %u (user) and %m (machine) variables.")}</p>
 			<label for="share-path" title="${_('Set the Path to be Shares')}">${_('Path')}:</label>
 			<input type="text" id="share-path" name="share_path" value="${c.samba_lp.get("path", share)}" />
+                        
+                        <a href="${h.url_for(controller='share', action='path')}?height=480&width=640" class="smoothbox" title="${_('Select the Share Location')}">${_('select')}</a>
 		    </li>                                                                
 		</ol>
 		
