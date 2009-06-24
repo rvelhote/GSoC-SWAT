@@ -61,7 +61,6 @@ class BreadcrumbTrail:
 	in the Breadcrumb Trail's Mako def
 	
 	"""
-	
 	return self._items
     
     def get_is_dashboard_first(self):
@@ -103,8 +102,8 @@ class ControllerConfiguration:
 	- Information: General Information regarding the Controller.
 	
 	"""
-	self._controller = controller
-	self._action = action
+	self.__controller = controller
+	self.__action = action
         self.__yaml = {}
 
         file_exists = False
@@ -159,6 +158,22 @@ class ControllerConfiguration:
             items = self.__yaml['dashboard']
             
         return items
+    
+    def get_toolbar_items(self, action='index'):
+	""" Returns the Toolbar Items specifoed for this Controller """
+	items = {}
+
+        if self.__yaml.has_key('toolbar'):
+            if self.__yaml['toolbar'].has_key(action):
+                items = self.__yaml['toolbar'][action]
+            
+        return items
+    
+    def get_action(self):
+        return self.__action
+    
+    def get_controller(self):
+        return self.__controller
 
 #    def setup(self, controller='', action=''):
 #	

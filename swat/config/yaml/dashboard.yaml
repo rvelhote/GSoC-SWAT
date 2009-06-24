@@ -2,10 +2,12 @@ information:
     controller:
         is_advanced: False
         friendly_name: 'Dashboard'
+        name: dashboard
     
     actions:
         index:
             friendly_name: 'Dashboard'
+            name: index
 
 #
 # Main Dashboard
