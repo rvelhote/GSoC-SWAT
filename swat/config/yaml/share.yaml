@@ -1,4 +1,30 @@
 #
+# Controller and Action information
+#
+information:
+    controller:
+        is_advanced: False
+        friendly_name: 'Share Management'
+        name: share
+    
+    action:
+        index:
+            friendly_name: 'Share Management'
+            name: index
+            
+        add:
+            friendly_name: 'Add a New Share'
+            name: add
+            
+        edit:
+            friendly_name: 'Edit Share'
+            name: edit
+            
+        add_assistant:
+            friendly_name: 'Add a New Share using the Assistant'
+            name: add_assistant
+
+#
 # Dashboard Items
 #
 dashboard:
@@ -110,7 +136,7 @@ toolbar:
             #
             # Switch to Edit Mode using the Assistant
             #
-            switch_to_assistant:
+            1-switch_to_assistant:
                 link:
                     name: 'switch to assistant'
                     title: 'Switch to Assistant View'
@@ -123,7 +149,7 @@ toolbar:
             #
             # Save the current options
             #
-            save:
+            2-save:
                link:
                    name: 'save'
                    title: 'Save Share Information'
@@ -137,7 +163,7 @@ toolbar:
             # Save the current options but return
             # to edit mode
             #
-            apply:
+            3-apply:
                link:
                    name: 'apply'     
                    title: 'Apply changes and return to this Page'
@@ -151,7 +177,7 @@ toolbar:
             # Save the current options but return
             # to edit mode
             #
-            cancel:
+            4-cancel:
                link:
                    name: 'cancel'
                    title: 'Cancel Share creation'
@@ -172,7 +198,7 @@ toolbar:
             #
             # Switch to Edit Mode using the Assistant
             #
-            switch_to_assistant:
+            1-switch_to_assistant:
                 link:
                     name: 'switch to assistant'
                     title: 'Switch to Assistant View'
@@ -185,7 +211,7 @@ toolbar:
             #
             # Save the current options
             #
-            save:
+            2-save:
                link:
                    name: 'save'
                    title: 'Save Share Information'
@@ -199,7 +225,7 @@ toolbar:
             # Save the current options but return
             # to edit mode
             #
-            apply:
+            3-apply:
                link:
                    name: 'apply'     
                    title: 'Apply changes and return to this Page'
@@ -213,7 +239,7 @@ toolbar:
             # Save the current options but return
             # to edit mode
             #
-            cancel:
+            4-cancel:
                link:
                    name: 'cancel'
                    title: 'Cancel Share creation'

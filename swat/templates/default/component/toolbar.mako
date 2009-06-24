@@ -18,7 +18,7 @@
 <%def name="write(items)">
     <div id="task-toolbar">
 	<ul class="task-toolbar">
-	    % if len(items) > 0:	    
+	    % if len(items) > 0:
 		% for item in items['actions'].values():
 		    <% write_item(item) %>
 		% endfor

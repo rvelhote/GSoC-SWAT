@@ -20,7 +20,7 @@
 <%namespace name="share_form" file="/default/component/share-form.mako" />
 
 ${parent.action_title(c.controller_config.get_action_info('page_title'))}
-${toolbar.write(c.controller_config.get_toolbar_items())}
+${toolbar.write(c.controller_config.get_toolbar_items(c.controller_config.get_action()))}
 
 ${share_form.write()}
 

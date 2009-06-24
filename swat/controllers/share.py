@@ -35,13 +35,14 @@ class ShareController(BaseController):
         me = request.environ['pylons.routes_dict']['controller']
         action = request.environ['pylons.routes_dict']['action']
         
-        c.controller_config = ControllerConfiguration(me, action)
-        
-        c.breadcrumb = BreadcrumbTrail(c.controller_config)
-        c.breadcrumb.build()
-        
-        c.samba_lp = param.LoadParm()
-        c.samba_lp.load_default()
+        if action != 'cancel' and action != 'save':
+            c.controller_config = ControllerConfiguration(me, action)
+            
+            c.breadcrumb = BreadcrumbTrail(c.controller_config)
+            c.breadcrumb.build()
+            
+            c.samba_lp = param.LoadParm()
+            c.samba_lp.load_default()
     
     def index(self):        
         """ Point of entry. """
