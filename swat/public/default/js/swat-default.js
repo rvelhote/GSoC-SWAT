@@ -1,4 +1,4 @@
-window.addEvent("domready", function() {
+window.addEvent("domready", function() {    
     /**
      *  Add the Tab Feature
      */
@@ -27,7 +27,7 @@ window.addEvent("domready", function() {
                 confirm("Are you sure you want to delete this User/Group?");
             });          
         }
-    }    
+    }
 });
 
 function activateTab(clickedTab) {
@@ -55,3 +55,31 @@ function activateTab(clickedTab) {
         }
     }
 }
+
+/**
+ *  Path Selection
+ */
+var PathSelector = new Class({
+    Implements: [Options, Events],
+    
+    options: {
+        request: null,
+        element: '',
+        copyTo: ''
+    },
+    
+    initialize: function(options) {
+        this.setOptions(options);        
+        this.request = new Request.HTML({
+            update: this.options.element
+        });
+    },
+    
+    get: function(url) {
+        this.request.get(url);
+    },
+    
+    add: function(path) {
+        $(this.options.copyTo).value = path;
+    }
+});

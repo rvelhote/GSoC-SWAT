@@ -19,6 +19,14 @@
 <%namespace name="toolbar" file="/default/component/toolbar.mako" />
 <%namespace name="share_form" file="/default/component/share-form.mako" />
 
+<script type="text/javascript">
+    var path = null;
+    
+    window.addEvent('domready', function() {
+        path = new PathSelector({element: 'TB_ajaxContent', copyTo: 'share-path'});
+    });
+</script>
+
 ${parent.action_title(c.controller_config.get_action_info('page_title'))}
 ${toolbar.write(c.controller_config.get_toolbar_items(c.controller_config.get_action()))}
 

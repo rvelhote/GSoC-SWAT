@@ -7,13 +7,6 @@
  *   http://www.opensource.org/licenses/mit-license.php
  */
 
-
-html, body {
-min-height: 100%;
-height: auto !important;
-height: 100%
-}
-
 #TB_window {
 	font: 12px Arial, Helvetica, sans-serif;
 	color: #333333;
@@ -24,36 +17,21 @@ height: 100%
 	color:#666666;
 }
 
-#TB_window a:link {color: #666666;}
-#TB_window a:visited {color: #666666;}
-#TB_window a:hover {color: #000;}
-#TB_window a:active {color: #666666;}
-#TB_window a:focus{color: #666666;}
-
-#TB_overlay {
+/*#TB_overlay {
 	position: absolute;
 	z-index:100;
 	top: 0px;
 	left: 0px;
 	background-color:#000;
-}
+}*/
 
 #TB_window {
 	position: absolute;
 	background: #ffffff;
 	z-index: 102;
 	color:#000000;
-	border: 4px solid #525252;
+	border: 2px solid #525252;
 	text-align:left;
-}
-
-#TB_window img {
-	display:block;
-	margin: 15px 0 0 15px;
-	border-right: 1px solid #ccc;
-	border-bottom: 1px solid #ccc;
-	border-top: 1px solid #666;
-	border-left: 1px solid #666;
 }
 
 #TB_caption{

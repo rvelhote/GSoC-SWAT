@@ -42,17 +42,5 @@
 	    </li>
 	</ol>
     ${h.end_form()}
-    
-    <!--
-    
-        ${h.form(h.url_for(controller='dashboard', action='goto'), method='get')}
-	<div class="filter-items">
-	    <label title="${_('Go directly to...')}" for="goto-items-textbox">${_('Goto')}: </label>
-	    ${h.text('where', '', id = 'goto-items-textbox')}
-	</div>
-    ${h.end_form()}
-    
-    -->
-    
 </%def>
 	

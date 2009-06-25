@@ -18,7 +18,7 @@ var TB_doneOnce = 0;
 
 // add smoothbox to href elements that have a class of .smoothbox
 function TB_init(){
-    $$("a.smoothbox").each(function(el){
+    $$("a.popup-selector").each(function(el){
         el.onclick = TB_bind
     });
 }
@@ -69,6 +69,7 @@ function TB_show(caption, url, rel){
     
     if (!$("TB_window")) {
         new Element('div').setProperty('id', 'TB_window').injectInside(document.body);
+	new Drag.Move('TB_window')
         $('TB_window').setOpacity(0);
     }
     

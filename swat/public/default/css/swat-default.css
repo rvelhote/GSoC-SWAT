@@ -756,3 +756,22 @@ div.bulk-operations {
 div.bulk-operations.bulk-bottom {
     margin-bottom:0;
 }
+
+/** Path Selection Popup **/
+ul.path-list {
+    font-size:100%;
+}
+
+ul.path-list li {
+    margin-bottom:2px;
+}
+
+ul.path-list img.folder {
+    display:inline;
+    margin-right:5px;
+}
+
+ul.path-list img.add {
+    display:inline;
+    margin-left:5px;
+}

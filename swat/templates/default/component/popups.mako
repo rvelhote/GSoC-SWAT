@@ -1,8 +1,8 @@
 <%def name="select_path(current='/')">
     <% import os %>
 
-    <ul>
-        <li><a title="${_('Parent Folder')}" href="${h.url_for(controller = 'share', action = 'path', path = os.path.split(current)[:1])}">..</a>
+    <ul class="path-list">
+        <li><a onclick="path.get('${h.url_for(controller = 'share', action = 'path', path = os.path.split(current)[:1])}');return false;" title="${_('Parent Folder')}" href="#">..</a>
         
         % try:
             <%
@@ -16,7 +16,12 @@
                     
                     % if os.path.isdir(path):
                         <li>
-                            <a title="${_('List this Folder')}" href="${h.url_for(controller = 'share', action = 'path', path = path)}">${f}</a>
+                            <a id="path-selector" onclick="path.get('${h.url_for(controller = 'share', action = 'path', path = path)}'); return false;" title="${_('List this Folder')}" href="#">
+                                <img class="folder" src="/default/images/icons/folders.png" />
+                                ${f}
+                            </a>
+                            
+                            <a title="${_('Copy this Path to the Textbox')}" onclick="path.add('${path}');return false;" href="#"><img class="add" src="/default/images/icons/plus-small.png" /></a>
                         </li>
                         
                         <% has_dirs = True %>

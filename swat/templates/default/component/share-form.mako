@@ -34,7 +34,7 @@
 			<label for="share-path" title="${_('Set the Path to be Shares')}">${_('Path')}:</label>
 			<input type="text" id="share-path" name="share_path" value="${c.samba_lp.get("path", share)}" />
                         
-                        <a href="${h.url_for(controller='share', action='path')}?height=480&width=640" class="smoothbox" title="${_('Select the Share Location')}">${_('select')}</a>
+                        <a href="${h.url_for(controller='share', action='path')}?height=400&width=200" class="popup-selector" title="${_('Select the Share Location')}">${_('select')}</a>
 		    </li>                                                                
 		</ol>
 		
