@@ -60,6 +60,7 @@ Head Tags
     <link rel="shortcut icon" href="/default/images/favicon.ico" />
     
     ${h.javascript_link(h.url_for('/default/js/mootools-core-nc.js'))}
+    ${h.javascript_link(h.url_for('/default/js/mootools-more-nc.js'))}
     ${h.javascript_link(h.url_for('/default/js/swat-default.js'))}
 
     ${h.stylesheet_link(h.url_for('/default/css/reset-fonts-yui.css'))}
