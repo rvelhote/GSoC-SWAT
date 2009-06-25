@@ -53,7 +53,7 @@ class ShareController(BaseController):
         return render('/default/derived/share.mako')
         
     def add(self):
-        return render('/default/derived/add-share.mako')
+        return self.edit('')
     
     def add_assistant(self):
         pass
