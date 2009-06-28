@@ -40,46 +40,13 @@ class TestDashboardConfiguration():
     def tearDown(self):
 	pass
 
-    def test_layout_keys(self):
-	self.d.load_layout('index')
-	layout = self.d.get_layout()
-
-	for row in layout:
-	    assert row.has_key('display') and row.has_key('names') == True
+    def test_load_config(self):
+	self.d.load_config('index')
+	assert len(self.d.get_layout()) > 0
 	
-    def test_load_layout_good(self):
-	self.d.load_layout('index')
-	layout = self.d.get_layout()
-	assert len(layout) > 0
-	
-    def test_load_layout_bad(self):
-	self.d.load_layout('bad-index')
-	layout = self.d.get_layout()
-	assert len(layout) == 0
-
-    def test_get_item_empty(self):
-	self.d.load_layout('index')
-	layout = self.d.get_layout()
-	
-	self.d.load_layout_items(layout)
-	assert self.d.get_item('') is None
-	
-    def test_get_item_invalid(self):
-	self.d.load_layout('index')
-	layout = self.d.get_layout()
-	
-	self.d.load_layout_items(layout)	
-	assert self.d.get_item('invalid-item') is None
-	
-    def test_get_item_good(self):
-	self.d.load_layout('index')
-	layout = self.d.get_layout()
-	
-	self.d.load_layout_items(layout)	
-	assert isinstance(self.d.get_item('share'), ControllerConfiguration)
+    
 
 class TestSwatMessages():
-    
     def setUp(self):
 	self.m = SwatMessages()
 
@@ -104,9 +71,7 @@ class TestSwatMessages():
 	
 class TestBreadcrumbTrail():
     def setUp(self):
-	self.c = ControllerConfiguration('share')
-	self.c.setup()
-	
+	self.c = ControllerConfiguration('share')	
 	self.b = self.new_instance()
 
     def new_instance(self):
@@ -135,19 +100,4 @@ class TestControllerConfiguration():
 	self.c = 'share'
 	self.a = 'index'
 	self.conf = None
-
-    def new_config_instance(self):
-	return ControllerConfiguration(self.c, self.a)
-
-    def test_configuration_setup(self):
-	self.conf = self.new_config_instance()
-	self.conf.setup()
-
-    def test_setup_information(self):
-	self.conf = self.new_config_instance()
-	
-	self.conf.setup_information(self.c, self.a)
-	info = self.conf.get_information()
-	
-	assert len(info) > 0
 	

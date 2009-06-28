@@ -292,151 +292,19 @@ def get_menu(type):
     
     """
     
-    return []
+    items = []
+    
+    if type == "top":
+        dashboard_url = url_for(controller = 'dashboard', action = 'index')
+        login_url = url_for(controller = 'authentication', action = 'logout')
+        
+        items.append({"name" : "dashboard", "link" : dashboard_url})
+        items.append({"name" : "general help", "link" : url_for('/')})
+        items.append({"name" : "context help", "link" : url_for('/')})
+        items.append({"name" : "about", "link" : url_for('/')})
+        items.append({"name" : "logout", "link" : login_url})    
+    
+    return items
 
-#
-# SWAT Data
-#
-#def get_info_on(type, area, name='', action=''):
-#    items = []
-#    
-#    #
-#    # Type: Menu
-#    #
-#    if type == 'menu':
-#	items = []
-#	
-#	if area == "top":
-#	    dashboard_url = url_for(controller = 'dashboard', action = 'index')
-#	    login_url = url_for(controller = 'authentication', action = 'logout')
-#	    
-#	    items.append({"name" : "dashboard", "link" : dashboard_url})
-#	    items.append({"name" : "general help", "link" : url_for('/')})
-#	    items.append({"name" : "context help", "link" : url_for('/')})
-#	    items.append({"name" : "about", "link" : url_for('/')})
-#	    items.append({"name" : "logout", "link" : login_url})
-#
-#    #
-#    # Type: Controller
-#    #
-#    if type == 'controller':
-#
-#	#
-#	# Dashboard Information on this Controller
-#	#
-#	if area == 'dashboard':
-#	    if name == 'share':
-#		items = {'title_bar' : {'title' : 'Share Management',
-#			'title_link' : url_for(controller = name, action='index'),
-#			'title_icon' : 'folders.png', 'title_link_title' :
-#					    'Go to the Share Management Area'},
-#
-#			'actions' : [{'title' : 'add share',
-#				    'link' : url_for(controller = name,
-#							 action = 'add'),
-#				    'link_title' : 'Add a Share',
-#				    'icon' : 'folder-plus.png',
-#				    'icon_alt' : 'Add Share Icon'},
-#
-#				    {'title' : 'list shares',
-#				    'link' : url_for(controller = name, action='index'),
-#				    'link_title' : 'List All Shares',
-#				    'icon' : 'folders-stack.png',
-#				    'icon_alt' : 'List Shares Icon'},
-#					
-#				    {'title' : 'add share assistant',
-#				    'link' : url_for(controller = name,
-#						    action = 'add_assistant'),
-#				    'link_title' : 'Add a Share using the \
-#								    Assistant',
-#				    'icon' : 'wand.png',
-#				    'icon_alt' : 'Add Share Assistant Icon'}]}
-#	
-#	#
-#	# Toolbar Items Information on this Controller
-#	#
-#	elif area == 'toolbar':
-#	    if name == 'share':
-#		if action == 'index':
-#		    items = {'actions' : [{'title' : 'add share',
-#			    'link' : url_for(controller = name, action = 'add'),
-#			    'link_title' : 'Add a Share',
-#			    'icon' : 'folder-plus.png',
-#			    'icon_alt' : 'Add Share Icon'},
-#
-#			    {'title' : 'add share assistant',
-#			    'link' : url_for(controller = name, action = 'add_assistant'),
-#			    'link_title' : 'Add a Share using the Assistant',
-#			    'icon' : 'wand.png',
-#			    'icon_alt' : 'Add Share Assistant Icon'}]}
-#		
-#		if action == 'add':
-#		    items = {'actions' : [{'title' : 'switch to assistant',
-#			    'link' : url_for(controller = name, action = 'add_assistant'),
-#			    'link_title' : 'Switch to Assistant View',
-#			    'icon' : 'wand.png',
-#			    'icon_alt' : 'Assistant Icon'},
-#
-#			    {'title' : 'save',
-#			    'link' : url_for(controller = name, action = 'save'),
-#			    'link_title' : 'Save Share Information',
-#			    'icon' : 'disk.png',
-#			    'icon_alt' : 'Save Share Icon'},
-#			    
-#			    {'title' : 'apply',
-#			    'link' : url_for(controller = name, action = 'apply'),
-#			    'link_title' : 'Apply Changes and \
-#						    Return to this Page',
-#			    'icon' : 'disk-arrow.png',
-#			    'icon_alt' : 'Apply Changes Icon'},
-#			     
-#			    {'title' : 'cancel',
-#			    'link' : url_for(controller = name, action = 'cancel'),
-#			    'link_title' : 'Cancel Share Creation',
-#			    'icon' : 'minus-circle.png',
-#			    'icon_alt' : 'Cancel Icon'}]}
-#
-#		if action == 'edit':
-#		    items = {'actions' : [{'title' : 'switch to assistant',
-#			    'link' : url_for(controller = name, action = 'add_assistant'),
-#			    'link_title' : 'Switch to Assistant View',
-#			    'icon' : 'wand.png',
-#			    'icon_alt' : 'Assistant Icon'},
-#
-#			    {'title' : 'save',
-#			    'link' : url_for(controller = name, action = 'save'),
-#			    'link_title' : 'Save Share Information',
-#			    'icon' : 'disk.png',
-#			    'icon_alt' : 'Save Share Icon'},
-#			    
-#			    {'title' : 'apply',
-#			    'link' : url_for(controller = name, action = 'apply'),
-#			    'link_title' : 'Apply Changes and \
-#						    Return to this Page',
-#			    'icon' : 'disk-arrow.png',
-#			    'icon_alt' : 'Apply Changes Icon'},
-#			     
-#			    {'title' : 'cancel',
-#			    'link' : url_for(controller = name, action = 'cancel'),
-#			    'link_title' : 'Cancel Share Creation',
-#			    'icon' : 'minus-circle.png',
-#			    'icon_alt' : 'Cancel Icon'}]}
-#	
-#	#
-#	# General Controller information
-#	#
-#	elif area == 'information':
-#	    pass
-#    
-#    #
-#    # Type: Dashboard
-#    #
-#    if type == 'dashboard':
-#	items = []
-#	
-#	if area == 'index':
-#	    items = [{'display' : 2, 'names' : ['share', 'account']},
-#		    {'display' : 2, 'names' : ['printer', 'help']},
-#		    {'display' : 1, 'names' : ['administration']}]
-#
-#    return items
+def load_yaml_file(filename, dir=''):
+    pass

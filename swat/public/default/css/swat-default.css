@@ -115,7 +115,6 @@ ul.useful-links li:first-child {
 /** Layout :: Login */
 div.login {
     width:400px;
-    height:300px;
         
     padding:35px;
     position:relative;            
@@ -146,7 +145,7 @@ div.login {
     /** Login Form */
         form.login {
             width:250px;
-            margin:25px auto 0px auto;
+            margin:25px auto 25px auto;
         }
         
         form.login ol li {
