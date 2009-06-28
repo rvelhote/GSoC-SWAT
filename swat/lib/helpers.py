@@ -83,7 +83,7 @@ class BreadcrumbTrail:
 		     controller.get_controller())
 
 	    if controller.get_action() != "index":
-		self.add(controller.get_action_info(controller.get_action())['friendly_name'],
+		self.add(controller.get_action_info('friendly_name'),
 			 controller.get_controller(),
 			 controller.get_action())
 
@@ -145,8 +145,8 @@ class ControllerConfiguration:
         value = ''
 
 	if information.has_key('action'):
-            if information['action'].has_key(key):
-                value = information['action'][key]
+            if information['action'][self.__action].has_key(key):
+                value = information['action'][self.__action][key]
 	    
 	return value
     

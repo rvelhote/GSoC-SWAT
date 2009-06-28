@@ -33,8 +33,8 @@
 			<p class="option-help">${_("Sets the path to the directory provided by a file share or used by a printer share. Set automatically in [homes] share to user\'s home directory, otherwise defaults to  /tmp. Honors the %u (user) and %m (machine) variables.")}</p>
 			<label for="share-path" title="${_('Set the Path to be Shares')}">${_('Path')}:</label>
 			<input type="text" id="share-path" name="share_path" value="${c.samba_lp.get("path", share)}" />
-                        
-                        <a href="${h.url_for(controller='share', action='path')}?height=400&width=200" class="popup-selector" title="${_('Select the Share Location')}">${_('select')}</a>
+
+                        <a href="${h.url_for(controller='share', action='path')}?height=400&width=200" class="popup-selector" title="${_('Select the Share Location')}"><img src="/default/images/icons/plus-small.png" alt="${_('Add User/Group Icon')}" /></a>
 		    </li>                                                                
 		</ol>
 		
@@ -198,17 +198,17 @@
 			</span>
 
 			<ol class="user-list-operations">
-			    <li><a title="${_('Add this User/Group')}" href="#"><img src="/default/images/icons/plus-small.png" alt="${_('Add User/Group Icon')}" /></a></li>
-			    <li><a title="${_('Open User/Group Selection Popup')}" href="#"><img src="/default/images/icons/users.png" alt="${_('Select Users/Groups Icon')}" /></a></li>
+			    <li><a title="${_('Add this User/Group')}" href="#" onclick="userGroup.add($('share-insert-user').value);return false;"><img src="/default/images/icons/plus-small.png" alt="${_('Add User/Group Icon')}" /></a></li>
+			    <li><a title="${_('Open User/Group Selection Popup')}" href="${h.url_for(controller='share', action='users_groups')}?height=400&width=200" class="popup-selector"><img src="/default/images/icons/users.png" alt="${_('Select Users/Groups Icon')}" /></a></li>
 			</ol>
 			
 			<input type="hidden" name="share_read_list" />
 			
-			<ul class="user-list">
-			    <li><a id="delete-read-list-1" title="${_('Remove this User/Group')}" href="#"><span>@vandelay</span><img src="/default/images/icons/minus-small.png" alt="${_('Remove User/Group Icon')}" /></a></li>
+			<ul id="user-list-read" class="user-list">
+			    <!--<li><a id="delete-read-list-1" title="${_('Remove this User/Group')}" href="#"><span>@vandelay</span><img src="/default/images/icons/minus-small.png" alt="${_('Remove User/Group Icon')}" /></a></li>
 			    <li><a id="delete-read-list-2" title="${_('Remove this User/Group')}" href="#"><span>art.vandelay</span><img src="/default/images/icons/minus-small.png" alt="${_('Remove User/Group Icon')}" /></a></li>
 			    <li><a id="delete-read-list-3" title="${_('Remove this User/Group')}" href="#"><span>@board</span><img src="/default/images/icons/minus-small.png" alt="${_('Remove User/Group Icon')}" /></a></li>
-			    <li><a id="delete-read-list-4" title="${_('Remove this User/Group')}" href="#"><span>crusader</span><img src="/default/images/icons/minus-small.png" alt="${_('Remove User/Group Icon')}" /></a></li>
+			    <li><a id="delete-read-list-4" title="${_('Remove this User/Group')}" href="#"><span>crusader</span><img src="/default/images/icons/minus-small.png" alt="${_('Remove User/Group Icon')}" /></a></li>-->
 			</ul>
 			
 			<div class="clear-both"></div>
@@ -223,8 +223,8 @@
 			</span>
 			
 			<ol class="user-list-operations">
-			    <li><a title="${_('Add this User/Group')}" href="#"><img src="/default/images/icons/plus-small.png" alt="${_('Add User/Group Icon')}" /></a></li>
-			    <li><a title="${_('Open User/Group Selection Popup')}" href="#"><img src="/default/images/icons/users.png" alt="${_('Select Users/Groups Icon')}" /></a></li>
+			    <!--<li><a title="${_('Add this User/Group')}" href="#"><img src="/default/images/icons/plus-small.png" alt="${_('Add User/Group Icon')}" /></a></li>
+			    <li><a title="${_('Open User/Group Selection Popup')}" href="#"><img src="/default/images/icons/users.png" alt="${_('Select Users/Groups Icon')}" /></a></li>-->
 			</ol>
 			
 			<input type="hidden" name="share_admin_list" />

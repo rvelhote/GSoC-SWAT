@@ -40,3 +40,18 @@
         % endtry
     </ul>
 </%def>
+
+<%def name="select_user_group()"><%
+
+    import grp
+    list = grp.getgrall() %>
+
+    <ul class="group-list">
+        % for g in list:
+            <li>
+                ${g.gr_name}
+                <a title="${_('Add this User/Group to the List')}" onclick="userGroup.add('${g.gr_name}', 'g');return false;" href="#"><img class="add" src="/default/images/icons/plus-small.png" /></a>
+            <li>
+        % endfor
+    </ul>
+</%def>

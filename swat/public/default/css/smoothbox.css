@@ -7,15 +7,15 @@
  *   http://www.opensource.org/licenses/mit-license.php
  */
 
-#TB_window {
-	font: 12px Arial, Helvetica, sans-serif;
-	color: #333333;
-}
-
-#TB_secondLine {
-	font: 10px Arial, Helvetica, sans-serif;
-	color:#666666;
-}
+/*#TB_window {*/
+/*	font: 12px Arial, Helvetica, sans-serif;*/
+/*	color: #333333;*/
+/*}*/
+/**/
+/*#TB_secondLine {*/
+/*	font: 10px Arial, Helvetica, sans-serif;*/
+/*	color:#666666;*/
+/*}*/
 
 /*#TB_overlay {
 	position: absolute;
@@ -76,31 +76,31 @@
 	padding:5px 0px 5px 0px;
 }
 
-#TB_load{
-	position: absolute;
-	display:none;
-	height:100px;
-	width:100px;
-	z-index:101;
-}
+/*#TB_load{*/
+/*	position: absolute;*/
+/*	display:none;*/
+/*	height:100px;*/
+/*	width:100px;*/
+/*	z-index:101;*/
+/*}*/
 
-#TB_HideSelect{
-	z-index:99;
-	position:absolute;
-	top: 0;
-	left: 0;
-	background-color:#fff;
-	border:none;
-}
+/*#TB_HideSelect{*/
+/*	z-index:99;*/
+/*	position:absolute;*/
+/*	top: 0;*/
+/*	left: 0;*/
+/*	background-color:#fff;*/
+/*	border:none;*/
+/*}*/
 
-#TB_iframeContent{
-	clear:both;
-	border:none;
-	margin-bottom:-1px;
-	margin-top:1px;
-}
+/*#TB_iframeContent{*/
+/*	clear:both;*/
+/*	border:none;*/
+/*	margin-bottom:-1px;*/
+/*	margin-top:1px;*/
+/*}*/
 
 /* IE6 */
-* html #TB_iframeContent{
-	margin-bottom:1px;
-}
+/** html #TB_iframeContent{*/
+/*	margin-bottom:1px;*/
+/*}*/

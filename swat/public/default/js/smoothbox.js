@@ -69,7 +69,7 @@ function TB_show(caption, url, rel){
     
     if (!$("TB_window")) {
         new Element('div').setProperty('id', 'TB_window').injectInside(document.body);
-	new Drag.Move('TB_window')
+	//new Drag.Move('TB_window')
         $('TB_window').setOpacity(0);
     }
     

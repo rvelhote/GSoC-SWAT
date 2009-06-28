@@ -18,14 +18,14 @@
 <%inherit file="/default/base/base.mako" />
 <%namespace name="toolbar" file="/default/component/toolbar.mako" />
 
-${parent.action_title(c.controller_config.get_action_info('page_title'))}
+${parent.action_title(c.controller_config.get_action_info('friendly_name'))}
 ${toolbar.write(c.controller_config.get_toolbar_items(c.controller_config.get_action()))}
 
 ${share_table(['test'])}
 
 <%doc></%doc>
 <%def name="page_title()">
-    ${parent.page_title()} :: ${c.controller_config.get_action_info('page_title')}
+    ${parent.page_title()} :: ${c.controller_config.get_action_info('friendly_name')}
 </%def>
 
 <%def name="share_table(shares)">

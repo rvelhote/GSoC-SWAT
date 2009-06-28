@@ -84,3 +84,7 @@ class ShareController(BaseController):
         path = request.params.get('path', '/')
         return render_mako_def('/default/component/popups.mako', 'select_path', \
                                current=path)
+        
+    def users_groups(self):
+        return render_mako_def('/default/component/popups.mako', \
+                               'select_user_group')

@@ -20,19 +20,19 @@
 <%namespace name="share_form" file="/default/component/share-form.mako" />
 
 <script type="text/javascript">
-    var path = null;
-    
     window.addEvent('domready', function() {
         path = new PathSelector({element: 'TB_ajaxContent', copyTo: 'share-path'});
+        userGroup = new UserGroupSelector({element: 'TB_ajaxContent', copyTo: 'user-list-read', addFrom: 'share-insert-user'});
+        //userGroup = new UserGroupSelector({element: 'TB_ajaxContent', copyTo: 'user-list-read', addFrom: 'share-insert-user'});
     });
 </script>
 
-${parent.action_title(c.controller_config.get_action_info('page_title'))}
+${parent.action_title(c.controller_config.get_action_info('friendly_name'))}
 ${toolbar.write(c.controller_config.get_toolbar_items(c.controller_config.get_action()))}
 
 ${share_form.write(c.share_name)}
 
 <%doc></%doc>
 <%def name="page_title()">
-    ${parent.page_title()} :: ${c.controller_config.get_action_info('page_title')}
+    ${parent.page_title()} :: ${c.controller_config.get_action_info('friendly_name')}
 </%def>
