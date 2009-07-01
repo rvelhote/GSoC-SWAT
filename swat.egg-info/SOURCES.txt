@@ -18,9 +18,9 @@ swat/config/environment.py
 swat/config/middleware.py
 swat/config/routing.py
 swat/controllers/__init__.py
+swat/controllers/authentication.py
 swat/controllers/dashboard.py
 swat/controllers/error.py
-swat/controllers/login.py
 swat/controllers/share.py
 swat/lib/__init__.py
 swat/lib/app_globals.py
@@ -28,6 +28,7 @@ swat/lib/base.py
 swat/lib/helpers.py
 swat/model/__init__.py
 swat/public/default/css/reset-fonts-yui.css
+swat/public/default/css/smoothbox.css
 swat/public/default/css/swat-default.css
 swat/public/default/images/bc_separator.png
 swat/public/default/images/body-gradient.gif
@@ -81,15 +82,16 @@ swat/public/default/images/icons/user-silhouette.png
 swat/public/default/images/icons/users.png
 swat/public/default/images/icons/wand.png
 swat/public/default/js/mootools-core-nc.js
+swat/public/default/js/mootools-more-nc.js
+swat/public/default/js/smoothbox.js
 swat/public/default/js/swat-default.js
 swat/templates/default/base/base.mako
-swat/templates/default/base/conteudo.yaml
+swat/templates/default/base/login-screen.mako
 swat/templates/default/component/menu.mako
 swat/templates/default/component/messages.mako
+swat/templates/default/component/popups.mako
 swat/templates/default/component/share-form.mako
 swat/templates/default/component/toolbar.mako
-swat/templates/default/component/widget.mako
-swat/templates/default/derived/add-share.mako
 swat/templates/default/derived/dashboard.mako
 swat/templates/default/derived/edit-share.mako
 swat/templates/default/derived/share.mako
@@ -97,6 +99,6 @@ swat/tests/__init__.py
 swat/tests/test_helpers.py
 swat/tests/test_models.py
 swat/tests/functional/__init__.py
+swat/tests/functional/test_authentication.py
 swat/tests/functional/test_dashboard.py
-swat/tests/functional/test_login.py
 swat/tests/functional/test_share.py
