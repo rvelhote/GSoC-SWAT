@@ -102,6 +102,9 @@ class ControllerConfiguration:
 	- Information: General Information regarding the Controller.
 	
 	"""
+        import os
+        print os.getcwd();
+        
 	self.__controller = controller
 	self.__action = action
         self.__yaml = {}
@@ -109,7 +112,7 @@ class ControllerConfiguration:
         file_exists = False
 
         try:
-            stream = open('/home/ric/SWAT/pylons/swat/swat/config/yaml/%s.yaml' % (controller), 'r')
+            stream = open('%s/swat/config/yaml/%s.yaml' % (os.getcwd(), controller), 'r')
         except IOError:
             file_exists = False
         else:
