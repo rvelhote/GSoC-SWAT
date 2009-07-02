@@ -1,7 +1,8 @@
+<%doc>Should move the non-presentation code into a helper</%doc>
 <%def name="select_path(current='/')">
     <% import os %>
 
-    <ul class="path-list">
+    <ul class="popup-list path-list">
         <li><a onclick="path.get('${h.url_for(controller = 'share', action = 'path', path = os.path.split(current)[:1])}');return false;" title="${_('Parent Folder')}" href="#">..</a>
         
         % try:
@@ -41,12 +42,12 @@
     </ul>
 </%def>
 
+<%doc>Should move the non-presentation code into a helper</%doc>
 <%def name="select_user_group()"><%
-
     import grp
     list = grp.getgrall() %>
 
-    <ul class="group-list">
+    <ul class="popup-list group-list">
         % for g in list:
             <li>
                 ${g.gr_name}

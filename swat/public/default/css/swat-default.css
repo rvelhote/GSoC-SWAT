@@ -757,20 +757,23 @@ div.bulk-operations.bulk-bottom {
 }
 
 /** Path Selection Popup **/
-ul.path-list {
+ul.popup-list {
     font-size:85%;
 }
 
-ul.path-list li {
-    margin-bottom:2px;
+ul.popup-list li {
+    margin-right:5px;
+    margin-bottom:5px;
+    float:left;
+    width:140px;
 }
 
-ul.path-list img.folder {
+ul.popup-list img.folder {
     display:inline;
     margin-right:5px;
 }
 
-ul.path-list img.add {
+ul.popup-list img.add {
     display:inline;
     margin-left:5px;
 }

@@ -30,11 +30,16 @@
 		    </li>
 		    
 		    <li>
-			<p class="option-help">${_("Sets the path to the directory provided by a file share or used by a printer share. Set automatically in [homes] share to user\'s home directory, otherwise defaults to  /tmp. Honors the %u (user) and %m (machine) variables.")}</p>
-			<label for="share-path" title="${_('Set the Path to be Shares')}">${_('Path')}:</label>
-			<input type="text" id="share-path" name="share_path" value="${c.samba_lp.get("path", share)}" />
+                        <p class="option-help">${_("Sets the path to the directory provided by a file share or used by a printer share. Set automatically in [homes] share to user\'s home directory, otherwise defaults to  /tmp. Honors the %u (user) and %m (machine) variables.")}</p>
+                        
+			<span class="floated-field">
+                            <label for="share-path" title="${_('Set the Path to be Shares')}">${_('Path')}:</label>
+                            <input type="text" id="share-path" name="share_path" value="${c.samba_lp.get("path", share)}" />
+			</span>
 
-                        <a href="${h.url_for(controller='share', action='path')}?height=400&width=200" class="popup-selector" title="${_('Select the Share Location')}"><img src="/default/images/icons/plus-small.png" alt="${_('Add User/Group Icon')}" /></a>
+			<ol class="user-list-operations">
+			    <li><a href="${h.url_for(controller='share', action='path')}?height=140&width=600" class="popup-selector" title="${_('Select the Share Location')}"><img src="/default/images/icons/layer-select-point.png" alt="${_('Add User/Group Icon')}" /></a></li>
+			</ol>
 		    </li>                                                                
 		</ol>
 		
@@ -199,7 +204,7 @@
 
 			<ol class="user-list-operations">
 			    <li><a title="${_('Add this User/Group')}" href="#" onclick="userGroup.add($('share-insert-user').value);return false;"><img src="/default/images/icons/plus-small.png" alt="${_('Add User/Group Icon')}" /></a></li>
-			    <li><a title="${_('Open User/Group Selection Popup')}" href="${h.url_for(controller='share', action='users_groups')}?height=400&width=200" class="popup-selector"><img src="/default/images/icons/users.png" alt="${_('Select Users/Groups Icon')}" /></a></li>
+			    <li><a title="${_('Open User/Group Selection Popup')}" href="${h.url_for(controller='share', action='users_groups')}?height=140&width=600" class="popup-selector"><img src="/default/images/icons/users.png" alt="${_('Select Users/Groups Icon')}" /></a></li>
 			</ol>
 			
 			<input type="hidden" name="share_read_list" />
@@ -214,7 +219,7 @@
 			<div class="clear-both"></div>
 		    </li>
 		    
-		    <li>                                    
+		    <!--<li>                                    
 			<p class="option-help">${_('List of users who will be granted root permissions on the share by Samba.')}</p>
 			
 			<span class="floated-field">
@@ -223,8 +228,8 @@
 			</span>
 			
 			<ol class="user-list-operations">
-			    <!--<li><a title="${_('Add this User/Group')}" href="#"><img src="/default/images/icons/plus-small.png" alt="${_('Add User/Group Icon')}" /></a></li>
-			    <li><a title="${_('Open User/Group Selection Popup')}" href="#"><img src="/default/images/icons/users.png" alt="${_('Select Users/Groups Icon')}" /></a></li>-->
+                            <li><a title="${_('Add this User/Group')}" href="#"><img src="/default/images/icons/plus-small.png" alt="${_('Add User/Group Icon')}" /></a></li>
+			    <li><a title="${_('Open User/Group Selection Popup')}" href="#"><img src="/default/images/icons/users.png" alt="${_('Select Users/Groups Icon')}" /></a></li>
 			</ol>
 			
 			<input type="hidden" name="share_admin_list" />
@@ -234,7 +239,7 @@
 			</ul>
 			
 			<div class="clear-both"></div>
-		    </li>                                
+                    </li>--->
 		</ol>                            
 	    </li>
 	    

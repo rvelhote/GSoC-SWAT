@@ -113,7 +113,11 @@ var UserGroupSelector = new Class({
         this.request.get(url);
     },
     
-    add: function(name, type) {        
+    add: function(name, type) {
+        if(name.length == 0) {
+            return;
+        }
+        
         if(type == "g") {
             name = "@" + name;
         }        
