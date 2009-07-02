@@ -13,11 +13,5 @@ class Globals(object):
         'app_globals' variable
 
         """
-        import sys
-        
-        sys.path.append('/usr/local/samba/lib/python2.6/site-packages')
-        sys.path.append('/usr/local/samba/lib/python2.6/site-packages/samba')
-        sys.path.append('/usr/local/samba/lib/python2.6/site-packages/samba/dcerpc')
-        
-        import samba
-        self.samba_version = samba.version
+        import os, sys
+        self.swat_root = os.getcwd();

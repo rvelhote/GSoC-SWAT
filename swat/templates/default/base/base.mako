@@ -121,7 +121,8 @@ Header Part. Contains items that will be in all pages except login
 	% if len(name) > 0:
 	    ${name}
 	% else:
-	    Samba ${g.samba_version}
+            <% from samba import version %>
+	    Samba ${version}
 	% endif
     </h1>
 </%def>

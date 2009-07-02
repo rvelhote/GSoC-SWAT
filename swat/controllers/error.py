@@ -6,7 +6,7 @@ from pylons.controllers.util import forward
 from pylons.middleware import error_document_template
 from webhelpers.html.builder import literal
 
-from swat.lib.base import BaseController
+from swat.lib.base import BaseController, render
 
 class ErrorController(BaseController):
 
@@ -44,3 +44,6 @@ class ErrorController(BaseController):
         """
         request.environ['PATH_INFO'] = '/%s' % path
         return forward(PkgResourcesParser('pylons', 'pylons'))
+        
+    def no_libs(self):
+        return render("/default/derived/error/no-libs.mako")

@@ -103,7 +103,6 @@ class ControllerConfiguration:
 	
 	"""
         import os
-        print os.getcwd();
         
 	self.__controller = controller
 	self.__action = action
@@ -311,3 +310,32 @@ def get_menu(type):
 
 def load_yaml_file(filename, dir=''):
     pass
+
+def python_libs_exist():
+    import sys, os
+    
+    exist = False
+
+    try:
+        import samba, param
+    except ImportError, error:
+        pass
+    else:
+        exist = True
+        
+    if not exist and os.path.exists("/usr/local/samba/lib/python2.6/site-packages"):
+        
+        sys.path.append('/usr/local/samba/lib/python2.6/site-packages')
+        sys.path.append('/usr/local/samba/lib/python2.6/site-packages/samba')
+        sys.path.append('/usr/local/samba/lib/python2.6/site-packages/samba/dcerpc')
+        
+        try:
+            import samba, param
+        except ImportError, error:
+            swat_messages.add(str(error) \
+                + " (in Python Libraries directory and in /usr/local/samba/lib/*)",
+                "critical")
+        else:
+            exist = True
+    
+    return exist
