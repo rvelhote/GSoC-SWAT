@@ -759,6 +759,7 @@ div.bulk-operations.bulk-bottom {
 /** Path Selection Popup **/
 ul.popup-list {
     font-size:85%;
+    overflow:auto;
 }
 
 ul.popup-list li {

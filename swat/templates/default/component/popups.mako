@@ -45,14 +45,33 @@
 <%doc>Should move the non-presentation code into a helper</%doc>
 <%def name="select_user_group()"><%
     import grp
-    list = grp.getgrall() %>
+    
+    list = grp.getgrall()
+    users = []
 
+    for g in list:
+        if len(g.gr_mem) > 0:
+            users.extend(g.gr_mem)
+
+    users = set(users) %>
+    
+    <h1 style="border-bottom:1px solid #484848;margin-bottom:5px;">${_('User List List')}</h1>
+    <ul class="popup-list group-list" style="margin-bottom:25px;">
+        % for g in users:
+            <li>
+                ${g}
+                <a title="${_('Add this User/Group to the List')}" onclick="userGroup.add('${g}', 'u');return false;" href="#"><img class="add" src="/default/images/icons/plus-small.png" /></a>
+            </li>
+        % endfor
+    </ul>
+
+    <h1 style="border-bottom:1px solid #484848;margin-bottom:5px;">${_('Group List')}</h1>
     <ul class="popup-list group-list">
         % for g in list:
             <li>
                 ${g.gr_name}
                 <a title="${_('Add this User/Group to the List')}" onclick="userGroup.add('${g.gr_name}', 'g');return false;" href="#"><img class="add" src="/default/images/icons/plus-small.png" /></a>
-            <li>
+            </li>
         % endfor
     </ul>
 </%def>
