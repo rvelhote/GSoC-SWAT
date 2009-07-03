@@ -1,19 +1,40 @@
-This file is for you to describe the swat application. Typically
-you would include information such as the information below:
 
-Installation and Setup
-======================
+=======
+Method1
+=======
 
-Install ``swat`` using easy_install::
+This method uses the pre-packaged .egg file.
 
-    easy_install swat
+1. Download the file 'swat-deployment-1.tar.gz' in the downloads
+area
 
-Make a config file as follows::
+2. Unpack
 
-    paster make-config swat config.ini
+3. Execute 
+     # ./deploy-swat
 
-Tweak the config file as appropriate and then setup the application::
+chmod +x first. This will create a Python virtual environment
+so it won't mess with your current Python stuff.
 
-    paster setup-app config.ini
+4. Execute 
+     # ./run-swat. 
 
-Then you are ready to go.
+chmod +x first. If all goes well the server will start in port 5000.
+
+5. Open your browser and go to the address http://localhost:5000
+
+=======
+Method2
+=======
+
+This method requires you to create the .egg file and pull the git
+repository
+
+1. git-pull this repository
+
+2. enter the main dir and run
+     # python setup.py bdist_egg
+
+3. Right now the best way is to follow method nº1, starting at step 2 
+and replace the .egg file in the unpacked content. After replacing
+just continue with the rest of method nº 1
