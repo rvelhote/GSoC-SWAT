@@ -69,12 +69,15 @@
 #TB_ajaxContent{
 	clear:both;
 	padding:25px;
-	overflow:auto;
+	overflow-y:auto;
 	text-align:left;
 	/*line-height:1.4em;*/
 	width:auto !important;
 	height:auto !important;
 	max-width:600px;
+	min-width:600px;
+	min-height:200px;
+	max-height:400px;
 }
 
 #TB_ajaxContent p{

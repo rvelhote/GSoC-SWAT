@@ -104,7 +104,7 @@ function TB_position() {
 	tb.set('morph', {
 	    duration: 75
 	});
-    
+
 	tb.morph({
 	    left: (window.getScrollLeft() + (window.getWidth() - tb.getStyle("width").toInt()) / 2) + 'px',
 	    top: (window.getScrollTop() + (window.getHeight() - tb.getStyle("height").toInt()) / 2) + 'px'
