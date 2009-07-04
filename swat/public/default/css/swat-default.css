@@ -659,6 +659,13 @@ ul.user-list li a {
     overflow:auto;
 }
 
+ul.user-list li a.delete-link {
+    padding-right:20px;
+    background-image:url('/default/images/icons/minus-small.png');
+    background-repeat:no-repeat;
+    background-position:center right;
+}
+
 ul.user-list li a:hover {
     background-color:#C24E13;
     color:#ffffff;
@@ -671,10 +678,6 @@ ol.user-list-operations li {
 
 ul.user-list li span, ul.user-list li img {
     float:left;
-}
-
-ul.user-list li img {
-    margin-left:4px;
 }
 
 /** Permissions Table */

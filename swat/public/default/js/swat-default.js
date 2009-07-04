@@ -131,7 +131,7 @@ var UserGroupSelector = new Class({
         var newElementId = 'delete-read-list-' + (numElements + 1);
         
         var newLi = new Element('li');
-        var newAnchor = new Element('a', {id:newElementId, title:"Remove this User/Group", href:"#"});
+        var newAnchor = new Element('a', {class:"delete-link", id:newElementId, title:"Remove this User/Group", href:"#"});
 
         newAnchor.addEvent('click', function(ev) {
             event = new Event(ev).stop();
@@ -139,10 +139,7 @@ var UserGroupSelector = new Class({
         }.bind(this));
         
         var newSpan = new Element('span', {text:name});
-        var newImg = new Element('img', {src:'/default/images/icons/minus-small.png', alt:'Remove User/Group Icon'});
-        
         newSpan.injectInside(newAnchor);
-        newImg.injectInside(newAnchor);
         
         newAnchor.injectInside(newLi);
         newLi.injectInside($(this.options.copyTo));

@@ -3,7 +3,7 @@
     <% import os %>
 
     <ul class="popup-list path-list">
-        <li><a onclick="path.get('${h.url_for(controller = 'share', action = 'path', path = os.path.split(current)[:1])}');return false;" title="${_('Parent Folder')}" href="#">..</a>
+        <li><a style="float:left;display:block;height:16px;padding-left:20px;background-image:url('/default/images/icons/arrow-return-090.png');background-position:left center;background-repeat:no-repeat;" onclick="path.get('${h.url_for(controller = 'share', action = 'path', path = os.path.split(current)[:1])}');return false;" title="${_('Parent Folder')}" href="#">...</a>
         
         % try:
             <%
@@ -17,12 +17,11 @@
                     
                     % if os.path.isdir(path):
                         <li>
-                            <a id="path-selector" onclick="path.get('${h.url_for(controller = 'share', action = 'path', path = path)}'); return false;" title="${_('List this Folder')}" href="#">
-                                <img class="folder" src="/default/images/icons/folders.png" />
+                            <a style="float:left;display:block;height:16px;padding-left:20px;background-image:url('/default/images/icons/folders.png');background-position:left center;background-repeat:no-repeat;" id="path-selector" onclick="path.get('${h.url_for(controller = 'share', action = 'path', path = path)}'); return false;" title="${_('List this Folder')}" href="#">
                                 ${f}
                             </a>
                             
-                            <a title="${_('Copy this Path to the Textbox')}" onclick="path.add('${path}');return false;" href="#"><img class="add" src="/default/images/icons/plus-small.png" /></a>
+                            <a title="${_('Copy this Path to the Textbox')}" onclick="path.add('${path}');return false;" href="#"><img alt="Add Icon" class="add" src="/default/images/icons/plus-small.png" /></a>
                         </li>
                         
                         <% has_dirs = True %>
@@ -55,21 +54,21 @@
 
     users = set(users) %>
     
-    <h1 style="border-bottom:1px solid #484848;margin-bottom:5px;">${_('User List')}</h1>
+    <h1 style="font-weight:bold;border-bottom:1px solid #484848;margin-bottom:10px;">${_('User List')}</h1>
     <ul class="popup-list group-list" style="margin-bottom:25px;">
         % for g in users:
             <li>
-                ${g}
+                <span style="float:left;display:block;height:16px;padding-left:20px;background-image:url('/default/images/icons/user.png');background-position:left center;background-repeat:no-repeat;">${g}</span>
                 <a title="${_('Add this User/Group to the List')}" onclick="userGroup.add('${g}', 'u');return false;" href="#"><img class="add" src="/default/images/icons/plus-small.png" /></a>
             </li>
         % endfor
     </ul>
 
-    <h1 style="border-bottom:1px solid #484848;margin-bottom:5px;">${_('Group List')}</h1>
+    <h1 style="font-weight:bold;border-bottom:1px solid #484848;margin-bottom:10px;">${_('Group List')}</h1>
     <ul class="popup-list group-list">
         % for g in list:
             <li>
-                ${g.gr_name}
+                <span style="float:left;display:block;height:16px;padding-left:20px;background-image:url('/default/images/icons/users.png');background-position:left center;background-repeat:no-repeat;">${g.gr_name}</span>
                 <a title="${_('Add this User/Group to the List')}" onclick="userGroup.add('${g.gr_name}', 'g');return false;" href="#"><img class="add" src="/default/images/icons/plus-small.png" /></a>
             </li>
         % endfor
