@@ -55,7 +55,7 @@
 
     users = set(users) %>
     
-    <h1 style="border-bottom:1px solid #484848;margin-bottom:5px;">${_('User List List')}</h1>
+    <h1 style="border-bottom:1px solid #484848;margin-bottom:5px;">${_('User List')}</h1>
     <ul class="popup-list group-list" style="margin-bottom:25px;">
         % for g in users:
             <li>

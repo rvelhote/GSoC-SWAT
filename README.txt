@@ -13,8 +13,9 @@ area
 3. Execute 
      # ./deploy-swat
 
-chmod +x first. This will create a Python virtual environment
-so it won't mess with your current Python stuff.
+chmod +x first. This will create a Python virtual environment 
+so it won't mess with your current Python stuff and it will
+download the required packages to run Pylons (and SWAT :D)
 
 4. Execute 
      # ./run-swat. 
@@ -35,6 +36,7 @@ repository
 2. enter the main dir and run
      # python setup.py bdist_egg
 
-3. Right now the best way is to follow method nº1, starting at step 2 
+3. The generated .egg file is under the {dist} folder.
+Right now the best way is to follow method nº1, starting at step 2 
 and replace the .egg file in the unpacked content. After replacing
 just continue with the rest of method nº 1

@@ -30,7 +30,7 @@
 	background: #ffffff;
 	z-index: 102;
 	color:#000000;
-	border: 2px solid #484848;
+	border: 2px solid #72808B;
 	text-align:left;
 }
 
@@ -74,6 +74,7 @@
 	/*line-height:1.4em;*/
 	width:auto !important;
 	height:auto !important;
+	max-width:600px;
 }
 
 #TB_ajaxContent p{
