@@ -40,11 +40,6 @@
 			<ol class="user-list-operations">
 			    <li><a href="${h.url_for(controller='share', action='path')}?height=140&width=600" class="popup-selector" title="${_('Select the Share Location')}"><img src="/default/images/icons/layer-select-point.png" alt="${_('Add User/Group Icon')}" /></a></li>
 			</ol>
-                        
-                        <ul class="modifiers">
-                            <li>a</li>
-                            <li>b</li>
-                        </ul>
 		    </li>                                                                
 		</ol>
 		
@@ -220,8 +215,8 @@
 			</span>
 
 			<ol class="user-list-operations">
-			    <li><a title="${_('Add this User/Group')}" href="#" onclick="userGroup.add($('share-insert-user').value);return false;"><img src="/default/images/icons/plus-small.png" alt="${_('Add User/Group Icon')}" /></a></li>
-			    <li><a title="${_('Open User/Group Selection Popup')}" href="${h.url_for(controller='share', action='users_groups')}?height=140&width=600" class="popup-selector"><img src="/default/images/icons/users.png" alt="${_('Select Users/Groups Icon')}" /></a></li>
+			    <li><a title="${_('Add this User/Group')}" href="#" onclick="userGroup.addManual('share-insert-user', 'user-list-read');return false;"><img src="/default/images/icons/plus-small.png" alt="${_('Add User/Group Icon')}" /></a></li>
+			    <li><a title="${_('Open User/Group Selection Popup')}" href="${h.url_for(controller='share', action='users_groups')}?copyto=user-list-read" class="popup-selector"><img src="/default/images/icons/users.png" alt="${_('Select Users/Groups Icon')}" /></a></li>
 			</ol>
 			
 			<input type="hidden" name="share_read_list" />
@@ -232,7 +227,7 @@
 			<div class="clear-both"></div>
 		    </li>
 		    
-		    <!--<li>                                    
+                    <li>                                    
 			<p class="option-help">${_('List of users who will be granted root permissions on the share by Samba.')}</p>
 			
 			<span class="floated-field">
@@ -241,18 +236,18 @@
 			</span>
 			
 			<ol class="user-list-operations">
-                            <li><a title="${_('Add this User/Group')}" href="#"><img src="/default/images/icons/plus-small.png" alt="${_('Add User/Group Icon')}" /></a></li>
-			    <li><a title="${_('Open User/Group Selection Popup')}" href="#"><img src="/default/images/icons/users.png" alt="${_('Select Users/Groups Icon')}" /></a></li>
+                            <li><a title="${_('Add this User/Group')}" href="#" onclick="userGroup.addManual('share-insert-adminuser', 'user-list-admin');return false;"><img src="/default/images/icons/plus-small.png" alt="${_('Add User/Group Icon')}" /></a></li>
+			    <li><a title="${_('Open User/Group Selection Popup')}" href="${h.url_for(controller='share', action='users_groups')}?copyto=user-list-admin" class="popup-selector"><img src="/default/images/icons/users.png" alt="${_('Select Users/Groups Icon')}" /></a></li>
 			</ol>
 			
 			<input type="hidden" name="share_admin_list" />
 			
-			<ul class="user-list">                                        
+			<ul id="user-list-admin" class="user-list">                                        
 			    <li><a title="${_('Remove this User/Group')}" href="#"><span>@board</span><img src="/default/images/icons/minus-small.png" alt="${_('Remove User/Group Icon')}" /></a></li>
 			</ul>
 			
 			<div class="clear-both"></div>
-                    </li>--->
+                    </li>
 		</ol>                            
 	    </li>
 	    

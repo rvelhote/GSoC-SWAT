@@ -43,6 +43,11 @@ function TB_bind(e){
     var url = this.getProperty("href");
 
     TB_show(caption, url);
+    
+    var queryString = url.match(/\?(.+)/)[1];
+    var params = queryString.parseQueryString();
+    
+    userGroup.options.copyTo = params['copyto'];
 }
 
 function TB_show(caption, url) {

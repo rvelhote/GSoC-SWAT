@@ -98,8 +98,7 @@ var UserGroupSelector = new Class({
     options: {
         request: null,
         element: '',
-        copyTo: '',
-        addFrom: ''
+        copyTo: ''
     },
     
     initialize: function(options) {
@@ -107,6 +106,20 @@ var UserGroupSelector = new Class({
         this.request = new Request.HTML({
             update: this.options.element
         });
+    },
+    
+    effect: function(id, type) {
+        var element = $(id);
+        
+        if(element) {
+            element.set('tween', {duration: 250});
+            
+            if(type == "add") {
+                element.tween('opacity', 0, 1);
+            } else {
+                element.tween('opacity', 1, 0);
+            }
+        }
     },
     
     get: function(url) {
@@ -128,7 +141,7 @@ var UserGroupSelector = new Class({
         }
         
         var numElements = $(this.options.copyTo).getChildren().length;
-        var newElementId = 'delete-read-list-' + (numElements + 1);
+        var newElementId = 'delete-' + this.options.copyTo + '-' + (numElements + 1);
         
         var newLi = new Element('li');
         var newAnchor = new Element('a', {class:"delete-link", id:newElementId, title:"Remove this User/Group", href:"#"});
@@ -143,17 +156,24 @@ var UserGroupSelector = new Class({
         
         newAnchor.injectInside(newLi);
         newLi.injectInside($(this.options.copyTo));
+        
+        this.effect(newElementId, "add");
     },
     
-    remove: function(id) {
-        if($(this.options.copyTo).hasChild(id)) {
-            $(id).getParent().dispose();
+    addManual: function(from, to) {
+        var from = $(from);
+        this.options.copyTo = to;
+        
+        if(from) {
+            this.add(from.value);
         }
     },
     
-    addManual: function(type) {
-        this.add($(addFrom).value, type);
-        $(addFrom).value = "";
+    remove: function(id) {
+        if($(id)) {
+            this.effect(id, "remove");
+            $(id).getParent().dispose();
+        }
     },
     
     exists: function(name) {
