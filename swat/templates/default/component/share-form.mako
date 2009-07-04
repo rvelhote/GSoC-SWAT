@@ -21,7 +21,7 @@
 	</ol>
 	
 	<ul class="tab-list-items"> 
-	    <li id="content-tab1" class="active">
+	    <li id="content-tab1">
 		<ol>
 		    <li>
 			<p class="option-help">${_('Set the Share Name')}</p>
@@ -40,6 +40,11 @@
 			<ol class="user-list-operations">
 			    <li><a href="${h.url_for(controller='share', action='path')}?height=140&width=600" class="popup-selector" title="${_('Select the Share Location')}"><img src="/default/images/icons/layer-select-point.png" alt="${_('Add User/Group Icon')}" /></a></li>
 			</ol>
+                        
+                        <ul class="modifiers">
+                            <li>a</li>
+                            <li>b</li>
+                        </ul>
 		    </li>                                                                
 		</ol>
 		
@@ -92,47 +97,53 @@
 		<ol>
 		    <li>                                    
 			<p class="option-help">${_('Sets the maximum allowable permissions for new files (e.g., 0755). See also directory mask. To require certain permissions to be set, see force create mask/force directory mask.')}</p>
-			<label style="float:none;text-align:center;width:auto;margin-bottom:10px;" title="">${_('Create Mask')}</label>
-			
-			<table class="chmod-permissions" summary="Permissions for Create Mask">
-			    <thead>
-				<tr>
-				    <td></td>
-				    <td>${_('User')}</td>
-				    <td>${_('Group')}</td>
-				    <td>${_('World')}</td>
-				</tr>
-			    </thead>
-			    <tbody>  
-				<tr>
-				    <td class="thead">${_('Read')}</td>
-				    <td><input checked="checked" type="checkbox" value="4" name="create_mask_ur"/></td>
-				    <td><input checked="checked" type="checkbox" value="4" name="create_mask_gr"/></td>
-				    <td><input checked="checked" type="checkbox" value="4" name="create_mask_wr"/></td>
-				</tr>
-				
-				<tr>
-				    <td class="thead">${_('Write')}</td>
-				    <td><input checked="checked" type="checkbox" value="2" name="create_mask_uw"/></td>
-				    <td><input type="checkbox" value="2" name="create_mask_gw"/></td>
-				    <td><input type="checkbox" value="2" name="create_mask_ww"/></td>
-				</tr>
-				
-				<tr>
-				    <td class="thead">${_('Execute')}</td>
-				    <td><input checked="checked" type="checkbox" value="1" name="create_mask_ux"/></td>
-				    <td><input type="checkbox" value="1" name="create_mask_gx"/></td>
-				    <td><input type="checkbox" value="1" name="create_mask_wx"/></td>
-				</tr>
-				
-				<tr>
-				    <td class="thead">${_('Permission')}</td>
-				    <td><input type="text" readonly="readonly" size="1" name="create_mask_u" value="7"/></td>    
-				    <td><input type="text" readonly="readonly" size="1" name="create_mask_g" value="4"/></td>
-				    <td><input type="text" readonly="readonly" size="1" name="create_mask_w" value="4"/></td>
-				</tr>           
-			    </tbody>
-			</table>
+                        <p style="font-size:93%;float:none;text-align:center;width:auto;margin-bottom:20px;">Create Mask</p>
+                        
+                        <ul style="width:400px;margin:0px auto;">
+                            <li style="margin-bottom:10px;overflow:auto;">
+                                <label for="create-mask-owner">Owner Can:</label>
+                                <select style="float:left;font-size:85%;" id="create-mask-owner">
+                                    <option>None</option>
+                                    <option>Read Only</option>
+                                    <option>Write Only</option>
+                                    <option>Read and Write</option>
+                                </select>
+                                
+                                <span><input style="margin-left:15px;" type="checkbox" value="4" id="create-mask-owner-exec" name="create_mask_ur"/><label class="checkbox" for="create-mask-owner-exec">Can Execute?</label></span>
+                            </li>
+                            
+                            <li style="overflow:auto;margin-bottom:10px;">
+                                <label for="create-mask-group">Group Can:</label>
+                                <select style="float:left;font-size:85%;" id="create-mask-group">
+                                    <option>None</option>
+                                    <option>Read Only</option>
+                                    <option>Write Only</option>
+                                    <option>Read and Write</option>
+                                </select>
+                                
+                                <span>
+                                    <input style="margin-left:15px;" type="checkbox" value="4" id="create-mask-group-exec" name="create_mask_ur"/><label class="checkbox" for="create-mask-group-exec">Can Execute?</label>
+                                </span>
+                            </li>
+                            
+                            <li style="overflow:auto;margin-bottom:10px;">
+                                <label for="create-mask-world">Everyone Else:</label>
+                                <select style="float:left;font-size:85%;" id="create-mask-world">
+                                    <option>None</option>
+                                    <option>Read Only</option>
+                                    <option>Write Only</option>
+                                    <option>Read and Write</option>
+                                </select>
+                                
+                                <span>
+                                    <input style="margin-left:15px;" type="checkbox" value="4" id="create-mask-world-exec" name="create_mask_ur"/><label class="checkbox" for="create-mask-world-exec">Can Execute?</label>
+                                </span>
+                            </li>
+                        </ul>
+                        
+                        <span style="display:block;text-align:center;margin-top:20px;">
+                            <input style="width:30px;" type="text" id="create-mask-perms-result" />
+                        </span>
 			
 			<span style="display:block;text-align:center;margin-top:20px;">
 			    <input style="margin-left:0;" type="checkbox" id="share-force-create-mask" name="share_forcecreatemask" />
@@ -142,47 +153,53 @@
 		    
 		    <li>                                    
 			<p class="option-help">Also called directory mode. Sets the maximum allowable permissions for newly created directories. To require certain permissions be set, see the force create mask and force directory mask options</p>
-			<label style="float:none;text-align:center;width:auto;margin-bottom:10px;" title="">Directory Mask</label>
+			<p style="font-size:93%;float:none;text-align:center;width:auto;margin-bottom:20px;">Directory Mask</p>
 			
-			<table class="chmod-permissions" summary="Permission for Directory Mask">
-			    <thead>
-				<tr>
-				    <td></td>
-				    <td>${_('User')}</td>
-				    <td>${_('Group')}</td>
-				    <td>${_('World')}</td>
-				</tr>
-			    </thead>
-			    <tbody>  
-				<tr>
-				    <td class="thead">${_('Read')}</td>
-				    <td><input type="checkbox" checked="checked" value="4" name="directory_mask_ur"/></td>
-				    <td><input type="checkbox" checked="checked" value="4" name="directory_mask_gr"/></td>
-				    <td><input type="checkbox" checked="checked" value="4" name="directory_mask_wr"/></td>
-				</tr>
-				
-				<tr>
-				    <td class="thead">${_('Write')}</td>
-				    <td><input type="checkbox" checked="checked" value="2" name="directory_mask_uw"/></td>
-				    <td><input type="checkbox" value="2" name="directory_mask_gw"/></td>
-				    <td><input type="checkbox" value="2" name="directory_mask_ww"/></td>    
-				</tr>
-				
-				<tr>
-				    <td class="thead">${_('Execute')}</td>
-				    <td><input type="checkbox" checked="checked" value="1" name="directory_mask_ux"/></td>
-				    <td><input type="checkbox" checked="checked" value="1" name="directory_mask_gx"/></td>
-				    <td><input type="checkbox" checked="checked" value="1" name="directory_mask_wx"/></td>
-				</tr>
-				
-				<tr>
-				    <td class="thead">${_('Permission')}</td>
-				    <td><input type="text" readonly="readonly" size="1" name="directory_mask_u" value="7"/></td>    
-				    <td><input type="text" readonly="readonly" size="1" name="directory_mask_g" value="5"/></td>
-				    <td><input type="text" readonly="readonly" size="1" name="directory_mask_w" value="5"/></td>
-				</tr>           
-			    </tbody>
-			</table>
+                        <ul style="width:400px;margin:0px auto;">
+                            <li style="margin-bottom:10px;overflow:auto;">
+                                <label for="directory-mask-owner">Owner Can:</label>
+                                <select style="float:left;font-size:85%;" id="directory-mask-owner">
+                                    <option>None</option>
+                                    <option>Read Only</option>
+                                    <option>Write Only</option>
+                                    <option>Read and Write</option>
+                                </select>
+                                
+                                <span><input style="margin-left:15px;" type="checkbox" value="4" id="directory-mask-owner-exec" name="create_mask_ur"/><label class="checkbox" for="directory-mask-owner-exec">Can Execute?</label></span>
+                            </li>
+                            
+                            <li style="overflow:auto;margin-bottom:10px;">
+                                <label for="directory-mask-group">Group Can:</label>
+                                <select style="float:left;font-size:85%;" id="create-mask-group">
+                                    <option>None</option>
+                                    <option>Read Only</option>
+                                    <option>Write Only</option>
+                                    <option>Read and Write</option>
+                                </select>
+                                
+                                <span>
+                                    <input style="margin-left:15px;" type="checkbox" value="4" id="directory-mask-group-exec" name="create_mask_ur"/><label class="checkbox" for="directory-mask-group-exec">Can Execute?</label>
+                                </span>
+                            </li>
+                            
+                            <li style="overflow:auto;margin-bottom:10px;">
+                                <label for="directory-mask-world">Everyone Else:</label>
+                                <select style="float:left;font-size:85%;" id="create-mask-world">
+                                    <option>None</option>
+                                    <option>Read Only</option>
+                                    <option>Write Only</option>
+                                    <option>Read and Write</option>
+                                </select>
+                                
+                                <span>
+                                    <input style="margin-left:15px;" type="checkbox" value="4" id="directory-mask-world-exec" name="create_mask_ur"/><label class="checkbox" for="directory-mask-world-exec">Can Execute?</label>
+                                </span>
+                            </li>                            
+                        </ul>
+                        
+                        <span style="display:block;text-align:center;margin-top:20px;">
+                            <input style="width:30px;" type="text" id="create-mask-perms-result" />
+                        </span>                        
 			
 			<span style="display:block;text-align:center;margin-top:20px;">
 			    <input style="margin-left:0;" type="checkbox" id="share-force-directory-mask" name="share_forcedirectorymask" />
@@ -192,7 +209,7 @@
 		</ol>                            
 	    </li>
 	    
-	    <li id="content-tab3">
+	    <li id="content-tab3" class="active">
 		<ol>
 		    <li>                                    
 			<p class="option-help">${_('Specifies a list of users given read-only access to a writeable share.')}</p>
@@ -210,10 +227,6 @@
 			<input type="hidden" name="share_read_list" />
 			
 			<ul id="user-list-read" class="user-list">
-			    <!--<li><a id="delete-read-list-1" title="${_('Remove this User/Group')}" href="#"><span>@vandelay</span><img src="/default/images/icons/minus-small.png" alt="${_('Remove User/Group Icon')}" /></a></li>
-			    <li><a id="delete-read-list-2" title="${_('Remove this User/Group')}" href="#"><span>art.vandelay</span><img src="/default/images/icons/minus-small.png" alt="${_('Remove User/Group Icon')}" /></a></li>
-			    <li><a id="delete-read-list-3" title="${_('Remove this User/Group')}" href="#"><span>@board</span><img src="/default/images/icons/minus-small.png" alt="${_('Remove User/Group Icon')}" /></a></li>
-			    <li><a id="delete-read-list-4" title="${_('Remove this User/Group')}" href="#"><span>crusader</span><img src="/default/images/icons/minus-small.png" alt="${_('Remove User/Group Icon')}" /></a></li>-->
 			</ul>
 			
 			<div class="clear-both"></div>
