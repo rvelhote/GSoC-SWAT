@@ -544,8 +544,10 @@ ol.tab-list li a {
     color:#484848;
     padding:5px 15px 5px 35px;
     background-position:10px center;
+    text-decoration:none;
 }
 
+ol.tab-list li:hover,
 ol.tab-list li.active {
     display:block;
     background-color:#E1E3DA;    

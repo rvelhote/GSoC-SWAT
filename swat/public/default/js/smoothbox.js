@@ -63,15 +63,15 @@ function TB_show(caption, url) {
     
     if (!tb) {
         new Element('div').setProperty('id', TB_elementName).injectInside(document.body);
-	new Drag(TB_elementName, {handle:'TB_title'})
-	
 	tb = $(TB_elementName);
 	
         tb.setOpacity(0);
 	tb.addClass("round-2px");
 	
-	tb.innerHTML += "<div id='TB_title'><div id='TB_ajaxWindowTitle'></div><div id='TB_closeAjaxWindow'><a href='#' id='TB_closeWindowButton'>close</a></div></div><div id='TB_ajaxContent'></div>";
+	tb.innerHTML += "<div id='TB_title'><div id='TB_ajaxWindowTitle'></div><div id='TB_closeAjaxWindow'><a href='#' id='TB_closeWindowButton'>close</a></div></div><div id='TB_ajaxContent'>xxxxxxxxxxxxxxxx</div>";
 	$("TB_closeWindowButton").onclick = TB_remove;
+	
+	tb.makeDraggable({handle:'TB_title'})
     }
     
     $('TB_ajaxWindowTitle').set("text", caption);
@@ -82,7 +82,7 @@ function TB_showWindow() {
     var tb = $(TB_elementName);
     
     if(tb) {
-	tb.set('tween', {duration: 250});
+	tb.set('tween', {duration: 150});
         tb.fade("in");
     }
 }
@@ -92,7 +92,7 @@ function TB_remove() {
     TB_isActive = false;
     
     if(tb) {
-	tb.set('tween', {duration: 250});
+	tb.set('tween', {duration: 150});
 	tb.fade("out");
     }
     
@@ -103,11 +103,7 @@ function TB_position() {
     var tb = $(TB_elementName);
     
     if(tb) {
-	tb.set('morph', {duration: 75});
-
-	tb.morph({
-	    left: (window.getScrollLeft() + (window.getWidth() - tb.getStyle("width").toInt()) / 2) + 'px',
-	    top: (window.getScrollTop() + (window.getHeight() - tb.getStyle("height").toInt()) / 2) + 'px'
-	});	
+	tb.setStyle("left", (window.getScrollLeft() + (window.getWidth() - tb.getStyle("width").toInt()) / 2) + 'px');
+	tb.setStyle("top", (window.getScrollTop() + (window.getHeight() - tb.getStyle("height").toInt()) / 2) + 'px');
     }
 }

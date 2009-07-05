@@ -1,60 +1,61 @@
 window.addEvent("domready", function() {    
-    /**
-     *  Add the Tab Feature
-     */
-    var tabList = $$("li[id^=tab]");
-    var numTabs = tabList.length;
-    
-    if(numTabs > 0) {    
-        for(var i = 0; i < numTabs; i++) {
-            tabList[i].addEvent("click", function(event) {
-                event = new Event(event).stop();
-                activateTab(this);
-            });
-        }
-    }
-    
-    /**
-     *  Delete Confirmation Popup Mockup
-     */
-    var deleteButtonsList = $$("a[id^=delete-]");
-    var numButtons = deleteButtonsList.length;
-    
-    if(numButtons > 0) {    
-        for(var i = 0; i < numButtons; i++) {
-            deleteButtonsList[i].addEvent("click", function(event) {
-                event = new Event(event).stop();
-                confirm("Are you sure you want to delete this User/Group?");
-            });          
-        }
-    }
 });
 
-function activateTab(clickedTab) {
-    if(clickedTab) {
-        var clickedTabContent = $("content-" + clickedTab.getProperty("id"));
-        
-        if(clickedTab && clickedTabContent) {
-            clickedTab.addClass("active");
-            clickedTabContent.addClass("active");
+var TabGroup = new Class({
+    Implements: [Options, Events],
+
+    options: {
+        tabGroupClass: 'tab-list'
+    },
     
-            var tabList = clickedTab.getParent().getChildren();
-            var numTabs = tabList.length;
-            var otherTab = null;
+    initialize: function(options) {
+        this.setOptions(options);
+        
+        var tabContainers = $$('.' + this.options.tabGroupClass);
+        var children = null;
+
+        tabContainers.each(function(el) {
+            children = el.getChildren("li");
             
-            for(var i = 0; i < numTabs; i++) {
-                if(tabList[i] && tabList[i].getProperty("id") != clickedTab.getProperty("id")) {
-                    tabList[i].removeClass("active");
-                    otherTab = $("content-" + tabList[i].getProperty("id"));
-                    
-                    if(otherTab) {
-                        otherTab.removeClass("active");
+            children.each(function(c) {
+                c.addEvent("click", function(event) {
+                    event = new Event(event).preventDefault()
+                    tabs.activateTab(this.getProperty("id"));
+                });
+            });
+        });
+    },
+    
+    activateTab: function(tabId) {
+        var clickedTab = $(tabId);
+        
+        if(clickedTab) {
+            var clickedTabContent = $("content-" + clickedTab.getProperty("id"));
+            
+            if(clickedTab && clickedTabContent) {
+                clickedTab.addClass("active");
+                clickedTabContent.addClass("active");
+        
+                var tabList = clickedTab.getParent().getChildren();
+                var numTabs = tabList.length;
+                var otherTab = null;
+                
+                for(var i = 0; i < numTabs; i++) {
+                    if(tabList[i] && tabList[i].getProperty("id") != clickedTab.getProperty("id")) {
+                        tabList[i].removeClass("active");
+                        otherTab = $("content-" + tabList[i].getProperty("id"));
+                        
+                        if(otherTab) {
+                            otherTab.removeClass("active");
+                        }
                     }
                 }
             }
         }
     }
-}
+    
+    //tab-list-items
+});
 
 /**
  *  Path Selection
@@ -69,7 +70,7 @@ var PathSelector = new Class({
     },
     
     initialize: function(options) {
-        this.setOptions(options);        
+        this.setOptions(options);
         this.request = new Request.HTML({
             update: this.options.element
         });
@@ -87,10 +88,6 @@ var PathSelector = new Class({
         $(this.options.copyTo).value = "";
     }
 });
-
-function add(name, type) {
-    
-}
 
 var UserGroupSelector = new Class({
     Implements: [Options, Events],
@@ -151,9 +148,6 @@ var UserGroupSelector = new Class({
             this.remove(ev.target);
         }.bind(this));
         
-        //var newSpan = new Element('span', {text:name});
-        //newSpan.injectInside(newAnchor);
-        
         newAnchor.injectInside(newLi);
         newLi.injectInside($(this.options.copyTo));
         
@@ -161,7 +155,7 @@ var UserGroupSelector = new Class({
     },
     
     addManual: function(from, to) {
-        var from = $(from);
+        from = $(from);
         this.options.copyTo = to;
         
         if(from) {

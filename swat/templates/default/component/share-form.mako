@@ -21,7 +21,7 @@
 	</ol>
 	
 	<ul class="tab-list-items"> 
-	    <li id="content-tab1">
+	    <li id="content-tab1" class="active">
 		<ol>
 		    <li>
 			<p class="option-help">${_('Set the Share Name')}</p>
@@ -204,7 +204,7 @@
 		</ol>                            
 	    </li>
 	    
-	    <li id="content-tab3" class="active">
+	    <li id="content-tab3">
 		<ol>
 		    <li>                                    
 			<p class="option-help">${_('Specifies a list of users given read-only access to a writeable share.')}</p>
