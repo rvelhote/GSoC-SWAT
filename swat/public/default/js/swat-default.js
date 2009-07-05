@@ -112,7 +112,7 @@ var UserGroupSelector = new Class({
         var element = $(id);
         
         if(element) {
-            element.set('tween', {duration: 250});
+            element.set('tween', {duration: 100});
             
             if(type == "add") {
                 element.tween('opacity', 0, 1);
@@ -144,15 +144,15 @@ var UserGroupSelector = new Class({
         var newElementId = 'delete-' + this.options.copyTo + '-' + (numElements + 1);
         
         var newLi = new Element('li');
-        var newAnchor = new Element('a', {class:"delete-link", id:newElementId, title:"Remove this User/Group", href:"#"});
+        var newAnchor = new Element('a', {text:name, class:"delete-link", id:newElementId, title:"Remove this User/Group", href:"#"});
 
         newAnchor.addEvent('click', function(ev) {
             event = new Event(ev).stop();
             this.remove(ev.target);
         }.bind(this));
         
-        var newSpan = new Element('span', {text:name});
-        newSpan.injectInside(newAnchor);
+        //var newSpan = new Element('span', {text:name});
+        //newSpan.injectInside(newAnchor);
         
         newAnchor.injectInside(newLi);
         newLi.injectInside($(this.options.copyTo));
@@ -169,24 +169,26 @@ var UserGroupSelector = new Class({
         }
     },
     
-    remove: function(id) {
-        if($(id)) {
+    remove: function(id, forReal) {
+        var element = $(id);
+        
+        if(element) {
             this.effect(id, "remove");
-            $(id).getParent().dispose();
+            element.getParent().dispose();
         }
     },
     
     exists: function(name) {
         var elements = $(this.options.copyTo).getChildren();
         var n = elements.length;
-        var span = null;
+        var a = null;
         
         var exists = false;
         
         for(var i = 0; i < n; i++) {
-            span = elements[i].getElement("span");
+            a = elements[i].getElement("a");
             
-            if(span.get('text') == name) {
+            if(a.get('text') == name) {
                 exists = true;
                 break;
             }

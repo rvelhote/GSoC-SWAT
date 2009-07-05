@@ -242,8 +242,7 @@
 			
 			<input type="hidden" name="share_admin_list" />
 			
-			<ul id="user-list-admin" class="user-list">                                        
-			    <li><a title="${_('Remove this User/Group')}" href="#"><span>@board</span><img src="/default/images/icons/minus-small.png" alt="${_('Remove User/Group Icon')}" /></a></li>
+			<ul id="user-list-admin" class="user-list">
 			</ul>
 			
 			<div class="clear-both"></div>

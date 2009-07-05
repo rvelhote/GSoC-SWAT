@@ -83,7 +83,7 @@ function TB_showWindow() {
     
     if(tb) {
 	tb.set('tween', {duration: 250});
-        tb.tween('opacity', 0, 1);
+        tb.fade("in");
     }
 }
 
@@ -92,11 +92,8 @@ function TB_remove() {
     TB_isActive = false;
     
     if(tb) {
-	tb.set('tween', {
-	    duration: 250
-	});
-	
-	tb.tween('opacity', 1, 0);
+	tb.set('tween', {duration: 250});
+	tb.fade("out");
     }
     
     return false;
@@ -106,9 +103,7 @@ function TB_position() {
     var tb = $(TB_elementName);
     
     if(tb) {
-	tb.set('morph', {
-	    duration: 75
-	});
+	tb.set('morph', {duration: 75});
 
 	tb.morph({
 	    left: (window.getScrollLeft() + (window.getWidth() - tb.getStyle("width").toInt()) / 2) + 'px',
