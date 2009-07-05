@@ -410,40 +410,16 @@ ul.quick-tasks li {
     display:inline;
 }
 
+/** Share Edit and Creation Form */
+form.share-form ol {
+    
+}
+
 /** Share Creation Form  */
-form.create-form {
-    margin-bottom:15px;
-}
-
-form.create-form label {
-    float:left;
-    display:block;
-    font-weight:bold;
-    text-align:right;
-    width:100px;
-    font-size:85%;
-    margin-right:5px;
-}
-
-form.create-form label.checkbox {
-    float:none;
-    display:inline;    
-}
-
-form.create-form input[type=text] {
-    font-size:85%;
-    width:300px;
-}
-
-form.create-form input[type=checkbox] {
-    float:none;
-    margin-left:65px;
-}
-
-form.create-form p.option-help {
+p.option-help {
     font-size:77%;
     
-    margin:30px 0px 10px 0px;
+    margin-bottom:15px;
     padding-left:15px;
     
     background-image:url("../images/icons/question-small.png");
@@ -451,48 +427,91 @@ form.create-form p.option-help {
     background-position:left -1px;
 }
 
-form.create-form ul.tab-list-items ol li:first-child p.option-help {
-    margin-top:0;
+form.share-configuration label {
+    float:left;
+    display:block;
+    font-weight:bold;
+    text-align:right;
+    width:120px;
+    font-size:85%;
+    margin-right:5px;
 }
 
-form.create-form ul.tab-list-items ol.col-2 li:first-child p.option-help {
-    margin-top:30px;
+form.share-configuration label.checkbox {
+    float:none;
+    display:inline;    
 }
 
-form.create-form ul.tab-list-items ol.col-2 li {
+form.share-configuration input[type=text] {
+    font-size:85%; 
+}
+
+form.share-configuration input.big-margin[type=checkbox] {
+    margin-left:85px;
+}
+
+form.share-configuration input.big-text {
+    width:400px;
+}
+
+form.share-configuration input.small-text {
+    width:25px;
+}
+
+ol.col-1 > li {
+    margin-bottom:30px;
+}
+
+ol.col-2 > li {
     float:left;
     width:50%;
     display:block;
+    margin-bottom:20px;
+}
+
+form.share-configuration span.field-with-ops {
+    display:block;
+    float:left;
+}
+
+form.share-configuration ol.field-ops li {
+    display: inline;
+    margin-left: 5px;
+}
+
+form.share-configuration p.field-title {
+    font-size:93%;
+    text-align:center;
+    margin-bottom:20px;
+    font-weight:bold;
+}
+
+form.share-configuration ul.permissions-selection {
+    width:400px;
+    margin:0px auto;
+}
+
+form.share-configuration ul.permissions-selection li {
+    margin-bottom:20px;
+    overflow:auto;
+}
+
+form.share-configuration ul.permissions-selection li label {
+    width:150px;
 }
 
 /** Share Summary */
-div.share-summary div.content, div.share-notes div.content {
+div.share-comment {
+    margin-top:15px;
+}
+
+div.share-comment div.content {
     padding:15px;
 }
 
-div.share-notes textarea {
+div.share-comment textarea {
     font-size:85%;
-    width:675px;
-}
-
-div.share-summary ol {
-    margin-left:43px;
-    font-size:85%;
-    font-family:monospace;
-}
-
-div.share-summary ol li {
-    list-style-type:decimal-leading-zero;
-    padding:2px 0px 2px 5px;
-}
-
-div.share-summary ol li span.smb-option {
-    font-weight:bold;
-    color:#8BAD82;    
-}
-
-div.share-summary ol li.ident-1 {
-    padding-left:30px;
+    width:100%;
 }
 
 /** */
@@ -578,11 +597,6 @@ ul.tab-list-items > li.active {
     display:block;
 }
 
-ul.tab-list-items span.floated-field {
-    display:block;
-    float:left;
-}
-
 /** Background Images */
 .basic-tab {
     background-image:url('../images/icons/block.png');
@@ -626,6 +640,7 @@ div.pagination ul li.previous, div.pagination ul li.next {
     margin-top:-2px;
 }
 
+/** Misc */
 p.dev-notes {
     font-size:10px;
     text-align:center;
@@ -637,7 +652,7 @@ p.dev-notes {
 /** User List */
 ul.user-list {
     clear:both;
-    margin-left:104px;
+    margin-left:125px;
     padding-top:10px;
     font-size:85%;
 }
@@ -648,6 +663,7 @@ ul.user-list li {
     display:block;
     float:left;
     margin-right:5px;
+    margin-bottom:10px;
     
     -moz-border-radius:2px;
     -webkit-border-radius:2px;
@@ -673,80 +689,11 @@ ul.user-list li a:hover {
     color:#ffffff;
 }
 
-ol.user-list-operations li {
-    display: inline;
-    margin-left: 5px;
-}
-
 ul.user-list li span, ul.user-list li img {
     float:left;
 }
 
-/** Permissions Table */
-table.chmod-permissions {
-    font-size:85%;
-    width:225px;
-    margin:0px auto;
-}
-
-table.chmod-permissions input[type=text] {
-    width:auto;
-}
-
-table.chmod-permissions input[type=checkbox] {
-    margin:0;
-}
-
-table.chmod-permissions td {
-    text-align:center;
-}
-
-table.chmod-permissions thead, table.chmod-permissions td.thead {
-    font-weight:bold;
-}
-
-/** Assistant */
-div.assistant ol.progress {
-    margin-bottom:15px;
-    font-size:85%;
-    
-    background-color:#EAEAE8;
-    border:1px solid #CCCCCC;
-}
-
-div.assistant ol.progress li {    
-    display:inline-block;
-    padding:10px 25px 10px 15px;
-    
-    background-image:url("../images/bc_separator.png");
-    background-position:right center;
-    background-repeat:no-repeat;   
-}
-
-div.assistant ol.progress li.current,
-div.assistant ol.progress li.done {
-    padding:0;    
-}
-
-div.assistant ol.progress li a {
-    background-repeat:no-repeat;
-    background-position:10px center;
-    padding:10px 25px 10px 35px;
-    display:block;
-    color:#484848;
-    font-weight:bold;
-}
-
-div.assistant ol.progress li.done a {
-    background-image:url("../images/icons/tick.png");
-}
-
-div.assistant ol.progress li.current a {
-    background-image:url("../images/icons/marker.png");
-}
-
 /** Bulk Operations Area */
-
 div.bulk-operations.table-footer {
     float:left;
 }

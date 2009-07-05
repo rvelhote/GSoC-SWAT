@@ -22,7 +22,7 @@
 <script type="text/javascript">
     window.addEvent('domready', function() {
         path = new PathSelector({element: 'TB_ajaxContent', copyTo: 'share-path'});
-        userGroup = new UserGroupSelector({element: 'TB_ajaxContent'});
+        userGroup = new ItemList({element: 'TB_ajaxContent'});
         tabs = new TabGroup();
         formSubmission = new FormSubmit({formId: 'share-form'});
     });

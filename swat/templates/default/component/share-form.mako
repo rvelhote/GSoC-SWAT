@@ -177,6 +177,47 @@
 	    </li>
 	    
 	    <li id="content-tab4">
+                <ol class="col-1">
+                    <li>
+			<p class="option-help">${_('A list of machines that can access a share or shares. If NULL (the default) any machine can access the share unless there is a hosts deny option.')}</p>
+			
+			<span class="field-with-ops">
+			    <label for="share-insert-allowed-hosts" title="${_('List of Hostnames that will be able to access this Share')}">${_('Allowed Hosts')}:</label>
+                            ${h.text("", "", id="share-insert-allowed-hosts", class_='big-text')}
+			</span>
+			
+			<ol class="field-ops">
+                            <li><a title="${_('Add this Host')}" href="#" onclick="userGroup.addManual('share-insert-allowed-hosts', 'allowed-hosts-list');return false;"><img src="/default/images/icons/plus-small.png" alt="${_('Add User/Group Icon')}" /></a></li>
+			</ol>
+			
+			<input type="hidden" name="share_allowed_hosts" />
+			
+			<ul id="allowed-hosts-list" class="user-list">
+			</ul>
+			
+			<div class="clear-both"></div>
+                    </li>
+                    
+                    <li>
+			<p class="option-help">${_('A list of machines that cannot connect to a share or shares. ')}</p>
+			
+			<span class="field-with-ops">
+			    <label for="share-insert-deny-hosts" title="${_('List of Hostnames that will not be able to access this Share')}">${_('Denied Hosts')}:</label>
+                            ${h.text("", "", id="share-insert-deny-hosts", class_='big-text')}
+			</span>
+			
+			<ol class="field-ops">
+                            <li><a title="${_('Add this Host')}" href="#" onclick="userGroup.addManual('share-insert-deny-hosts', 'denied-hosts-list');return false;"><img src="/default/images/icons/plus-small.png" alt="${_('Add User/Group Icon')}" /></a></li>
+			</ol>
+			
+			<input type="hidden" name="share_deny_hosts" />
+			
+			<ul id="denied-hosts-list" class="user-list">
+			</ul>
+			
+			<div class="clear-both"></div>
+                    </li>                     
+                </ol>
 	    </li>
 	</ul>
 	

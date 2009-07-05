@@ -118,7 +118,7 @@ var PathSelector = new Class({
     }
 });
 
-var UserGroupSelector = new Class({
+var ItemList = new Class({
     Implements: [Options, Events],
     
     options: {
@@ -157,9 +157,19 @@ var UserGroupSelector = new Class({
             return;
         }
         
+        /**
+         *  Type is 'Group'
+         */
         if(type == "g") {
             name = "@" + name;
-        }        
+        }
+        
+        /**
+         *  Type is Hostname
+         */
+        if(type == "h") {
+            
+        }
         
         if(this.exists(name)) {
             alert("Already Exists!");
@@ -170,7 +180,7 @@ var UserGroupSelector = new Class({
         var newElementId = 'delete-' + this.options.copyTo + '-' + (numElements + 1);
         
         var newLi = new Element('li');
-        var newAnchor = new Element('a', {text:name, class:"delete-link", id:newElementId, title:"Remove this User/Group", href:"#"});
+        var newAnchor = new Element('a', {text:name, class:"delete-link", id:newElementId, title:"Remove this item from the list", href:"#"});
 
         newAnchor.addEvent('click', function(ev) {
             event = new Event(ev).stop();
@@ -197,6 +207,8 @@ var UserGroupSelector = new Class({
             for(var i = 0; i < numItems; i++) {
                 this.add(items[i].trim());
             }
+            
+            from.value = "";
         }
     },
     
