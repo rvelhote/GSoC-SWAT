@@ -1,8 +1,27 @@
+<%def name="permission_zone(name, id)">
+    <% permissions = [["0", _("None")], ["4", _("Read Only")], ["2", _("Write Only")], ["6", _("Read and Write")]]%>
+    <% permissionGroups = [[_("Owner Can"), "owner", 6, 1], [_("Group Members Can"), "group", 4, 1], [_("Everyone Else Can"), "world", 4, 1]] %>
+    
+    <ul style="width:400px;margin:0px auto;">
+        % for grp in permissionGroups:
+        
+            <li style="margin-bottom:10px;overflow:auto;">
+                <label for="${id}-${grp[1]}-rw">${grp[0]}:</label>                                
+                ${h.select(name + "_" + grp[1] + "_rw", grp[2], permissions, style="float:left;font-size:85%;", id=id + "-" + grp[1] + "-rw")}
+    
+                <span>
+                    ${h.checkbox(name + "_" + grp[1] + '_x', grp[3], True, style="margin-left:15px;", id=id + "-" + grp[1] + '-x')}
+                    <label class="checkbox" for="${id}-${grp[1]}-x">${_('Execute?')}</label>
+                </span>
+            </li>
+        % endfor
+    </ul>
+</%def>
+
 <%def name="write(share='')">
-    <form class="create-form create-share" action="" method="post">
-	<p class="dev-notes">some of this text is taken from the book "Using Samba". it serves just a filler for now. in the future there will be an option to remove the help items for more knowledgeable users :)</p>
-	
-	<ol class="tab-list">
+
+    ${h.form('', method="post", id="share-form", class_="create-form create-share")}
+        <ol class="tab-list">
 	    <li id="tab1" class="active">
 		<h3><a title="${_('Basic Share Configuration')}" class="title-icon basic-tab" href="#">${_('Basic')}</a></h3>                           
 	    </li>
@@ -19,68 +38,46 @@
 		<h3><a title="${_('Share Host Management')}" class="title-icon hosts-tab" href="#">${_('Hosts')}</a></h3>
 	    </li>                        
 	</ol>
-	
-	<ul class="tab-list-items"> 
+        
+        <ul class="tab-list-items"> 
 	    <li id="content-tab1" class="active">
 		<ol>
 		    <li>
 			<p class="option-help">${_('Set the Share Name')}</p>
 			<label for="share-name" title="Set this Share's Name">${_('Name')}:</label>
-			<input type="text" id="share-name" name="share_name" value="${share}" />                                                                        
+                        ${h.text("share_name", share, id="share-name")}
 		    </li>
 		    
 		    <li>
                         <p class="option-help">${_("Sets the path to the directory provided by a file share or used by a printer share. Set automatically in [homes] share to user\'s home directory, otherwise defaults to  /tmp. Honors the %u (user) and %m (machine) variables.")}</p>
                         
 			<span class="floated-field">
-                            <label for="share-path" title="${_('Set the Path to be Shares')}">${_('Path')}:</label>
-                            <input type="text" id="share-path" name="share_path" value="${c.samba_lp.get("path", share)}" />
+                            <label for="share-path" title="${_('Set the Path to be Shared')}">${_('Path')}:</label>
+                            ${h.text("share_path", c.samba_lp.get("path", share), id="share-path")}
 			</span>
 
 			<ol class="user-list-operations">
-			    <li><a href="${h.url_for(controller='share', action='path')}?height=140&width=600" class="popup-selector" title="${_('Select the Share Location')}"><img src="/default/images/icons/layer-select-point.png" alt="${_('Add User/Group Icon')}" /></a></li>
+			    <li><a href="${h.url_for(controller='share', action='path')}" class="popup-selector" title="${_('Select the Share Location')}"><img src="/default/images/icons/layer-select-point.png" alt="${_('Add User/Group Icon')}" /></a></li>
 			</ol>
 		    </li>                                                                
 		</ol>
 		
 		<ol class="col-2">
-		    <li><%
-		    
-			checked = ""
-
-			if c.samba_lp.get("guest ok", share):
-			    checked = ' checked="checked" '
-			
-			%>
+		    <li>
 			<p class="option-help">${_('If checked, passwords are not needed for this share.')}</p>
-			<input ${checked} type="checkbox" id="share-guest-ok" name="share_guestok" />
-			<label class="checkbox" for="share-guest-ok" title="${_('Check to make this Share Public')}">${_('Public?')}</label>                                    
+                        ${h.checkbox('share_guestok', 1, c.samba_lp.get("guest ok", share), id='share-guest-ok')}
+                        <label class="checkbox" for="share-guest-ok" title="${_('Check to make this Share Public')}">${_('Public?')}</label>                                    
 		    </li>
 		    
-		    <li><%
-		    
-			checked = ""
-
-			if c.samba_lp.get("browsable", share):
-			    checked = ' checked="checked" '
-			
-			%>
+		    <li>
 			<p class="option-help">${_('Allows a share to be announced in browse lists.')}</p>
-			<input ${checked} type="checkbox" id="share-browsable" name="share_guestok" />
+                        ${h.checkbox('share_browsable', 1, c.samba_lp.get("browsable", share), id='share-browsable')}
 			<label class="checkbox" for="share-browsable" title="${_('Check to make this share Browsable')}">${_('Browsable?')}</label>
 		    </li>
 		    
-		    <li><%
-		    
-			checked = ""
-
-			if c.samba_lp.get("read only", share):
-			    checked = ' checked="checked" '
-			
-			%>
-
+		    <li>
 			<p class="option-help">${_('Sets a share to read-only.')}</p>
-			<input ${checked} type="checkbox" id="share-readonly" name="share_readonly" />
+                        ${h.checkbox('share_readonly', 1, c.samba_lp.get("browsable", share), id='share-readonly')}
 			<label class="checkbox" for="share-readonly" title="${_('Check to make this Share Read Only')}">${_('Read Only?')}</label>
 		    </li>
 		</ol>
@@ -94,48 +91,8 @@
 			<p class="option-help">${_('Sets the maximum allowable permissions for new files (e.g., 0755). See also directory mask. To require certain permissions to be set, see force create mask/force directory mask.')}</p>
                         <p style="font-size:93%;float:none;text-align:center;width:auto;margin-bottom:20px;">Create Mask</p>
                         
-                        <ul style="width:400px;margin:0px auto;">
-                            <li style="margin-bottom:10px;overflow:auto;">
-                                <label for="create-mask-owner">Owner Can:</label>
-                                <select style="float:left;font-size:85%;" id="create-mask-owner">
-                                    <option>None</option>
-                                    <option>Read Only</option>
-                                    <option>Write Only</option>
-                                    <option>Read and Write</option>
-                                </select>
-                                
-                                <span><input style="margin-left:15px;" type="checkbox" value="4" id="create-mask-owner-exec" name="create_mask_ur"/><label class="checkbox" for="create-mask-owner-exec">Can Execute?</label></span>
-                            </li>
-                            
-                            <li style="overflow:auto;margin-bottom:10px;">
-                                <label for="create-mask-group">Group Can:</label>
-                                <select style="float:left;font-size:85%;" id="create-mask-group">
-                                    <option>None</option>
-                                    <option>Read Only</option>
-                                    <option>Write Only</option>
-                                    <option>Read and Write</option>
-                                </select>
-                                
-                                <span>
-                                    <input style="margin-left:15px;" type="checkbox" value="4" id="create-mask-group-exec" name="create_mask_ur"/><label class="checkbox" for="create-mask-group-exec">Can Execute?</label>
-                                </span>
-                            </li>
-                            
-                            <li style="overflow:auto;margin-bottom:10px;">
-                                <label for="create-mask-world">Everyone Else:</label>
-                                <select style="float:left;font-size:85%;" id="create-mask-world">
-                                    <option>None</option>
-                                    <option>Read Only</option>
-                                    <option>Write Only</option>
-                                    <option>Read and Write</option>
-                                </select>
-                                
-                                <span>
-                                    <input style="margin-left:15px;" type="checkbox" value="4" id="create-mask-world-exec" name="create_mask_ur"/><label class="checkbox" for="create-mask-world-exec">Can Execute?</label>
-                                </span>
-                            </li>
-                        </ul>
-                        
+                        ${permission_zone('create_mask', 'create-mask')}
+
                         <span style="display:block;text-align:center;margin-top:20px;">
                             <input style="width:30px;" type="text" id="create-mask-perms-result" />
                         </span>
@@ -150,50 +107,10 @@
 			<p class="option-help">Also called directory mode. Sets the maximum allowable permissions for newly created directories. To require certain permissions be set, see the force create mask and force directory mask options</p>
 			<p style="font-size:93%;float:none;text-align:center;width:auto;margin-bottom:20px;">Directory Mask</p>
 			
-                        <ul style="width:400px;margin:0px auto;">
-                            <li style="margin-bottom:10px;overflow:auto;">
-                                <label for="directory-mask-owner">Owner Can:</label>
-                                <select style="float:left;font-size:85%;" id="directory-mask-owner">
-                                    <option>None</option>
-                                    <option>Read Only</option>
-                                    <option>Write Only</option>
-                                    <option>Read and Write</option>
-                                </select>
-                                
-                                <span><input style="margin-left:15px;" type="checkbox" value="4" id="directory-mask-owner-exec" name="create_mask_ur"/><label class="checkbox" for="directory-mask-owner-exec">Can Execute?</label></span>
-                            </li>
-                            
-                            <li style="overflow:auto;margin-bottom:10px;">
-                                <label for="directory-mask-group">Group Can:</label>
-                                <select style="float:left;font-size:85%;" id="create-mask-group">
-                                    <option>None</option>
-                                    <option>Read Only</option>
-                                    <option>Write Only</option>
-                                    <option>Read and Write</option>
-                                </select>
-                                
-                                <span>
-                                    <input style="margin-left:15px;" type="checkbox" value="4" id="directory-mask-group-exec" name="create_mask_ur"/><label class="checkbox" for="directory-mask-group-exec">Can Execute?</label>
-                                </span>
-                            </li>
-                            
-                            <li style="overflow:auto;margin-bottom:10px;">
-                                <label for="directory-mask-world">Everyone Else:</label>
-                                <select style="float:left;font-size:85%;" id="create-mask-world">
-                                    <option>None</option>
-                                    <option>Read Only</option>
-                                    <option>Write Only</option>
-                                    <option>Read and Write</option>
-                                </select>
-                                
-                                <span>
-                                    <input style="margin-left:15px;" type="checkbox" value="4" id="directory-mask-world-exec" name="create_mask_ur"/><label class="checkbox" for="directory-mask-world-exec">Can Execute?</label>
-                                </span>
-                            </li>                            
-                        </ul>
+                        ${permission_zone('directory_mask', 'directory-mask')}
                         
                         <span style="display:block;text-align:center;margin-top:20px;">
-                            <input style="width:30px;" type="text" id="create-mask-perms-result" />
+                            <input style="width:30px;" type="text" id="directory-mask-perms-result" />
                         </span>                        
 			
 			<span style="display:block;text-align:center;margin-top:20px;">
@@ -262,6 +179,8 @@
 	    <div class="content">
 		<textarea cols="80" rows="5" name="share_notes" id="share-notes">${c.samba_lp.get("comment", share)}</textarea>
 	    </div>
-	</div>  
-    </form>
+	</div>        
+        
+        
+    ${h.end_form()}
 </%def>
