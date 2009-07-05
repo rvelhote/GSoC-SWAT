@@ -184,11 +184,19 @@ var UserGroupSelector = new Class({
     },
     
     addManual: function(from, to) {
+        var items = null;
+        var numItems = 0;
+        
         from = $(from);
         this.options.copyTo = to;
         
         if(from) {
-            this.add(from.value);
+            items = from.value.split(',');
+            numItems = items.length;
+
+            for(var i = 0; i < numItems; i++) {
+                this.add(items[i].trim());
+            }
         }
     },
     
