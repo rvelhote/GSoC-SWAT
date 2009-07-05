@@ -294,19 +294,22 @@ def get_menu(type):
     (name and link) of the selected menu.
     
     """
+    import os
     
-    items = []
-    
-    if type == "top":
-        dashboard_url = url_for(controller = 'dashboard', action = 'index')
-        login_url = url_for(controller = 'authentication', action = 'logout')
+    items = {}
+    file_exists = False
+
+    try:
+        stream = open('%s/swat/config/yaml/menu.%s.yaml' % (os.getcwd(), type), 'r')
+    except IOError:
+        file_exists = False
+    else:
+        file_exists = True
+
+    if file_exists:        
+        items = yaml.safe_load(stream)
+        stream.close()
         
-        items.append({"name" : "dashboard", "link" : dashboard_url})
-        items.append({"name" : "general help", "link" : url_for('/')})
-        items.append({"name" : "context help", "link" : url_for('/')})
-        items.append({"name" : "about", "link" : url_for('/')})
-        items.append({"name" : "logout", "link" : login_url})    
-    
     return items
 
 def load_yaml_file(filename, dir=''):

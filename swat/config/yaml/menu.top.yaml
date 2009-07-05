@@ -1,0 +1,34 @@
+__dashboard:
+    link:
+        name: 'dashboard'
+        title: ''
+        controller: dashboard
+        action: index
+            
+_help:
+    link:
+        name: 'help'
+        title: ''
+        controller: help
+        action: index
+
+_context:
+    link:
+        name: 'context help'
+        title: ''
+        controller: _current_
+        action: help
+        
+about:
+    link:
+        name: 'about'
+        title: ''
+        controller: swat
+        action: about
+        
+_logout:
+    link:
+        name: 'logout'
+        title: ''
+        controller: authentication
+        action: logout

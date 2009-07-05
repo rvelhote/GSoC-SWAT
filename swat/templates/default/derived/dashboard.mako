@@ -39,7 +39,7 @@ information (DashboardConfiguration object)</%doc>
 		% endif
 	    % endfor
 	</div>
-    % endfor    
+    % endfor
 </%def>
 
 <%doc>Writes the Controller's Widget data i.e. the actions it will perform
