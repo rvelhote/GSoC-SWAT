@@ -1,6 +1,37 @@
 window.addEvent("domready", function() {    
 });
 
+var FormSubmit = new Class({
+    Implements: [Options, Events],
+
+    options: {
+        formId: ''
+    },
+    
+    initialize: function(options) {
+        this.setOptions(options);
+        
+        var elements = $$('a.form-submit-button');
+        
+        elements.each(function(el) {
+            el.addEvent("click", function(ev) {
+                ev = new Event(ev).preventDefault();
+                
+                this.changeTask(el.getProperty("href"));
+                this.submitForm();
+            }.bind(this));
+        }.bind(this));
+    },
+    
+    changeTask: function(link) {
+        $(this.options.formId).setProperty("action", link);
+    },
+    
+    submitForm: function() {
+        $(this.options.formId).submit();
+    }
+});
+
 var TabGroup = new Class({
     Implements: [Options, Events],
 
@@ -53,8 +84,6 @@ var TabGroup = new Class({
             }
         }
     }
-    
-    //tab-list-items
 });
 
 /**

@@ -30,11 +30,18 @@
 </%def>
     
 <%def name="write_item(item)">
-
-    <% link = h.url_for(controller = c.controller_config.get_controller(), action = item['link']['action']) %>
+    <%
+    
+    link = h.url_for(controller = c.controller_config.get_controller(), action = item['link']['action'])
+    submit = ''
+    
+    if item['link'].has_key('submit') and item['link']['submit']:
+	submit = ' form-submit-button '
+    
+    %>
     
     <li>
-	<a class="item-icon-link" title="${item['link']['title']}" href="${link}">
+	<a class="item-icon-link ${submit}" title="${item['link']['title']}" href="${link}">
 	    <img alt="${item['image']['alt']}" src="/default/images/icons/${item['image']['name']}"/>
 	    <span>${item['link']['name']}</span>
 	</a>

@@ -154,6 +154,7 @@ toolbar:
                    name: 'save'
                    title: 'Save Share Information'
                    action: save
+                   submit: True
                
                image:
                    name: disk.png
@@ -172,6 +173,7 @@ toolbar:
                image:
                    name: disk-arrow.png
                    alt: 'Apply Changes Icon'
+                   submit: True
 
             #
             # Save the current options but return
@@ -216,6 +218,7 @@ toolbar:
                    name: 'save'
                    title: 'Save Share Information'
                    action: save
+                   submit: True
                
                image:
                    name: disk.png
@@ -230,6 +233,7 @@ toolbar:
                    name: 'apply'     
                    title: 'Apply changes and return to this Page'
                    action: apply
+                   submit: True
                
                image:
                    name: disk-arrow.png
