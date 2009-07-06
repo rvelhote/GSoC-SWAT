@@ -37,6 +37,7 @@ swat/public/default/images/samba-logo.png
 swat/public/default/images/icons/application-monitor.png
 swat/public/default/images/icons/arrow-000-small.png
 swat/public/default/images/icons/arrow-180-small.png
+swat/public/default/images/icons/arrow-return-090.png
 swat/public/default/images/icons/balloon.png
 swat/public/default/images/icons/block.png
 swat/public/default/images/icons/blueprint.png
@@ -79,6 +80,7 @@ swat/public/default/images/icons/ui-check-box.png
 swat/public/default/images/icons/ui-tab.png
 swat/public/default/images/icons/user-plus.png
 swat/public/default/images/icons/user-silhouette.png
+swat/public/default/images/icons/user.png
 swat/public/default/images/icons/users.png
 swat/public/default/images/icons/wand.png
 swat/public/default/js/mootools-core-nc.js
@@ -95,6 +97,7 @@ swat/templates/default/component/toolbar.mako
 swat/templates/default/derived/dashboard.mako
 swat/templates/default/derived/edit-share.mako
 swat/templates/default/derived/share.mako
+swat/templates/default/derived/error/no-libs.mako
 swat/tests/__init__.py
 swat/tests/test_helpers.py
 swat/tests/test_models.py

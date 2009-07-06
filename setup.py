@@ -7,7 +7,7 @@ except ImportError:
 
 setup(
     name='swat',
-    version='0.1',
+    version='0.1.1',
     description='',
     author='',
     author_email='',
@@ -15,13 +15,15 @@ setup(
     install_requires=[
         "Pylons>=0.9.7",
 	"PyYAML>=3.0.8",
-	"Pam>=0.1.3"
+	"Pam>=0.1.3",
+	"repoze.who-friendlyform",
+	"repoze.who"
     ],
     setup_requires=["PasteScript>=1.6.3"],
     packages=find_packages(exclude=['ez_setup']),
     include_package_data=True,
     test_suite='nose.collector',
-    package_data={'swat': ['i18n/*/LC_MESSAGES/*.mo']},
+    package_data={'swat': ['i18n/*/LC_MESSAGES/*.mo', '../who.ini', 'config/yaml/*.yaml']},
     message_extractors={'swat': [
             ('**.py', 'python', None),
             ('templates/**.mako', 'mako', {'input_encoding': 'utf-8'}),

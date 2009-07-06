@@ -19,6 +19,13 @@ use = egg:swat
 full_stack = true
 static_files = true
 
+#
+# repoze.who
+#
+who.config_file = %(here)s/who.ini
+
+yaml.config = %(here)s/swat/config/yaml
+
 cache_dir = %(here)s/data
 beaker.session.key = swat
 beaker.session.secret = ${app_instance_secret}

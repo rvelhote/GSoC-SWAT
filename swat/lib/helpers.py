@@ -22,7 +22,7 @@ from webhelpers.html.tags import *
 from webhelpers.html import literal
 
 from routes import url_for
-from pylons import request, app_globals as g
+from pylons import request, app_globals as g, config
 
 import yaml
 
@@ -112,7 +112,7 @@ class ControllerConfiguration:
         file_exists = False
 
         try:
-            stream = open('%s/swat/config/yaml/%s.yaml' % (os.getcwd(), controller), 'r')
+            stream = open('%s/%s.yaml' % (config['yaml.config'], controller), 'r')
         except IOError:
             file_exists = False
         else:
@@ -185,9 +185,12 @@ class DashboardConfiguration:
         self.__yaml = {}
         
         file_exists = False
-
+        print '%s/dashboard.yaml' % (config['yaml.config'])
         try:
-            stream = open('/home/ric/SWAT/pylons/swat/swat/config/yaml/dashboard.yaml', 'r')
+            stream = open('%s/dashboard.yaml' % (config['yaml.config']), 'r')
+            
+            
+            
         except IOError:
             file_exists = False
         else:
@@ -300,7 +303,7 @@ def get_menu(type):
     file_exists = False
 
     try:
-        stream = open('%s/swat/config/yaml/menu.%s.yaml' % (os.getcwd(), type), 'r')
+        stream = open('%s/menu.%s.yaml' % (config['yaml.config'], type), 'r')
     except IOError:
         file_exists = False
     else:
