@@ -11,6 +11,12 @@ from routes.middleware import RoutesMiddleware
 
 from swat.config.environment import load_environment
 
+#
+#   repoze.who
+#
+from repoze.who.config import make_middleware_with_config
+
+
 def make_app(global_conf, full_stack=True, static_files=True, **app_conf):
     """Create a Pylons WSGI application and return it
 
@@ -46,10 +52,15 @@ def make_app(global_conf, full_stack=True, static_files=True, **app_conf):
     app = CacheMiddleware(app, config)
 
     # CUSTOM MIDDLEWARE HERE (filtered by error handling middlewares)
-
+    
     if asbool(full_stack):
         # Handle Python exceptions
         app = ErrorHandler(app, global_conf, **config['pylons.errorware'])
+        
+        #
+        # repoze.who
+        #
+        app = make_middleware_with_config(app, global_conf, app_conf['who.config_file'])        
 
         # Display error documents for 401, 403, 404 status codes (and
         # 500 when debug is disabled)

@@ -20,28 +20,29 @@ class AuthenticationController(BaseController):
     def logout(self):
         redirect_to(controller = 'authentication', action = 'login')
         
-    def do(self):
-        username = request.params.get('username', '')
-        password = request.params.get('password', '')
+    def authenticate(self, environ, identity):
+        username = identity['login']
+        password = identity['password']
         
         len_username = len(username)
-        len_password = len(password)
+        len_password = len(password)        
         
         if len_username == 0:
-            swat_messages.add(_('Username cannot be empty'))
+            swat_messages.add('Username cannot be empty', 'critical')
             
         if len_password == 0:
-            swat_messages.add(_('Password cannot be empty'))
+            swat_messages.add('Password cannot be empty', 'critical')
             
         if username not in self.allow_usernames:
-            swat_messages.add(_('That username is not allowed to login to SWAT'))
-
-        if username in self.allow_usernames and len_username > 0 \
-            and len_password > 0 and pam.authenticate(username, password):
-            
-            swat_messages.add(_('Authentication successful!'))
-            redirect_to(controller = 'dashboard', action = 'index')
-        else:
-            swat_messages.add(_('Authentication failed. Try Again'), 'critical')
-            redirect_to(controller = 'authentication', action = 'login')
+            swat_messages.add('That username is not allowed to login to SWAT')        
         
+        if pam.authenticate(username, password):
+            swat_messages.add('Authentication successful!')
+            return username
+        
+        swat_messages.add('Authentication failed. Try Again', 'critical')
+        
+        return None        
+        
+    def do(self):
+        pass

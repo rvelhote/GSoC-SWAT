@@ -36,7 +36,7 @@
 	<ol>
 	    <li>
 		<label title="${_("Type your Username. Typically 'root'")}" for="form-login-username">${_('Username')}:</label>
-		${h.text('username', '', id = 'form-login-username', class_='round-2px')}
+		${h.text('login', '', id = 'form-login-username', class_='round-2px')}
 	    </li>
 	    <li>
 		<label title="${_("Type the Password for the user you chose above")}" for="form-login-password">${_('Password')}:</label>
@@ -47,6 +47,9 @@
 		${h.submit('submit', value=_('Login'), class_='round-2px')}
 	    </li>
 	</ol>
+        
+        <div>${h.hidden("came_from", request.params.get("came_from", ""))}</div>
+        
     ${h.end_form()}
 </%def>
 	

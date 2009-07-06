@@ -45,6 +45,11 @@ class DashboardController(BaseController):
         c.samba_lp.load_default()
 
     def index(self):
+        identity = request.environ.get('repoze.who.identity')
+        
+        if identity is None:
+            abort(401)
+        
         """ The default Dashboard. The entry point for SWAT """
         return render('/default/derived/dashboard.mako')
         
