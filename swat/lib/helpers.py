@@ -103,24 +103,12 @@ class ControllerConfiguration:
 	- Information: General Information regarding the Controller.
 	
 	"""
-        import os
         
 	self.__controller = controller
 	self.__action = action
-        self.__yaml = {}
-
-        file_exists = False
-
-        try:
-            stream = open('%s/%s.yaml' % (config['yaml.config'], controller), 'r')
-        except IOError:
-            file_exists = False
-        else:
-            file_exists = True
-
-        if file_exists:        
-            self.__yaml = yaml.safe_load(stream)
-            stream.close()
+        
+        filename = '%s' % (controller)
+        self.__yaml = load_yaml_file(filename)
 
     def get_information(self):
 	""" Returns general information about this controller """
@@ -182,23 +170,7 @@ class DashboardConfiguration:
     def __init__(self):
         self.__items = {}
         self.__layout = []
-        self.__yaml = {}
-        
-        file_exists = False
-        print '%s/dashboard.yaml' % (config['yaml.config'])
-        try:
-            stream = open('%s/dashboard.yaml' % (config['yaml.config']), 'r')
-            
-            
-            
-        except IOError:
-            file_exists = False
-        else:
-            file_exists = True
-
-        if file_exists:        
-            self.__yaml = yaml.safe_load(stream)
-            stream.close()
+        self.__yaml = load_yaml_file('dashboard')
         
     def load_config(self, type='index'):
 	self.__load_layout(type)
@@ -227,10 +199,10 @@ class DashboardConfiguration:
 	return item		
 
     def get_items(self):
-	return self._items
+	return self.__items
 
     def get_layout(self):
-	return self._layout
+	return self.__layout
 
 class SwatMessages:    
     def __init__(self):
@@ -285,38 +257,27 @@ def get_samba_server_status():
     return status
 
 def get_menu(type):
-    """ Gets the menu items attributed to a certain menu type. In the
-    future these items will be snatched from an XML or other type of
-    configuration file but for now they are statically configures.
+    filename = 'menu.%s' % (type)
+    items = load_yaml_file(filename)
     
-    The menu name passed as a parameter will be checked agains a list of
-    available menus and if it's there, the appropriate information will be
-    returned.
-    
-    Returns a List containing n dictionary items with the link properties
-    (name and link) of the selected menu.
-    
-    """
-    import os
-    
-    items = {}
+    return items
+
+def load_yaml_file(filename, dir=''):
     file_exists = False
+    yaml_contents = {}
 
     try:
-        stream = open('%s/menu.%s.yaml' % (config['yaml.config'], type), 'r')
+        stream = open('%s/%s.yaml' % (config['yaml.config'], filename), 'r')
     except IOError:
         file_exists = False
     else:
         file_exists = True
 
     if file_exists:        
-        items = yaml.safe_load(stream)
+        yaml_contents = yaml.safe_load(stream)
         stream.close()
         
-    return items
-
-def load_yaml_file(filename, dir=''):
-    pass
+    return yaml_contents
 
 def python_libs_exist():
     import sys, os
