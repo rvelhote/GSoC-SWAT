@@ -214,21 +214,7 @@ class YamlConfig:
         return value
 
 class ControllerConfiguration(YamlConfig):
-    """ Each controller will have a configuration file. That information will
-    be read at the controller's initialization method.
-    
-    """
     def __init__(self, controller, action='index'):
-	""" Set the controller and action for the specified item and fetch the
-	necessary information.
-	
-	The information that retrieved from a controller's configuration is:
-	- Dashboard Items: The items that will apear in the dashboard
-	- Toolbar Items: The items that will appear in an action's toolbar
-	- Information: General Information regarding the Controller.
-	
-	"""
-        
 	self.__controller = controller
 	self.__action = action
         
@@ -247,7 +233,6 @@ class ControllerConfiguration(YamlConfig):
         return self.y_get(tree)
 
     def get_dashboard_items(self):
-	""" Returns the Dashboard Items specified for this Controller """
         tree = ('dashboard/actions')
 	return self.y_get(tree)
         
