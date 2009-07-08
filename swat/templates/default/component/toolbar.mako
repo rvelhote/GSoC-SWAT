@@ -15,12 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # 
 </%doc>
-<%def name="write(items)">
+<%def name="write(toolbar)">
     <div id="task-toolbar">
 	<ul class="task-toolbar">
-	    % if len(items) > 0:
-		% for item in items.values():
-		    <% write_item(item) %>
+	    % if len(toolbar) > 0:
+		% for action in toolbar:
+		    <% write_item(action) %>
 		% endfor
 	    % endif
 	</ul>
@@ -29,21 +29,21 @@
     </div>
 </%def>
     
-<%def name="write_item(item)">
+<%def name="write_item(action)">
     <%
     
-    link = h.url_for(controller = c.controller_config.get_controller(), action = item['link']['action'])
+    link = h.url_for(controller = c.config.get_controller(), action = c.config.get_action_info('link/action', action))
     submit = ''
-    
-    if item['link'].has_key('submit') and item['link']['submit']:
+
+    if c.config.get_action_info('link/submit', action):
 	submit = ' form-submit-button '
     
     %>
     
     <li>
-	<a class="item-icon-link ${submit}" title="${item['link']['title']}" href="${link}">
-	    <img alt="${item['image']['alt']}" src="/default/images/icons/${item['image']['name']}"/>
-	    <span>${item['link']['name']}</span>
+	<a class="item-icon-link ${submit}" title="${c.config.get_action_info('link/title', action)}" href="${link}">
+	    <img alt="${c.config.get_action_info('image/alt', action)}" src="/default/images/icons/${c.config.get_action_info('image/name', action)}"/>
+	    <span>${c.config.get_action_info('link/name', action)}</span>
 	</a>
     </li>
 </%def>

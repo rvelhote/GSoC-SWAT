@@ -28,12 +28,12 @@
     });
 </script>
 
-${parent.action_title(c.controller_config.get_action_info('friendly_name'))}
-${toolbar.write(c.controller_config.get_toolbar_items(c.controller_config.get_action()))}
+${parent.action_title(c.config.get_action_info('friendly_name'))}
+${toolbar.write(c.config.get_toolbar_items())}
 
 ${share_form.write(c.share_name)}
 
 <%doc></%doc>
 <%def name="page_title()">
-    ${parent.page_title()} :: ${c.controller_config.get_action_info('friendly_name')}
+    ${parent.page_title()} :: ${c.config.get_action_info('friendly_name')}
 </%def>

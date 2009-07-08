@@ -40,9 +40,9 @@ class ShareController(BaseController):
         allowed = ('index', 'add', 'edit', 'add_assistant')
         
         if action in allowed:
-            c.controller_config = ControllerConfiguration(me, action)
+            c.config = ControllerConfiguration(me, action)
             
-            c.breadcrumb = BreadcrumbTrail(c.controller_config)
+            c.breadcrumb = BreadcrumbTrail(c.config)
             c.breadcrumb.build()
             
             c.samba_lp = param.LoadParm()
