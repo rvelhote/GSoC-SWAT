@@ -1,31 +1,35 @@
-information:
-    controller:
-        is_advanced: False
+#
+#   Define this Controller's Actions
+#
+actions:
+    index:
         friendly_name: 'Dashboard'
-        name: dashboard
-    
-    action:
-        index:
-            friendly_name: 'Dashboard'
-            name: index
+        name: index
+        
+#
+#   Controller Information
+#
+controller:
+    is_advanced: False
 
 #
 # Main Dashboard
 #
-index:
-    -
-        display: 2
-        names:
-            - share
-            - account
-
-    -
-        display: 2
-        names:
-            - printer
-            - help
-            
-    -
-        display: 1
-        names:
-            - advanced
+layout:
+    index:
+        -
+            display: 2
+            names:
+                - share
+                - account
+    
+        -
+            display: 2
+            names:
+                - printer
+                - help
+                
+        -
+            display: 1
+            names:
+                - advanced

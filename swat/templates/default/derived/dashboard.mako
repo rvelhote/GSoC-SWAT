@@ -46,7 +46,9 @@ information (DashboardConfiguration object)</%doc>
 and the title bar.</%doc>
 <%def name="write_widget(name, controller)"><%
 
-    link = h.url_for(controller = name, action = controller['title_bar']['link']['action']) %>
+#controller['title_bar']['link']['action']
+
+    link = h.url_for(controller = name, action = 'index') %>
 
     <div class="widget round-2px">
 	<div class="title-bar">

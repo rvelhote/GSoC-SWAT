@@ -71,24 +71,62 @@ class BreadcrumbTrail:
 	self._dashboard_first = is_first
 
     def build(self, controller=None):
-	controller = controller or self._controller
-	
-	if self.get_is_dashboard_first() == True:
-	    self.add('Dashboard', "dashboard")
-	    
-	if controller.get_controller_info("is_advanced") == True:
-	    self.add("Advanced Dashboard", "dashboard", "advanced")
+        pass
+	#controller = controller or self._controller
+	#
+	#if self.get_is_dashboard_first() == True:
+	#    self.add('Dashboard', "dashboard")
+	#    
+	#if controller.get_controller_info("is_advanced") == True:
+	#    self.add("Advanced Dashboard", "dashboard", "advanced")
+	#
+	#if controller.get_controller() != "dashboard":
+	#    self.add(controller.get_controller_info('friendly_name'), \
+	#	     controller.get_controller())
+	#
+	#    if controller.get_action() != "index":
+	#	self.add(controller.get_action_info('friendly_name'),
+	#		 controller.get_controller(),
+	#		 controller.get_action())
+        
+class YamlConfig:
+    def y_load(self, filename, dir=''):
+        file_exists = False
+        self.yaml_contents = {}
+    
+        try:
+            stream = open('%s/%s.yaml' % (config['yaml.config'], filename), 'r')
+        except IOError:
+            file_exists = False
+        else:
+            file_exists = True
+    
+        if file_exists:        
+            self.yaml_contents = yaml.safe_load(stream)
+            stream.close()
+    
+    def y_get(self, tree):
+        value = ""
+        
+        if len(tree) > 0:
+            splitted = tree.split('/')
+            value = self.__y_get_recursive(0, len(splitted), \
+                                           self.yaml_contents, splitted)
 
-	if controller.get_controller() != "dashboard":
-	    self.add(controller.get_controller_info('friendly_name'), \
-		     controller.get_controller())
+        return value
 
-	    if controller.get_action() != "index":
-		self.add(controller.get_action_info('friendly_name'),
-			 controller.get_controller(),
-			 controller.get_action())
+    
+    def __y_get_recursive(self, i, depth, value, items):
+        if i < depth - 1 and value.has_key(items[i]):
+                value = self.__y_get_recursive(i + 1, depth, value[items[i]], items)
+        elif value.has_key(items[i]):
+                return value[items[i]]
+        else:
+                return ""
 
-class ControllerConfiguration:
+        return value
+
+class ControllerConfiguration(YamlConfig):
     """ Each controller will have a configuration file. That information will
     be read at the controller's initialization method.
     
@@ -108,57 +146,24 @@ class ControllerConfiguration:
 	self.__action = action
         
         filename = '%s' % (controller)
-        self.__yaml = load_yaml_file(filename)
+        self.y_load(filename)
 
-    def get_information(self):
-	""" Returns general information about this controller """
-        information = {}
-        
-        if self.__yaml.has_key('information'):
-            information = self.__yaml['information']
-        
-	return information
+    def get_action_info(self, action, tree):
+        tree = ('actions/%s/%s') % (action, tree)
+        return self.y_get(tree)
 
-    def get_controller_info(self, key):
-	""" Returns a specific value from the controller info dictionary """
-	information = self.get_information()
-        value = ''
+    def get_is_advanced(self, key):
+        tree = ('controller/is_advanced')
+        return self.y_get(tree)
 
-	if information.has_key('controller'):
-            if information['controller'].has_key(key):
-                value = information['controller'][key]
-	    
-	return value
-	
-    def get_action_info(self, key):
-	""" Returns a specific value from the action info dictionary """
-	information = self.get_information()
-        value = ''
-
-	if information.has_key('action'):
-            if information['action'][self.__action].has_key(key):
-                value = information['action'][self.__action][key]
-	    
-	return value
-    
     def get_dashboard_items(self):
 	""" Returns the Dashboard Items specified for this Controller """
-	items = {}
+        tree = ('dashboard/actions')
+	return self.y_get(tree)
         
-        if self.__yaml.has_key('dashboard'):
-            items = self.__yaml['dashboard']
-            
-        return items
-    
-    def get_toolbar_items(self, action='index'):
-	""" Returns the Toolbar Items specifoed for this Controller """
-	items = {}
-
-        if self.__yaml.has_key('toolbar'):
-            if self.__yaml['toolbar'].has_key(action):
-                items = self.__yaml['toolbar'][action]
-            
-        return items
+    def get_toolbar_items(self):
+        tree = ('toolbar/%s') % self.get_action()
+        return self.y_get(tree)
     
     def get_action(self):
         return self.__action
@@ -166,35 +171,36 @@ class ControllerConfiguration:
     def get_controller(self):
         return self.__controller
 
-class DashboardConfiguration:
+class DashboardConfiguration(YamlConfig):
     def __init__(self):
         self.__items = {}
         self.__layout = []
-        self.__yaml = load_yaml_file('dashboard')
+        
+        self.y_load('dashboard')
         
     def load_config(self, type='index'):
 	self.__load_layout(type)
 	self.__load_layout_items(self.get_layout())
 
     def __load_layout(self, type='index'):
-        if self.__yaml.has_key(type):
-            self._layout = self.__yaml[type]
+        tree = ('layout/%s') % type
+        self.__layout = self.y_get(tree)
 
     def __load_layout_items(self, layout=None):
-	self._items = {}
+	self.__items = {}
 	
 	if layout is None:
 	    layout = self.get_layout()
 
 	for row in layout:
 	    for controller in row['names']:
-		self._items[controller] = ControllerConfiguration(controller)
+		self.__items[controller] = ControllerConfiguration(controller)
 		
     def get_item(self, name):
 	item = None
 	
-	if self._items.has_key(name) == True:
-	    item = self._items[name]
+	if self.__items.has_key(name) == True:
+	    item = self.__items[name]
 	    
 	return item		
 
@@ -204,7 +210,7 @@ class DashboardConfiguration:
     def get_layout(self):
 	return self.__layout
 
-class SwatMessages:    
+class SwatMessages:
     def __init__(self):
 	self._items = []
     
@@ -257,27 +263,11 @@ def get_samba_server_status():
     return status
 
 def get_menu(type):
-    filename = 'menu.%s' % (type)
-    items = load_yaml_file(filename)
+    #filename = 'menu.%s' % (type)
+    #items = load_yaml_file(filename)
+    items = {}
     
     return items
-
-def load_yaml_file(filename, dir=''):
-    file_exists = False
-    yaml_contents = {}
-
-    try:
-        stream = open('%s/%s.yaml' % (config['yaml.config'], filename), 'r')
-    except IOError:
-        file_exists = False
-    else:
-        file_exists = True
-
-    if file_exists:        
-        yaml_contents = yaml.safe_load(stream)
-        stream.close()
-        
-    return yaml_contents
 
 def python_libs_exist():
     import sys, os
