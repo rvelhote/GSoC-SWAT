@@ -31,31 +31,44 @@ class BreadcrumbTrail:
     
     The base structure for the Breadcrumb is:
     
-    > Dashboard
-    > [Advanced]
-    > Current Controller if not Dashboard
-    > Current Action if not index
+    1. Dashboard
+    2. [Advanced]
+    3. Current Controller if not Dashboard
+    4. Current Action if not index
     
     """
     
     def __init__(self, controller, dashboard_first=True):
+        """ Constructor. It will initialize the breadcrumb with the controller's
+        configuration options and we can also define if the first items will
+        the a link to the Dashboard
+
+        Keyword arguments:
+        controller -- an object of ControllerConfiguration. should contain
+        YAML configuration options, mainly the friendly name parameter
+        
+        dashboard_first -- defines if the first item in the breadcrumb should
+        be a link to the Dashboard
+    
+        """
 	self._items = []
 	self._controller = controller
 	self._dashboard_first = dashboard_first
     
     def add(self, name, controller_name, action_name = "index"):
-	""" Add an item to the Breadcrumb Trail
+	""" Add an item to the Breadcrumb Trail. It will be stored in a
+        dictionary with the parameters above.
+        
+        The controller/action pair will be converted into a link
 	
-	name is a String with the items's name
-	controller is a String with the controller's name
-	action is a String with the Action's Name
-	
-	This function will store a dictionary with the above information
-	
-	"""	    
-	self._items.append({'name' : name,
-			    'link' : url_for(controller = controller_name, \
-					       action = action_name)})
+        Keyword arguments:
+	name -- items's name
+	controller -- controller's name
+	action -- action's Name
+
+	"""
+        link = url_for(controller = controller_name, action = action_name)
+	self._items.append({'name':name, 'link':link})
 
     def get(self):
 	""" Gets the current Breadcrumb Trail Dictionary. This should be used
@@ -65,18 +78,26 @@ class BreadcrumbTrail:
 	return self._items
     
     def get_is_dashboard_first(self):
+        """ Is the Dashboard the first item? """
 	return self._dashboard_first
-    
-    def set_is_dashboard_first(self, is_first=True):
-	self._dashboard_first = is_first
 
     def build(self, controller=None):
-	controller = controller or self._controller
-
-	if self.get_is_dashboard_first() == True:
+        """ Builds the breadcrumb based on the Controller's Configuration
+        parameters.
+        
+        Optionally, we can build the breadcrumb arbitrarily by passing a
+        Controller Configuration object as a parameter
+        
+        Keyword arguments:
+        controller -- optional parameter. a ControllerConfiguration object
+        
+        """
+        controller = self._controller or controller
+        
+	if self.get_is_dashboard_first():
 	    self.add('Dashboard', "dashboard")
 	    
-	if controller.get_is_advanced() == True:
+	if controller.get_is_advanced():
 	    self.add("Advanced Dashboard", "dashboard", "advanced")
 
 	if controller.get_controller() != "dashboard":
@@ -89,7 +110,19 @@ class BreadcrumbTrail:
 			 controller.get_action())
         
 class YamlConfig:
+    """ Handles some operations associated with loading and getting stuff from
+    YAML files
+    
+    """
     def y_load(self, filename, dir=''):
+        """ Load a YAML file
+        
+        Keyword arguments:
+        filename -- the name of the file to load
+        dir -- the directory to load the file from. if empty or ommited it will
+        default to the YAML configuration directory in the Paster parameters
+        
+        """
         file_exists = False
         self.yaml_contents = {}
     
@@ -105,6 +138,27 @@ class YamlConfig:
             stream.close()
     
     def y_get(self, tree):
+        """ Get the final value of a YAML tree. For example, if you have your
+        YAML file defined as:
+        
+            #   action:
+            #       index:
+            #           link: x
+        
+        and, as the parameter, you pass:
+        
+            #   y.get('action/index/link')
+        
+        this method will return:
+        
+            #   x
+            
+        if there is no value in this tree, an empty string will be returned
+        
+        Keyword arguments:
+        tree -- the structure to get the value from
+        
+        """
         value = ""
         
         if len(tree) > 0:
@@ -116,6 +170,40 @@ class YamlConfig:
 
     
     def __y_get_recursive(self, i, depth, value, items):
+        """ Recursive function that goes through the tree to get the final
+        value.
+        
+        This was the best way I could think of to do this. I hope there is a
+        better one :)
+        
+        Each value recursively replaces the previous one. For example, if you
+        have your YAML file defined as:
+        
+            #   action:
+            #       index:
+            #           link: x
+            
+        on the first iteration 'value' will be:
+        
+            #   action:
+            #       index:
+            #           link: x
+            
+        on the second iteration 'value' will be:
+        
+            #   index:
+            #       link: x
+            
+        and so on, until we reach the final item in the depth. Fortunately,
+        our YAML files are not very deep :)
+        
+        Keyword arguments:
+        i -- current index
+        depth -- tree length
+        value -- the current value we have
+        items -- the list of tree items
+        
+        """
         if i < depth - 1 and value.has_key(items[i]):
                 value = self.__y_get_recursive(i + 1, depth, value[items[i]], items)
         elif value.has_key(items[i]):
