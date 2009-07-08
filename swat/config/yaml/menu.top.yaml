@@ -1,18 +1,25 @@
-__dashboard:
+actions:
+    - dashboard
+    - help
+    - context
+    - about
+    - logout
+
+dashboard:
     link:
         name: 'dashboard'
         title: ''
         controller: dashboard
         action: index
             
-_help:
+help:
     link:
         name: 'help'
         title: ''
         controller: help
         action: index
 
-_context:
+context:
     link:
         name: 'context help'
         title: ''
@@ -26,7 +33,7 @@ about:
         controller: swat
         action: about
         
-_logout:
+logout:
     link:
         name: 'logout'
         title: ''

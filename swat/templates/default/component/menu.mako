@@ -17,20 +17,22 @@
 </%doc>
 
 <%doc>Writes the Top menu for SWAT</%doc>
-<%def name="top()">
-    <% menu_items = h.get_menu("top") %>
+<%def name="top()"><%
+    menu = h.MenuConfiguration("top")
+    items = menu.get_items() %>
 
-    % if len(menu_items) > 0:
+    % if len(items) > 0:
 	<ul id="swat-top-nav" class="useful-links">
-	    % for item in menu_items.values():
+	    % for item in items:
 		<li>
+		    <% controller = menu.get_item_configuration(item, 'link/controller') %>
 		
-		    % if item['link']['controller'] == '_current_':
-			<% item['link']['controller'] = request.environ['pylons.routes_dict']['controller'] %>
+		    % if controller == '_current_':
+			<% controller = request.environ['pylons.routes_dict']['controller'] %>
 		    % endif
 		    
-		    <a href="${h.url_for(controller=item['link']['controller'], action=item['link']['action'])}">
-		        ${item['link']['name']}
+		    <a href="${h.url_for(controller=controller, action=menu.get_item_configuration(item, 'link/action'))}">
+		        ${menu.get_item_configuration(item, 'link/name')}
 		    </a>
 		</li>
 	    % endfor

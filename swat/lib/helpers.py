@@ -269,12 +269,19 @@ def get_samba_server_status():
 
     return status
 
-def get_menu(type):
-    #filename = 'menu.%s' % (type)
-    #items = load_yaml_file(filename)
-    items = {}
-    
-    return items
+
+class MenuConfiguration(YamlConfig):
+    def __init__(self, type):
+        filename = 'menu.%s' % (type)
+        self.y_load(filename)
+        
+    def get_items(self):
+        tree = ('actions')
+        return self.y_get(tree)
+        
+    def get_item_configuration(self, name, tree):
+        tree = ('%s/%s') % (name, tree)
+        return self.y_get(tree)
 
 def python_libs_exist():
     import sys, os
