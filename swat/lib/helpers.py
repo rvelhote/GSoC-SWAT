@@ -71,23 +71,22 @@ class BreadcrumbTrail:
 	self._dashboard_first = is_first
 
     def build(self, controller=None):
-        pass
-	#controller = controller or self._controller
-	#
-	#if self.get_is_dashboard_first() == True:
-	#    self.add('Dashboard', "dashboard")
-	#    
-	#if controller.get_controller_info("is_advanced") == True:
-	#    self.add("Advanced Dashboard", "dashboard", "advanced")
-	#
-	#if controller.get_controller() != "dashboard":
-	#    self.add(controller.get_controller_info('friendly_name'), \
-	#	     controller.get_controller())
-	#
-	#    if controller.get_action() != "index":
-	#	self.add(controller.get_action_info('friendly_name'),
-	#		 controller.get_controller(),
-	#		 controller.get_action())
+	controller = controller or self._controller
+
+	if self.get_is_dashboard_first() == True:
+	    self.add('Dashboard', "dashboard")
+	    
+	if controller.get_is_advanced() == True:
+	    self.add("Advanced Dashboard", "dashboard", "advanced")
+
+	if controller.get_controller() != "dashboard":
+	    self.add(controller.get_action_info('friendly_name', 'index'), \
+		     controller.get_controller())
+
+	    if controller.get_action() != "index":
+		self.add(controller.get_action_info('friendly_name'),
+			 controller.get_controller(),
+			 controller.get_action())
         
 class YamlConfig:
     def y_load(self, filename, dir=''):
@@ -155,7 +154,7 @@ class ControllerConfiguration(YamlConfig):
         tree = ('actions/%s/%s') % (action, tree)
         return self.y_get(tree)
 
-    def get_is_advanced(self, key):
+    def get_is_advanced(self):
         tree = ('controller/is_advanced')
         return self.y_get(tree)
 
