@@ -33,12 +33,12 @@ class DashboardController(BaseController):
         me = request.environ['pylons.routes_dict']['controller']
         type = request.environ['pylons.routes_dict']['action']
 
-        c.controller_config = ControllerConfiguration(me, type)
+        c.config = ControllerConfiguration(me, type)
 
-        c.dashboard_config = DashboardConfiguration()
-        c.dashboard_config.load_config(type)
+        c.dash = DashboardConfiguration()
+        c.dash.load_config(type)
 
-        c.breadcrumb = BreadcrumbTrail(c.controller_config)
+        c.breadcrumb = BreadcrumbTrail(c.config)
         c.breadcrumb.build()
         
         c.samba_lp = param.LoadParm()

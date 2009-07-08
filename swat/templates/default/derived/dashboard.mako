@@ -17,13 +17,13 @@
 </%doc>
 <%inherit file="/default/base/base.mako" />
 
-${build_dashboard(c.dashboard_config)}
+${build_dashboard(c.dash)}
 
 <%doc>Specific Page title for the Dashboard Template</%doc>
 <%def name="page_title()">
     ${parent.page_title()}
     ::
-    ${c.controller_config.get_action_info('friendly_name')}
+    ${c.config.get_action_info('friendly_name')}
 </%def>
 
 <%doc>Build the Dashboard Layout. Takes a parameter containing the layout
@@ -32,48 +32,48 @@ information (DashboardConfiguration object)</%doc>
     % for row in dashboard.get_layout():
 	<div class="dashboard-row col${row['display']}">
 	    % for name in row['names']:
-		<% items = dashboard.get_item(name).get_dashboard_items() %>
-
-		% if len(items) > 0:
-		    <% write_widget(name, items) %>
-		% endif
+		<% item = dashboard.get_item(name) %>
+                
+                % if item is not None and len(item.get_dashboard_items()) > 0:
+                    <% write_widget(item) %>
+                % endif
 	    % endfor
+            
+            <div class="clear-both"></div>
 	</div>
     % endfor
 </%def>
 
 <%doc>Writes the Controller's Widget data i.e. the actions it will perform
 and the title bar.</%doc>
-<%def name="write_widget(name, controller)"><%
-
-#controller['title_bar']['link']['action']
-
-    link = h.url_for(controller = name, action = 'index') %>
-
+<%def name="write_widget(item)">
     <div class="widget round-2px">
-	<div class="title-bar">
-	    <h2 class="title-icon" style="background-image:url('/default/images/icons/${controller['title_bar']['image']['name']}')"><a href="${link}" title="${controller['title_bar']['link']['title']}">${controller['title_bar']['link']['name']}</a></h2>
+        
+        <div class="title-bar">
+            <% link = h.url_for(controller = item.get_controller(), action = item.get_dashboard_info('link/action')) %>
+	    <h2 class="title-icon" style="background-image:url('/default/images/icons/${item.get_dashboard_info('image/name')}')"><a href="${link}" title="${item.get_dashboard_info('link/title')}">${item.get_dashboard_info('link/name')}</a></h2>
 
 	    <ul>                                
-		<li><a href="${link}" title="${controller['title_bar']['link']['title']}"><img src="/default/images/icons/arrow-000-small.png" alt="Right Arrow Icon" /></a></li>                                
+		<li><a href="${link}" title="${item.get_dashboard_info('link/title')}"><img src="/default/images/icons/arrow-000-small.png" alt="Right Arrow Icon" /></a></li>                                
 	    </ul>
 	</div>
-
-	<div class="content">
-	    <ul class="widget-task-list">
-		% for action in controller['actions'].values():
-                    <% link =  h.url_for(controller = name, action = action['link']['action']) %>
+        
+        <div class="content">
+            <ul class="widget-task-list">
+                <% actions = item.get_dashboard_items() %>
+        
+                % for action in actions:
+                    <% link = h.url_for(controller = item.get_controller(), action = action) %>
                     
-		    <li>
-			<a href="${link}" title="${action['link']['title']}" class="item-icon-link">
-			    <img src="/default/images/icons/${action['image']['name']}" alt="${action['image']['alt']}" />
-			    <span>${action['link']['name']}</span>
-			</a>
-		    </li>
-		% endfor
-	    </ul>
-	    
-	    <div class="clear-both"></div>
-	</div>
+                    <li>
+                        <a href="${link}" title="${item.get_action_info('link/title', action)}" class="item-icon-link">
+                            <img src="/default/images/icons/${item.get_action_info('image/name', action)}" alt="${item.get_action_info('image/alt', action)}" />
+                            <span>${item.get_action_info('link/name', action)}</span>
+                        </a>
+                    </li>
+                % endfor
+            </ul>
+            <div class="clear-both"></div>
+        </div>
     </div>
 </%def>

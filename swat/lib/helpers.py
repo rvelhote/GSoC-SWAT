@@ -148,7 +148,10 @@ class ControllerConfiguration(YamlConfig):
         filename = '%s' % (controller)
         self.y_load(filename)
 
-    def get_action_info(self, action, tree):
+    def get_action_info(self, tree, action=''):
+        if len(action) == 0:
+            action = self.get_action()
+
         tree = ('actions/%s/%s') % (action, tree)
         return self.y_get(tree)
 
@@ -160,6 +163,10 @@ class ControllerConfiguration(YamlConfig):
 	""" Returns the Dashboard Items specified for this Controller """
         tree = ('dashboard/actions')
 	return self.y_get(tree)
+        
+    def get_dashboard_info(self, tree):
+        tree = ('dashboard/%s') % (tree)
+        return self.y_get(tree)
         
     def get_toolbar_items(self):
         tree = ('toolbar/%s') % self.get_action()
