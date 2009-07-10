@@ -290,32 +290,66 @@ class DashboardConfiguration(YamlConfig):
 	return self.__layout
 
 class SwatMessages:
+    """ Handles informational messages to be shown to the user after each page
+    refresh to provide information on the status of an operation for example.
+    
+    They are not necessarily show only after a refresh. If the a message is
+    provided before it is written in the template it will also appear.
+    
+    """
     def __init__(self):
+        """ Initialization """
 	self._items = []
     
     def add(self, text, type='cool'):
+        """ Add a message to the message queue.
+        
+        Concerning the message type, it can be anything but to have any
+        relevance to the end user it should have the name of a class in the CSS
+        file.
+        
+        By default the available message types are:
+        - cool (green)
+        - warning (yellow)
+        - critical (red)
+        
+        Keyword arguments:
+        text -- the text to show in the message
+        type -- the type of message. default value is 'cool'
+        
+        """
 	if len(type) == 0:
 	    type = 'cool'
 	    
 	self._items.append({'text' : text, 'type' : type})
 	
     def clean(self):
+        """ Cleanup message queue. This should be called after messages are
+        shown in the template
+        
+        """
 	del self._items[:]
 
     def get(self):
+        """ Gets all messages currently stored as a dictionary """
 	return self._items
     
     def __len__(self):
+        """ Returns the number of messsages in store """
 	return len(self._items)
     
     def any(self):
+        """ Checks if there are any messages in the queue.
+        Returns a boolean value
+        
+        """
 	has_any = False
 	
 	if len(self._items) > 0:
 	    has_any = True
 	    
 	return has_any
-    
+
 swat_messages = SwatMessages()
 
 def get_samba_server_status():
@@ -328,8 +362,6 @@ def get_samba_server_status():
     process 'samba' has a pid with 'pidof'. Probably not very portable but it
     works for now :)
     
-    Returns a string "up" or "down" 
-    
     """
 
     import commands
@@ -341,21 +373,53 @@ def get_samba_server_status():
 
     return status
 
-
 class MenuConfiguration(YamlConfig):
-    def __init__(self, type):
-        filename = 'menu.%s' % (type)
+    """ Handles regular menu items in SWAT. Data is loaded from a YAML file """
+    def __init__(self, name):
+        """ Initialization. Loads the YAML file passed as parameter. Only the
+        name of the menu (i.e. top, footer) is required.
+        
+        The standard naming for yaml file concerning menus is:
+        
+            #   menu.[name].yaml
+            
+        Therefore, if you pass only the name, the rest of the string will be
+        added for you.
+        
+        Keyword arguments:
+        name -- the menu name
+        
+        """
+        filename = 'menu.%s' % (name)
         self.y_load(filename)
         
     def get_items(self):
+        """ Gets all possible actions with this menu. This is basically a list
+        of the items that will appear in the referenced menu. The individual
+        information of each item is obtained with the get_item_configuration()
+        method
+        
+        """
         tree = ('actions')
         return self.y_get(tree)
         
     def get_item_configuration(self, name, tree):
+        """ Gets a certain configuration option for a specified item
+        
+        Keyword arguments:
+        name -- the name of the menu item
+        tree -- what to get in
+        
+        """
         tree = ('%s/%s') % (name, tree)
         return self.y_get(tree)
 
 def python_libs_exist():
+    """ Checks if the Samba Python Libraries exist in the Python path. If they
+    don't exist the default Samba install directory is checked and if they
+    exist, they are added to the Python path.
+    
+    """
     import sys, os
     
     exist = False
@@ -367,8 +431,7 @@ def python_libs_exist():
     else:
         exist = True
         
-    if not exist and os.path.exists("/usr/local/samba/lib/python2.6/site-packages"):
-        
+    if not exist and os.path.exists("/usr/local/samba/lib/python2.6/site-packages"):        
         sys.path.append('/usr/local/samba/lib/python2.6/site-packages')
         sys.path.append('/usr/local/samba/lib/python2.6/site-packages/samba')
         sys.path.append('/usr/local/samba/lib/python2.6/site-packages/samba/dcerpc')
