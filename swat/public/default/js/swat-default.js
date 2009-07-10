@@ -191,6 +191,7 @@ var ItemList = new Class({
         newLi.injectInside($(this.options.copyTo));
         
         this.effect(newElementId, "add");
+        this.updateHiddenList(name, "add");
     },
     
     addManual: function(from, to) {
@@ -217,6 +218,7 @@ var ItemList = new Class({
         
         if(element) {
             this.effect(id, "remove");
+            this.updateHiddenList(element.get("text"), "rem")
             element.getParent().dispose();
         }
     },
@@ -238,5 +240,20 @@ var ItemList = new Class({
         }
         
         return exists;
+    },
+    
+    updateHiddenList: function(name, operation) {
+        var area = $(this.options.copyTo + "-textbox");
+        var list = $(this.options.copyTo);
+        var elements = null;
+        
+        if(area && list && name.length > 0) {
+            console.log(area.getProperty("value"));
+            if(operation == "add") {
+                area.setProperty("value", name +  "," + area.getProperty("value"));
+            } else if(operation == "rem") {
+                area.setProperty("value", area.getProperty("value").replace(name + ",", ''));
+            }
+        }
     }
 });

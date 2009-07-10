@@ -124,7 +124,7 @@
 			    <li><a title="${_('Open User/Group Selection Popup')}" href="${h.url_for(controller='share', action='users_groups')}?copyto=user-list-read" class="popup-selector"><img src="/default/images/icons/users.png" alt="${_('Select Users/Groups Icon')}" /></a></li>
 			</ol>
 			
-			<input type="hidden" name="share_read_list" />
+			<input type="hidden" id="user-list-read-textbox" name="share_read_list" />
 			
 			<ul id="user-list-read" class="user-list">
 			</ul>
@@ -145,7 +145,7 @@
 			    <li><a title="${_('Open User/Group Selection Popup')}" href="${h.url_for(controller='share', action='users_groups')}?copyto=user-list-write" class="popup-selector"><img src="/default/images/icons/users.png" alt="${_('Select Users/Groups Icon')}" /></a></li>
 			</ol>
 			
-			<input type="hidden" name="share_write_list" />
+			<input type="hidden" id="user-list-write-textbox" name="share_write_list" />
 			
 			<ul id="user-list-write" class="user-list">
 			</ul>
@@ -166,7 +166,7 @@
 			    <li><a title="${_('Open User/Group Selection Popup')}" href="${h.url_for(controller='share', action='users_groups')}?copyto=user-list-admin" class="popup-selector"><img src="/default/images/icons/users.png" alt="${_('Select Users/Groups Icon')}" /></a></li>
 			</ol>
 			
-			<input type="hidden" name="share_admin_list" />
+			<input type="hidden" id="user-list-admin-textbox" name="share_admin_list" />
 			
 			<ul id="user-list-admin" class="user-list">
 			</ul>
@@ -190,7 +190,7 @@
                             <li><a title="${_('Add this Host')}" href="#" onclick="userGroup.addManual('share-insert-allowed-hosts', 'allowed-hosts-list');return false;"><img src="/default/images/icons/plus-small.png" alt="${_('Add User/Group Icon')}" /></a></li>
 			</ol>
 			
-			<input type="hidden" name="share_allowed_hosts" />
+			<input type="hidden" id="allowed-hosts-list-textbox" name="share_allowed_hosts" />
 			
 			<ul id="allowed-hosts-list" class="user-list">
 			</ul>
@@ -210,7 +210,7 @@
                             <li><a title="${_('Add this Host')}" href="#" onclick="userGroup.addManual('share-insert-deny-hosts', 'denied-hosts-list');return false;"><img src="/default/images/icons/plus-small.png" alt="${_('Add User/Group Icon')}" /></a></li>
 			</ol>
 			
-			<input type="hidden" name="share_deny_hosts" />
+			<input type="hidden" id="denied-hosts-list-textbox" name="share_deny_hosts" />
 			
 			<ul id="denied-hosts-list" class="user-list">
 			</ul>
