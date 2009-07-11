@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: swat 0.1\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2009-06-20 15:10+0100\n"
-"PO-Revision-Date: 2009-06-21 15:29+0100\n"
+"PO-Revision-Date: 2009-07-11 10:10+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: en <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -17,89 +17,200 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.4\n"
 
+#: swat/controllers/share.py:86 swat/controllers/share.py:94
+msgid "Share Information was Saved"
+msgstr ""
+
+#: swat/controllers/share.py:100
+msgid "Cancelled Share editing. No changes were saved!"
+msgstr ""
+
 #: swat/templates/default/base/base.mako:53
-#: swat/templates/default/base/base.mako:76
+#: swat/templates/default/base/base.mako:80
+#: swat/templates/default/base/login-screen.mako:31
+#: swat/templates/default/derived/error/no-libs.mako:23
 msgid "Samba Web Administration Tool"
 msgstr ""
 
-#: swat/templates/default/base/base.mako:77
+#: swat/templates/default/base/base.mako:81
 msgid "Only Tested in Firefox for now"
 msgstr ""
 
-#: swat/templates/default/base/base.mako:77
+#: swat/templates/default/base/base.mako:81
 msgid "Icons used in SWAT"
 msgstr ""
 
-#: swat/templates/default/base/base.mako:77
+#: swat/templates/default/base/base.mako:81
 msgid "Fugue Icons"
 msgstr ""
 
-#: swat/templates/default/base/base.mako:77
+#: swat/templates/default/base/base.mako:81
 msgid "Samba"
 msgstr ""
 
-#: swat/templates/default/base/base.mako:98
+#: swat/templates/default/base/base.mako:105
 msgid "Samba Logo"
 msgstr ""
 
-#: swat/templates/default/base/base.mako:98
+#: swat/templates/default/base/base.mako:105
 msgid "Samba - Opening Windows to a Wider World"
 msgstr ""
 
-#: swat/templates/default/base/base.mako:108
+#: swat/templates/default/base/base.mako:118
 msgid "Samba is down!"
 msgstr ""
 
-#: swat/templates/default/base/base.mako:129
+#: swat/templates/default/base/base.mako:140
 msgid "Go directly to..."
 msgstr ""
 
-#: swat/templates/default/base/base.mako:129
+#: swat/templates/default/base/base.mako:140
 msgid "Goto"
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:7
+#: swat/templates/default/base/login-screen.mako:19
+msgid "Login into the Samba Web Administration Tool"
+msgstr ""
+
+#: swat/templates/default/base/login-screen.mako:24
+msgid "get help!"
+msgstr ""
+
+#: swat/templates/default/base/login-screen.mako:25
+msgid "about"
+msgstr ""
+
+#: swat/templates/default/base/login-screen.mako:38
+msgid "Type your Username. Typically 'root'"
+msgstr ""
+
+#: swat/templates/default/base/login-screen.mako:38
+msgid "Username"
+msgstr ""
+
+#: swat/templates/default/base/login-screen.mako:42
+msgid "Type the Password for the user you chose above"
+msgstr ""
+
+#: swat/templates/default/base/login-screen.mako:42
+msgid "Password"
+msgstr ""
+
+#: swat/templates/default/base/login-screen.mako:47
+msgid "Login"
+msgstr ""
+
+#: swat/templates/default/component/popups.mako:6
+msgid "Parent Folder"
+msgstr ""
+
+#: swat/templates/default/component/popups.mako:20
+msgid "List this Folder"
+msgstr ""
+
+#: swat/templates/default/component/popups.mako:24
+msgid "Copy this Path to the Textbox"
+msgstr ""
+
+#: swat/templates/default/component/popups.mako:32
+msgid "No directories to choose here..."
+msgstr ""
+
+#: swat/templates/default/component/popups.mako:36
+msgid "Nothing to see here"
+msgstr ""
+
+#: swat/templates/default/component/popups.mako:39
+msgid "Ooops, can't go there..."
+msgstr ""
+
+#: swat/templates/default/component/popups.mako:57
+msgid "User List"
+msgstr ""
+
+#: swat/templates/default/component/popups.mako:62
+#: swat/templates/default/component/popups.mako:72
+msgid "Add this User/Group to the List"
+msgstr ""
+
+#: swat/templates/default/component/popups.mako:67
+msgid "Group List"
+msgstr ""
+
+#: swat/templates/default/component/share-form.mako:2
+msgid "None"
+msgstr ""
+
+#: swat/templates/default/component/share-form.mako:2
+msgid "Read Only"
+msgstr ""
+
+#: swat/templates/default/component/share-form.mako:2
+msgid "Write Only"
+msgstr ""
+
+#: swat/templates/default/component/share-form.mako:2
+msgid "Read and Write"
+msgstr ""
+
+#: swat/templates/default/component/share-form.mako:3
+msgid "Owner Can"
+msgstr ""
+
+#: swat/templates/default/component/share-form.mako:3
+msgid "Group Members Can"
+msgstr ""
+
+#: swat/templates/default/component/share-form.mako:3
+msgid "Everyone Else Can"
+msgstr ""
+
+#: swat/templates/default/component/share-form.mako:13
+msgid "Execute?"
+msgstr ""
+
+#: swat/templates/default/component/share-form.mako:25
 msgid "Basic Share Configuration"
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:7
+#: swat/templates/default/component/share-form.mako:25
 msgid "Basic"
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:11
+#: swat/templates/default/component/share-form.mako:29
 msgid "Advanced Permissions for this Share"
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:11
+#: swat/templates/default/component/share-form.mako:29
 msgid "Permissions"
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:15
+#: swat/templates/default/component/share-form.mako:33
 msgid "Share User Management"
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:15
+#: swat/templates/default/component/share-form.mako:33
 msgid "Users"
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:19
+#: swat/templates/default/component/share-form.mako:37
 msgid "Share Host Management"
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:19
+#: swat/templates/default/component/share-form.mako:37
 msgid "Hosts"
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:27
+#: swat/templates/default/component/share-form.mako:45
 msgid "Set the Share Name"
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:28
+#: swat/templates/default/component/share-form.mako:46
 #: swat/templates/default/derived/share.mako:37
 msgid "Name"
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:33
+#: swat/templates/default/component/share-form.mako:51
 #, python-format
 msgid ""
 "Sets the path to the directory provided by a file share or used by a "
@@ -108,171 +219,182 @@ msgid ""
 "(machine) variables."
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:34
-msgid "Set the Path to be Shares"
+#: swat/templates/default/component/share-form.mako:54
+msgid "Set the Path to be Shared"
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:34
+#: swat/templates/default/component/share-form.mako:54
 #: swat/templates/default/derived/share.mako:38
 msgid "Path"
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:48
+#: swat/templates/default/component/share-form.mako:59
+msgid "Select the Share Location"
+msgstr ""
+
+#: swat/templates/default/component/share-form.mako:59
+#: swat/templates/default/component/share-form.mako:122
+#: swat/templates/default/component/share-form.mako:143
+#: swat/templates/default/component/share-form.mako:164
+#: swat/templates/default/component/share-form.mako:189
+#: swat/templates/default/component/share-form.mako:209
+msgid "Add User/Group Icon"
+msgstr ""
+
+#: swat/templates/default/component/share-form.mako:66
 msgid "If checked, passwords are not needed for this share."
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:50
+#: swat/templates/default/component/share-form.mako:68
 msgid "Check to make this Share Public"
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:50
+#: swat/templates/default/component/share-form.mako:68
 msgid "Public?"
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:61
+#: swat/templates/default/component/share-form.mako:72
 msgid "Allows a share to be announced in browse lists."
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:63
+#: swat/templates/default/component/share-form.mako:74
 msgid "Check to make this share Browsable"
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:63
+#: swat/templates/default/component/share-form.mako:74
 msgid "Browsable?"
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:75
+#: swat/templates/default/component/share-form.mako:78
 msgid "Sets a share to read-only."
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:77
+#: swat/templates/default/component/share-form.mako:80
 msgid "Check to make this Share Read Only"
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:77
+#: swat/templates/default/component/share-form.mako:80
 msgid "Read Only?"
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:87
+#: swat/templates/default/component/share-form.mako:84
+msgid "Forces user of a share to do so as the guest account"
+msgstr ""
+
+#: swat/templates/default/component/share-form.mako:86
+msgid "Check to make this Guest Only"
+msgstr ""
+
+#: swat/templates/default/component/share-form.mako:86
+msgid "Guest Only?"
+msgstr ""
+
+#: swat/templates/default/component/share-form.mako:96
 msgid ""
 "Sets the maximum allowable permissions for new files (e.g., 0755). See "
 "also directory mask. To require certain permissions to be set, see force "
 "create mask/force directory mask."
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:88
+#: swat/templates/default/component/share-form.mako:97
 msgid "Create Mask"
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:94
-#: swat/templates/default/component/share-form.mako:144
-msgid "User"
+#: swat/templates/default/component/share-form.mako:103
+msgid ""
+"Also called directory mode. Sets the maximum allowable permissions for "
+"newly created directories. To require certain permissions be set, see the"
+" force create mask and force directory mask options"
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:95
-#: swat/templates/default/component/share-form.mako:145
-msgid "Group"
+#: swat/templates/default/component/share-form.mako:104
+msgid "Directory Mask"
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:96
-#: swat/templates/default/component/share-form.mako:146
-msgid "World"
+#: swat/templates/default/component/share-form.mako:114
+msgid "List of users that are given read-write access to a read-only share."
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:101
-#: swat/templates/default/component/share-form.mako:151
-msgid "Read"
-msgstr ""
-
-#: swat/templates/default/component/share-form.mako:108
-#: swat/templates/default/component/share-form.mako:158
-msgid "Write"
-msgstr ""
-
-#: swat/templates/default/component/share-form.mako:115
-#: swat/templates/default/component/share-form.mako:165
-msgid "Execute"
-msgstr ""
-
-#: swat/templates/default/component/share-form.mako:122
-#: swat/templates/default/component/share-form.mako:172
-msgid "Permission"
-msgstr ""
-
-#: swat/templates/default/component/share-form.mako:132
-msgid "Check to Force the Create Mask"
-msgstr ""
-
-#: swat/templates/default/component/share-form.mako:132
-msgid "Force Create Mask?"
-msgstr ""
-
-#: swat/templates/default/component/share-form.mako:182
-msgid "Check to Force the Directory Mask"
-msgstr ""
-
-#: swat/templates/default/component/share-form.mako:182
-msgid "Force Directory Mask?"
-msgstr ""
-
-#: swat/templates/default/component/share-form.mako:191
-msgid "Specifies a list of users given read-only access to a writeable share."
-msgstr ""
-
-#: swat/templates/default/component/share-form.mako:194
-#: swat/templates/default/component/share-form.mako:219
+#: swat/templates/default/component/share-form.mako:117
+#: swat/templates/default/component/share-form.mako:159
 msgid "Select Users/Groups that will have Read Access to this Share"
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:194
+#: swat/templates/default/component/share-form.mako:117
 msgid "Read List"
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:199
-#: swat/templates/default/component/share-form.mako:224
+#: swat/templates/default/component/share-form.mako:122
+#: swat/templates/default/component/share-form.mako:143
+#: swat/templates/default/component/share-form.mako:164
 msgid "Add this User/Group"
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:199
-#: swat/templates/default/component/share-form.mako:224
-msgid "Add User/Group Icon"
-msgstr ""
-
-#: swat/templates/default/component/share-form.mako:200
-#: swat/templates/default/component/share-form.mako:225
+#: swat/templates/default/component/share-form.mako:123
+#: swat/templates/default/component/share-form.mako:144
+#: swat/templates/default/component/share-form.mako:165
 msgid "Open User/Group Selection Popup"
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:200
-#: swat/templates/default/component/share-form.mako:225
+#: swat/templates/default/component/share-form.mako:123
+#: swat/templates/default/component/share-form.mako:144
+#: swat/templates/default/component/share-form.mako:165
 msgid "Select Users/Groups Icon"
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:206
-#: swat/templates/default/component/share-form.mako:207
-#: swat/templates/default/component/share-form.mako:208
-#: swat/templates/default/component/share-form.mako:209
-#: swat/templates/default/component/share-form.mako:231
-msgid "Remove this User/Group"
+#: swat/templates/default/component/share-form.mako:135
+msgid "Specifies a list of users given read-only access to a writeable share."
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:206
-#: swat/templates/default/component/share-form.mako:207
-#: swat/templates/default/component/share-form.mako:208
-#: swat/templates/default/component/share-form.mako:209
-#: swat/templates/default/component/share-form.mako:231
-msgid "Remove User/Group Icon"
+#: swat/templates/default/component/share-form.mako:138
+msgid "Select Users/Groups that will have Write Access to this Share"
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:216
+#: swat/templates/default/component/share-form.mako:138
+msgid "Write List"
+msgstr ""
+
+#: swat/templates/default/component/share-form.mako:156
 msgid "List of users who will be granted root permissions on the share by Samba."
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:219
+#: swat/templates/default/component/share-form.mako:159
 msgid "Admin List"
 msgstr ""
 
-#: swat/templates/default/component/share-form.mako:246
+#: swat/templates/default/component/share-form.mako:181
+msgid ""
+"A list of machines that can access a share or shares. If NULL (the "
+"default) any machine can access the share unless there is a hosts deny "
+"option."
+msgstr ""
+
+#: swat/templates/default/component/share-form.mako:184
+msgid "List of Hostnames that will be able to access this Share"
+msgstr ""
+
+#: swat/templates/default/component/share-form.mako:184
+msgid "Allowed Hosts"
+msgstr ""
+
+#: swat/templates/default/component/share-form.mako:189
+#: swat/templates/default/component/share-form.mako:209
+msgid "Add this Host"
+msgstr ""
+
+#: swat/templates/default/component/share-form.mako:201
+msgid "A list of machines that cannot connect to a share or shares. "
+msgstr ""
+
+#: swat/templates/default/component/share-form.mako:204
+msgid "List of Hostnames that will not be able to access this Share"
+msgstr ""
+
+#: swat/templates/default/component/share-form.mako:204
+msgid "Denied Hosts"
+msgstr ""
+
+#: swat/templates/default/component/share-form.mako:225
 msgid "Comments"
 msgstr ""
 
@@ -336,4 +458,46 @@ msgstr ""
 #: swat/templates/default/derived/share.mako:101
 msgid "Enable Share Icon"
 msgstr ""
+
+#~ msgid "Set the Path to be Shares"
+#~ msgstr ""
+
+#~ msgid "User"
+#~ msgstr ""
+
+#~ msgid "Group"
+#~ msgstr ""
+
+#~ msgid "World"
+#~ msgstr ""
+
+#~ msgid "Read"
+#~ msgstr ""
+
+#~ msgid "Write"
+#~ msgstr ""
+
+#~ msgid "Execute"
+#~ msgstr ""
+
+#~ msgid "Permission"
+#~ msgstr ""
+
+#~ msgid "Check to Force the Create Mask"
+#~ msgstr ""
+
+#~ msgid "Force Create Mask?"
+#~ msgstr ""
+
+#~ msgid "Check to Force the Directory Mask"
+#~ msgstr ""
+
+#~ msgid "Force Directory Mask?"
+#~ msgstr ""
+
+#~ msgid "Remove this User/Group"
+#~ msgstr ""
+
+#~ msgid "Remove User/Group Icon"
+#~ msgstr ""
 
