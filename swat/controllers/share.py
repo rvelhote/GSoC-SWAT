@@ -110,3 +110,12 @@ class ShareController(BaseController):
     def users_groups(self):
         return render_mako_def('/default/component/popups.mako', \
                                'select_user_group')
+        
+    def remove(self):
+        pass
+    
+    def copy(self):
+        pass
+    
+    def toggle(self):
+        pass
