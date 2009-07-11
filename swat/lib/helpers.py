@@ -251,21 +251,52 @@ class ControllerConfiguration(YamlConfig):
         return self.__controller
 
 class DashboardConfiguration(YamlConfig):
+    """ Handles the Dashboard Configuration Layout """
     def __init__(self):
+        """ Initialization and loading of the YAML File """
         self.__items = {}
         self.__layout = []
         
         self.y_load('dashboard')
         
     def load_config(self, type='index'):
+        """ Loads the configuration data for a specific dashboard type. The
+        dashboard type should be the name of an action defined in the
+        controller.
+        
+        Keyword arguments:
+        type -- the action name to load which must be in the YAML file. Defaults
+        to 'index'
+        
+        """
 	self.__load_layout(type)
 	self.__load_layout_items(self.get_layout())
 
     def __load_layout(self, type='index'):
+        """ Loads the base layout for the specified Dashboard. The layout is
+        the number of columns on a row and which controllers are present in
+        each slot.
+        
+        Keyword arguments:
+        type -- the action name to load which must be in the YAML file. Defaults
+        to 'index'
+        
+        """
         tree = ('layout/%s') % type
         self.__layout = self.y_get(tree)
 
     def __load_layout_items(self, layout=None):
+        """ Loads the Layout Items (i.e. controller configuration) for each of
+        the items present in the Dashboard.
+        
+        The items member variable will be loaded with an instance of each
+        controller's configuration options to be listed.
+        
+        Keyword arguments:
+        layout -- a layout definition. defaults to none and if it's none it will
+        load the layout present in the current instance of DashboardConfiguration
+        
+        """
 	self.__items = {}
 	
 	if layout is None:
@@ -276,6 +307,12 @@ class DashboardConfiguration(YamlConfig):
 		self.__items[controller] = ControllerConfiguration(controller)
 		
     def get_item(self, name):
+        """ Get a ControllerConfiguration item by name
+        
+        Keyword arguments:
+        name -- the name of the controller to get the configuration
+        
+        """
 	item = None
 	
 	if self.__items.has_key(name) == True:
@@ -284,9 +321,11 @@ class DashboardConfiguration(YamlConfig):
 	return item		
 
     def get_items(self):
+        """ Gets all the items loaded by the current layout """
 	return self.__items
 
     def get_layout(self):
+        """ Gets the current layout """
 	return self.__layout
 
 class SwatMessages:
