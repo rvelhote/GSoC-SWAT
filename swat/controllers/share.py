@@ -21,7 +21,7 @@ from pylons.controllers.util import abort, redirect_to
 from swat.lib.base import BaseController, render
 
 from pylons.templating import render_mako_def
-
+from pylons.i18n.translation import _
 from swat.lib.helpers import ControllerConfiguration, DashboardConfiguration, \
 BreadcrumbTrail, swat_messages
 
@@ -34,6 +34,16 @@ class ShareController(BaseController):
     """
 
     def __init__(self):
+        """ Initialization. Load the controller's configuration, builds the
+        breadcrumb trail based on that information and load the backend
+        information
+        
+        There are a few operations that don't require this initialization e.g.
+        save, apply, cancel; they always redirect somewhere. therefore, there
+        is a list of allowed operations that is checked to see if it's ok to
+        load the configuration
+        
+        """
         me = request.environ['pylons.routes_dict']['controller']
         action = request.environ['pylons.routes_dict']['action']
         
@@ -49,33 +59,45 @@ class ShareController(BaseController):
             c.samba_lp.load_default()
     
     def index(self):        
-        """ Point of entry. """
+        """ Point of entry. Loads the Share List Template """
         return render('/default/derived/share.mako')
         
     def add(self):
+        """ Add a New Share. Loads the Share Edition Template. It's the same as
+        calling the edit template but with an empty share name
+        
+        """
         return self.edit('')
     
     def add_assistant(self):
         pass
     
     def edit(self, name):
+        """ Edit a share. Loads the Share Edition Template.
+        
+        Keyword arguments:
+        name -- the share name to load the information from
+        
+        """
         c.share_name = name
         return render('/default/derived/edit-share.mako')
         
     def save(self):
-        message = "Share Information was Saved"
+        message = _("Share Information was Saved")
         swat_messages.add(message)
+        
+        print request.params
             
         redirect_to(controller='share', action='index')
         
     def apply(self):
-        message = "Share Information was Saved"
+        message = _("Share Information was Saved")
         swat_messages.add(message)
             
         redirect_to(controller='share', action='edit', name='test')
     
     def cancel(self, name=''):
-        message = "Cancelled Share editing. No changes were saved!"
+        message = _("Cancelled Share editing. No changes were saved!")
         swat_messages.add(message, "warning")
             
         redirect_to(controller='share', action='index')

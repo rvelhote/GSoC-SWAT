@@ -4,7 +4,6 @@
     
     <ul class="permissions-selection">
         % for grp in permissionGroups:
-        
             <li>
                 <label for="${id}-${grp[1]}-rw">${grp[0]}:</label>                                
                 ${h.select(name + "_" + grp[1] + "_rw", grp[2], permissions, style="float:left;font-size:85%;", id=id + "-" + grp[1] + "-rw")}
@@ -124,8 +123,8 @@
 			    <li><a title="${_('Open User/Group Selection Popup')}" href="${h.url_for(controller='share', action='users_groups')}?copyto=user-list-read" class="popup-selector"><img src="/default/images/icons/users.png" alt="${_('Select Users/Groups Icon')}" /></a></li>
 			</ol>
 			
-			<input type="hidden" id="user-list-read-textbox" name="share_read_list" />
-			
+                        ${h.hidden('share_read_list', '', id='user-list-read-textbox')}
+
 			<ul id="user-list-read" class="user-list">
 			</ul>
 			
@@ -145,7 +144,7 @@
 			    <li><a title="${_('Open User/Group Selection Popup')}" href="${h.url_for(controller='share', action='users_groups')}?copyto=user-list-write" class="popup-selector"><img src="/default/images/icons/users.png" alt="${_('Select Users/Groups Icon')}" /></a></li>
 			</ol>
 			
-			<input type="hidden" id="user-list-write-textbox" name="share_write_list" />
+                        ${h.hidden('share_write_list', '', id='user-list-write-textbox')}
 			
 			<ul id="user-list-write" class="user-list">
 			</ul>
@@ -165,8 +164,8 @@
                             <li><a title="${_('Add this User/Group')}" href="#" onclick="userGroup.addManual('share-insert-adminuser', 'user-list-admin');return false;"><img src="/default/images/icons/plus-small.png" alt="${_('Add User/Group Icon')}" /></a></li>
 			    <li><a title="${_('Open User/Group Selection Popup')}" href="${h.url_for(controller='share', action='users_groups')}?copyto=user-list-admin" class="popup-selector"><img src="/default/images/icons/users.png" alt="${_('Select Users/Groups Icon')}" /></a></li>
 			</ol>
-			
-			<input type="hidden" id="user-list-admin-textbox" name="share_admin_list" />
+
+                        ${h.hidden('share_admin_list', '', id='user-list-admin-textbox')}
 			
 			<ul id="user-list-admin" class="user-list">
 			</ul>
