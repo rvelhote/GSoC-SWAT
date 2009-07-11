@@ -16,6 +16,21 @@ actions:
         image:
             name: folders-stack.png
             alt: 'List Shares Icon'
+            
+    #
+    #   Default Action (index)
+    #
+    edit:
+        friendly_name: 'Edit Share'
+        
+        link:
+            name: 'edit shares'
+            title: 'Edit this Shre'
+            action: edit
+
+        image:
+            name: folder-pencil.png
+            alt: 'Share Edit Icon'
 
     #
     #   Add Share (add)

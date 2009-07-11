@@ -21,7 +21,7 @@
 ${parent.action_title(c.config.get_action_info('friendly_name'))}
 ${toolbar.write(c.config.get_toolbar_items())}
 
-${share_table(['test'])}
+${share_table(['swat', 'homes', 'etc'])}
 
 <%doc></%doc>
 <%def name="page_title()">
@@ -56,7 +56,13 @@ ${share_table(['test'])}
 	    <% i = 1 %>
 	    
 	    % for share in shares:
-		<% tr_class = '' %>
+		<%
+                
+                tr_class = ''
+                home_class = ''
+                
+                if share == 'homes':
+                    home_class = ' home-directory ' %>
 		
 		% if i % 2 == 0:
 		    <% tr_class += " alternate-row " %>
@@ -65,13 +71,13 @@ ${share_table(['test'])}
 		<tr class="${tr_class}">
 		    <td><input name="select_share${i}" type="checkbox"/></td>
 		    <td>${i}</td>
-		    <td>${share}</td>
+		    <td class='${home_class}'>${share}</td>
 		    <td>
 			
-			% if c.samba_lp.get('path', share) is not None:
+			% if len(c.samba_lp.get('path', share)) > 0:
 			    ${c.samba_lp.get('path', share)}
 			% else:
-			    ${_('No Path Defined')}
+			    ${_('No Path Defined or Required')}
 			% endif
 		    </td>
 		    <td>
