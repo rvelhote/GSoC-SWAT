@@ -43,8 +43,6 @@ class TestDashboardConfiguration():
     def test_load_config(self):
 	self.d.load_config('index')
 	assert len(self.d.get_layout()) > 0
-	
-    
 
 class TestSwatMessages():
     def setUp(self):

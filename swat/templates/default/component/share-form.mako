@@ -64,7 +64,7 @@
 		<ol class="col-2">
 		    <li>
 			<p class="option-help">${_('If checked, passwords are not needed for this share.')}</p>
-                        ${h.checkbox('share_guestok', 1, c.samba_lp.get("guest ok", share), id='share-guest-ok', class_='big-margin')}
+                        ${h.checkbox('share_guest_ok', 1, c.samba_lp.get("guest ok", share), id='share-guest-ok', class_='big-margin')}
                         <label class="checkbox" for="share-guest-ok" title="${_('Check to make this Share Public')}">${_('Public?')}</label>                                    
 		    </li>
 		    
@@ -76,15 +76,15 @@
 		    
 		    <li>
 			<p class="option-help">${_('Sets a share to read-only.')}</p>
-                        ${h.checkbox('share_readonly', 1, c.samba_lp.get("browsable", share), id='share-readonly', class_='big-margin')}
-			<label class="checkbox" for="share-readonly" title="${_('Check to make this Share Read Only')}">${_('Read Only?')}</label>
+                        ${h.checkbox('share_read_only', 1, c.samba_lp.get("browsable", share), id='share-read-only', class_='big-margin')}
+			<label class="checkbox" for="share-read-only" title="${_('Check to make this Share Read Only')}">${_('Read Only?')}</label>
 		    </li>
                     
 		    <li>
 			<p class="option-help">${_('Forces user of a share to do so as the guest account')}</p>
-                        ${h.checkbox('share_guestonly', 1, c.samba_lp.get("guest only", share), id='share-guestonly', class_='big-margin')}
-			<label class="checkbox" for="share-guestonly" title="${_('Check to make this Guest Only')}">${_('Guest Only?')}</label>
-		    </li>                    
+                        ${h.checkbox('share_guest_only', 1, c.samba_lp.get("guest only", share), id='share-guest-only', class_='big-margin')}
+			<label class="checkbox" for="share-guest-only" title="${_('Check to make this Share Guest Only')}">${_('Guest Only?')}</label>
+		    </li>                
 		</ol>
 		
 		<div class="clear-both"></div>
@@ -96,15 +96,15 @@
 			<p class="option-help">${_('Sets the maximum allowable permissions for new files (e.g., 0755). See also directory mask. To require certain permissions to be set, see force create mask/force directory mask.')}</p>
                         <p class="field-title">${_('Create Mask')}</p>
                         
-                        ${permission_zone('create_mask', 'create-mask')}
+                        ${permission_zone('share_create_mask', 'create-mask')}
 		    </li>
 		    
 		    <li>                                    
 			<p class="option-help">${_('Also called directory mode. Sets the maximum allowable permissions for newly created directories. To require certain permissions be set, see the force create mask and force directory mask options')}</p>
 			<p class="field-title">${_('Directory Mask')}</p>
 			
-                        ${permission_zone('directory_mask', 'directory-mask')}
-		    </li>                                
+                        ${permission_zone('share_directory_mask', 'directory-mask')}
+		    </li>
 		</ol>                            
 	    </li>
 	    
@@ -189,7 +189,7 @@
                             <li><a title="${_('Add this Host')}" href="#" onclick="userGroup.addManual('share-insert-allowed-hosts', 'allowed-hosts-list');return false;"><img src="/default/images/icons/plus-small.png" alt="${_('Add User/Group Icon')}" /></a></li>
 			</ol>
 			
-			<input type="hidden" id="allowed-hosts-list-textbox" name="share_allowed_hosts" />
+			<input type="hidden" id="allowed-hosts-list-textbox" name="share_hosts_allow" />
 			
 			<ul id="allowed-hosts-list" class="user-list">
 			</ul>
@@ -209,7 +209,7 @@
                             <li><a title="${_('Add this Host')}" href="#" onclick="userGroup.addManual('share-insert-deny-hosts', 'denied-hosts-list');return false;"><img src="/default/images/icons/plus-small.png" alt="${_('Add User/Group Icon')}" /></a></li>
 			</ol>
 			
-			<input type="hidden" id="denied-hosts-list-textbox" name="share_deny_hosts" />
+			<input type="hidden" id="denied-hosts-list-textbox" name="share_hosts_deny" />
 			
 			<ul id="denied-hosts-list" class="user-list">
 			</ul>
@@ -225,7 +225,7 @@
 		<h2 class="title-icon" style="background-image:url('/default/images/icons/balloon.png');">${_('Comments')}</h2>
 	    </div>
 	    <div class="content">
-		<textarea cols="80" rows="5" name="share_notes" id="share-notes">${c.samba_lp.get("comment", share)}</textarea>
+		<textarea cols="80" rows="5" name="share_comment" id="share-comment">${c.samba_lp.get("comment", share)}</textarea>
 	    </div>
 	</div>        
         

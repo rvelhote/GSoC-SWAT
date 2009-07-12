@@ -402,7 +402,6 @@ def get_samba_server_status():
     works for now :)
     
     """
-
     import commands
 
     status = "down"
