@@ -54,9 +54,9 @@ class ShareController(BaseController):
             
             c.breadcrumb = BreadcrumbTrail(c.config)
             c.breadcrumb.build()
-            
-            c.samba_lp = param.LoadParm()
-            c.samba_lp.load_default()
+
+        c.samba_lp = param.LoadParm()
+        c.samba_lp.load_default()
     
     def index(self):        
         """ Point of entry. Loads the Share List Template """
@@ -83,18 +83,67 @@ class ShareController(BaseController):
         return render('/default/derived/edit-share.mako')
         
     def save(self):
-        message = _("Share Information was Saved")
-        swat_messages.add(message)
+        import re
         
-        print request.params
+        if len(request.params.get("share_name", "")) <= 0:
+            message = _("Can't store Share without name")
+            swat_messages.add(message)
             
-        redirect_to(controller='share', action='index')
+        stream = open(c.samba_lp.configfile, 'r')
+        lines = stream.readlines()
+        stream.close()
         
+        line_start = lines.index('[' + request.params.get("share_name", "") + ']\n')
+        line_end = -1
+        line_number = line_start + 1
+        found = True
+
+        for line in lines[line_number:]:
+            m = re.search("\[(.*)\]", line)
+            
+            if m is not None and found:
+                line_end = line_number - 1
+                break
+
+            #if m is not None and not found and m.group(1) == request.params.get("share_name", ""):
+            #    found = True
+            #    line_start = line_number
+            
+            line_number = line_number + 1
+
+        section = lines[line_start:line_end]
+        new_section = ['[' + request.params.get("share_name", "") + ']\n']
+
+        for line in section:
+            line_param = re.search("(.*)=(.*)", line)
+
+            if line_param is not None:
+                value = line_param.group(2).strip()
+                param = line_param.group(1).strip()
+
+                if 'share_' + param in request.params:
+                    line = "\t" + param + " = " + re.sub(value, request.params.get("share_" + param), value) + "\n"
+                    new_section.append(line)
+        
+        before = lines[0:line_start - 1]
+        after = lines[line_end:]
+        
+        stream = open(c.samba_lp.configfile, 'w')
+
+        for area in [before, new_section, after]:
+            for line in area:
+                stream.write(line)
+                #print line
+                
+        stream.close()
+
+        redirect_to(controller='share', action='index')        
+
     def apply(self):
         message = _("Share Information was Saved")
         swat_messages.add(message)
             
-        redirect_to(controller='share', action='edit', name='test')
+        redirect_to(controller='share', action='edit', name=request.params.get("share_name", ""))
     
     def cancel(self, name=''):
         message = _("Cancelled Share editing. No changes were saved!")

@@ -189,7 +189,7 @@
                             <li><a title="${_('Add this Host')}" href="#" onclick="userGroup.addManual('share-insert-allowed-hosts', 'allowed-hosts-list');return false;"><img src="/default/images/icons/plus-small.png" alt="${_('Add User/Group Icon')}" /></a></li>
 			</ol>
 			
-			<input type="hidden" id="allowed-hosts-list-textbox" name="share_hosts_allow" />
+                        ${h.hidden('share_hosts_allow', '', id='allowed-hosts-list-textbox')}
 			
 			<ul id="allowed-hosts-list" class="user-list">
 			</ul>
@@ -209,7 +209,7 @@
                             <li><a title="${_('Add this Host')}" href="#" onclick="userGroup.addManual('share-insert-deny-hosts', 'denied-hosts-list');return false;"><img src="/default/images/icons/plus-small.png" alt="${_('Add User/Group Icon')}" /></a></li>
 			</ol>
 			
-			<input type="hidden" id="denied-hosts-list-textbox" name="share_hosts_deny" />
+                        ${h.hidden('share_hosts_deny', '', id='denied-hosts-list-textbox')}
 			
 			<ul id="denied-hosts-list" class="user-list">
 			</ul>
@@ -227,8 +227,12 @@
 	    <div class="content">
 		<textarea cols="80" rows="5" name="share_comment" id="share-comment">${c.samba_lp.get("comment", share)}</textarea>
 	    </div>
-	</div>        
+	</div>
         
+        <div>
+            ${h.hidden("task", request.environ['pylons.routes_dict']['action'])}
+            ${h.hidden("share_name_old", share)}
+        </div>
         
     ${h.end_form()}
 </%def>
