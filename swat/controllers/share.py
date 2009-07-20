@@ -83,61 +83,26 @@ class ShareController(BaseController):
         return render('/default/derived/edit-share.mako')
         
     def save(self):
-        import re
+        backend = None
+        is_new = False
         
-        if len(request.params.get("share_name", "")) <= 0:
-            message = _("Can't store Share without name")
+        if request.params.get("task", "edit") == "new":
+            is_new = True
+        
+        if c.samba_lp.get("share backend") == "classic":
+            backend = ShareBackendClassic(c.samba_lp.configfile, request.params)
+            stored = backend.store(is_new)
+            
+            if stored:
+                message = _("Share Information was Saved")
+                swat_messages.add(message)
+            else:
+                swat_messages.add(backend.get_error(), backend.get_error_type())
+        else:
+            message = _("Your chosen backend is not yet supported")
             swat_messages.add(message)
             
-        stream = open(c.samba_lp.configfile, 'r')
-        lines = stream.readlines()
-        stream.close()
-        
-        line_start = lines.index('[' + request.params.get("share_name", "") + ']\n')
-        line_end = -1
-        line_number = line_start + 1
-        found = True
-
-        for line in lines[line_number:]:
-            m = re.search("\[(.*)\]", line)
-            
-            if m is not None and found:
-                line_end = line_number - 1
-                break
-
-            #if m is not None and not found and m.group(1) == request.params.get("share_name", ""):
-            #    found = True
-            #    line_start = line_number
-            
-            line_number = line_number + 1
-
-        section = lines[line_start:line_end]
-        new_section = ['[' + request.params.get("share_name", "") + ']\n']
-
-        for line in section:
-            line_param = re.search("(.*)=(.*)", line)
-
-            if line_param is not None:
-                value = line_param.group(2).strip()
-                param = line_param.group(1).strip()
-
-                if 'share_' + param in request.params:
-                    line = "\t" + param + " = " + re.sub(value, request.params.get("share_" + param), value) + "\n"
-                    new_section.append(line)
-        
-        before = lines[0:line_start - 1]
-        after = lines[line_end:]
-        
-        stream = open(c.samba_lp.configfile, 'w')
-
-        for area in [before, new_section, after]:
-            for line in area:
-                stream.write(line)
-                #print line
-                
-        stream.close()
-
-        redirect_to(controller='share', action='index')        
+        redirect_to(controller='share', action='index')    
 
     def apply(self):
         message = _("Share Information was Saved")
@@ -168,3 +133,64 @@ class ShareController(BaseController):
     
     def toggle(self):
         pass
+
+class ShareBackendClassic():
+    def __init__(self, smbconf, params):
+        self.__smbconf = smbconf
+        self.__params = params
+    
+    def store(self, is_new=False):
+        import re
+
+        stream = open(self.__smbconf, 'r')
+        lines = stream.readlines()
+        stream.close()
+        
+        line_start = lines.index('[' + self.__params.get("share_name", "") + ']\n')
+        line_end = -1
+        line_number = line_start + 1
+        found = True
+
+        for line in lines[line_number:]:
+            m = re.search("\[(.*)\]", line)
+            
+            if m is not None and found:
+                line_end = line_number - 1
+                break
+            
+            line_number = line_number + 1
+
+        section = lines[line_start:line_end]
+        new_section = ['\n[' + self.__params.get("share_name", "") + ']\n']
+
+        for line in section:
+            line_param = re.search("(.*)=(.*)", line)
+
+            if line_param is not None:
+                value = line_param.group(2).strip()
+                param = line_param.group(1).strip()
+
+                if 'share_' + param in request.params:
+                    line = "\t" + param + " = " + self.__params.get("share_" + param) + "\n"
+                    new_section.append(line)
+        
+        before = lines[0:line_start - 1]
+        after = lines[line_end:]
+        
+        stream = open(self.__smbconf, 'w')
+
+        for area in [before, new_section, after]:
+            for line in area:
+                stream.write(line)
+                
+        stream.close()
+        
+        return True
+
+    def get_error(self):
+        pass
+    
+    def get_error_type(self):
+        pass
+
+    
