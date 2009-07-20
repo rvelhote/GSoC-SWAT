@@ -142,15 +142,20 @@ class ShareBackendClassic():
     def store(self, is_new=False):
         import re
 
+        #   Step 1: Read smb.conf's contents into a list
         stream = open(self.__smbconf, 'r')
         lines = stream.readlines()
         stream.close()
         
-        line_start = lines.index('[' + self.__params.get("share_name", "") + ']\n')
+        #   Step 2: Figure out where the section we are editing starts
+        #   Use the share_name_old variable in case we are changing the share's
+        #   name
+        line_start = lines.index('[' + self.__params.get("share_name_old", "") + ']\n')
         line_end = -1
         line_number = line_start + 1
         found = True
 
+        #   Step 3: Figure out where the section ends
         for line in lines[line_number:]:
             m = re.search("\[(.*)\]", line)
             
@@ -160,25 +165,37 @@ class ShareBackendClassic():
             
             line_number = line_number + 1
 
-        section = lines[line_start:line_end]
+        #   Step 4: exlude the Share Definition in the section. We don't need it
+        section = lines[line_start + 1:line_end]
         new_section = ['\n[' + self.__params.get("share_name", "") + ']\n']
+        
+        already_handled = []
 
+        #   Step 5: Replace each of the existing parameters
         for line in section:
             line_param = re.search("(.*)=(.*)", line)
 
             if line_param is not None:
-                value = line_param.group(2).strip()
+                #value = line_param.group(2).strip()
                 param = line_param.group(1).strip()
 
-                if 'share_' + param in request.params:
+                if 'share_' + param in self.__params:
                     line = "\t" + param + " = " + self.__params.get("share_" + param) + "\n"
                     new_section.append(line)
+                    already_handled.append('share_' + param)
+            else:
+                new_section.append(line)
+                
+        for param in self.__params:
+            if param.startswith('share_') and param not in already_handled:
+                pass
         
+        #   Step 6: Get the smb.conf content before and after the new section
         before = lines[0:line_start - 1]
         after = lines[line_end:]
         
+        #   Step 7: Write it to smb.conf
         stream = open(self.__smbconf, 'w')
-
         for area in [before, new_section, after]:
             for line in area:
                 stream.write(line)
@@ -192,5 +209,3 @@ class ShareBackendClassic():
     
     def get_error_type(self):
         pass
-
-    
