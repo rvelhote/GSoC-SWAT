@@ -143,8 +143,22 @@ class ShareController(BaseController):
         
         redirect_to(controller='share', action='index')
     
-    def copy(self):
-        pass
+    def copy(self, name):
+        backend = ShareBackendClassic(c.samba_lp.configfile, {'name':name})
+        deleted = backend.copy()
+        
+        message = ""
+        type = "cool"
+        
+        if deleted:
+            message = _("Share Duplicated Sucessfuly")
+        else:
+            message = _("Did not Duplicate Share")
+            type = "warning"
+        
+        swat_messages.add(message, type)
+        
+        redirect_to(controller='share', action='index')
     
     def toggle(self):
         pass
@@ -223,9 +237,8 @@ class ShareBackendClassic():
     def store(self, is_new=False):
         pos = self.__get_section_position(self.__params.get("share_name_old", ""))
         section = self.__smbconf_content[pos['start'] + 1:pos['end']]
-
-        new_section = self.__recreate_section(
-                                self.__params.get("share_name", ""), section)
+        
+        new_section = self.__recreate_section(self.__params.get("share_name", ""), section)
         
         before = self.__smbconf_content[0:pos['start'] - 1]
         after = self.__smbconf_content[pos['end']:]
@@ -241,6 +254,21 @@ class ShareBackendClassic():
         after = self.__smbconf_content[pos['end']:]
         
         self.__save_smbconf([before, after])
+        
+        return True
+    
+    def copy(self):
+        pos = self.__get_section_position(self.__params["name"])
+        section = self.__smbconf_content[pos['start']:pos['end']]
+
+        new_section = self.__recreate_section(
+                                "copy of " +
+                                self.__params["name"], section[1:])
+        
+        before = self.__smbconf_content[0:pos['start'] - 1]
+        after = self.__smbconf_content[pos['end']:]
+
+        self.__save_smbconf([before, section, new_section, after])
         
         return True
     
@@ -261,13 +289,13 @@ class ShareBackendClassic():
                     line = "\t" + param + " = " + self.__params.get("share_" + param) + "\n"
                     new_section.append(line)
                     already_handled.append('share_' + param)
+                else:
+                    line = "\t" + param + " = " + value + "\n"
+                    new_section.append(line)
             else:
                 new_section.append(line)
                 
         for param in self.__params:
-            
-            print param
-            
             if param.startswith('share_') and param not in already_handled:
                 pass
 
