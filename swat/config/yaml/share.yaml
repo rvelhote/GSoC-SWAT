@@ -99,11 +99,11 @@ actions:
            name: 'apply'     
            title: 'Apply changes and return to this Page'
            action: apply
+           submit: True
        
        image:
            name: disk-arrow.png
            alt: 'Apply Changes Icon'
-           submit: True
 
     #
     #   Cancel Add/Editing (cancel)

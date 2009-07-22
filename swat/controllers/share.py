@@ -101,13 +101,12 @@ class ShareController(BaseController):
         else:
             message = _("Your chosen backend is not yet supported")
             swat_messages.add(message)
-            
-        redirect_to(controller='share', action='index')    
+
+        if request.environ['pylons.routes_dict']['action'] == "save":
+            redirect_to(controller='share', action='index')
 
     def apply(self):
-        message = _("Share Information was Saved")
-        swat_messages.add(message)
-            
+        self.save()
         redirect_to(controller='share', action='edit', name=request.params.get("share_name", ""))
     
     def cancel(self, name=''):
@@ -240,9 +239,12 @@ class ShareBackendClassic():
                 new_section.append(line)
                 
         for param in self.__params:
+            
+            print param
+            
             if param.startswith('share_') and param not in already_handled:
                 pass
-            
+
         return new_section
     
     def __save_smbconf(self, what):
