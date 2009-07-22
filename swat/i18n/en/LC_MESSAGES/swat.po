@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: swat 0.1\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2009-06-20 15:10+0100\n"
-"PO-Revision-Date: 2009-07-11 10:10+0100\n"
+"PO-Revision-Date: 2009-07-23 00:06+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: en <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -17,12 +17,32 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.4\n"
 
-#: swat/controllers/share.py:86 swat/controllers/share.py:94
+#: swat/controllers/share.py:99
 msgid "Share Information was Saved"
 msgstr ""
 
-#: swat/controllers/share.py:100
+#: swat/controllers/share.py:104
+msgid "Your chosen backend is not yet supported"
+msgstr ""
+
+#: swat/controllers/share.py:115
 msgid "Cancelled Share editing. No changes were saved!"
+msgstr ""
+
+#: swat/controllers/share.py:137
+msgid "Share Deleted Sucessfuly"
+msgstr ""
+
+#: swat/controllers/share.py:139
+msgid "Did not Delete Share"
+msgstr ""
+
+#: swat/controllers/share.py:154
+msgid "Share Duplicated Sucessfuly"
+msgstr ""
+
+#: swat/controllers/share.py:156
+msgid "Did not Duplicate Share"
 msgstr ""
 
 #: swat/templates/default/base/base.mako:53
@@ -282,7 +302,7 @@ msgid "Forces user of a share to do so as the guest account"
 msgstr ""
 
 #: swat/templates/default/component/share-form.mako:86
-msgid "Check to make this Guest Only"
+msgid "Check to make this Share Guest Only"
 msgstr ""
 
 #: swat/templates/default/component/share-form.mako:86
@@ -419,85 +439,50 @@ msgstr ""
 msgid "%d Shares Total"
 msgstr ""
 
-#: swat/templates/default/derived/share.mako:74
-msgid "No Path Defined"
-msgstr ""
-
-#: swat/templates/default/derived/share.mako:81
-msgid "No Comment Defined"
-msgstr ""
-
-#: swat/templates/default/derived/share.mako:98
+#: swat/templates/default/derived/share.mako:71
+#: swat/templates/default/derived/share.mako:104
 msgid "Edit Share"
 msgstr ""
 
-#: swat/templates/default/derived/share.mako:98
+#: swat/templates/default/derived/share.mako:80
+msgid "No Path Defined or Required"
+msgstr ""
+
+#: swat/templates/default/derived/share.mako:87
+msgid "No Comment Defined"
+msgstr ""
+
+#: swat/templates/default/derived/share.mako:104
 msgid "Edit Share Icon"
 msgstr ""
 
-#: swat/templates/default/derived/share.mako:99
+#: swat/templates/default/derived/share.mako:105
 msgid "Remove Share"
 msgstr ""
 
-#: swat/templates/default/derived/share.mako:99
+#: swat/templates/default/derived/share.mako:105
 msgid "Remove Share Icon"
 msgstr ""
 
-#: swat/templates/default/derived/share.mako:100
+#: swat/templates/default/derived/share.mako:106
 msgid "Copy this Share"
 msgstr ""
 
-#: swat/templates/default/derived/share.mako:100
+#: swat/templates/default/derived/share.mako:106
 msgid "Copy Share Icon"
 msgstr ""
 
-#: swat/templates/default/derived/share.mako:101
+#: swat/templates/default/derived/share.mako:107
 msgid "Enable this Share"
 msgstr ""
 
-#: swat/templates/default/derived/share.mako:101
+#: swat/templates/default/derived/share.mako:107
 msgid "Enable Share Icon"
 msgstr ""
 
-#~ msgid "Set the Path to be Shares"
+#~ msgid "Check to make this Guest Only"
 #~ msgstr ""
 
-#~ msgid "User"
-#~ msgstr ""
-
-#~ msgid "Group"
-#~ msgstr ""
-
-#~ msgid "World"
-#~ msgstr ""
-
-#~ msgid "Read"
-#~ msgstr ""
-
-#~ msgid "Write"
-#~ msgstr ""
-
-#~ msgid "Execute"
-#~ msgstr ""
-
-#~ msgid "Permission"
-#~ msgstr ""
-
-#~ msgid "Check to Force the Create Mask"
-#~ msgstr ""
-
-#~ msgid "Force Create Mask?"
-#~ msgstr ""
-
-#~ msgid "Check to Force the Directory Mask"
-#~ msgstr ""
-
-#~ msgid "Force Directory Mask?"
-#~ msgstr ""
-
-#~ msgid "Remove this User/Group"
-#~ msgstr ""
-
-#~ msgid "Remove User/Group Icon"
+#~ msgid "No Path Defined"
 #~ msgstr ""
 
