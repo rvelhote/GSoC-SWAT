@@ -21,7 +21,7 @@
 ${parent.action_title(c.config.get_action_info('friendly_name'))}
 ${toolbar.write(c.config.get_toolbar_items())}
 
-${share_table(['swat', 'homes', 'etc'])}
+${share_table(c.share_list)}
 
 <%doc></%doc>
 <%def name="page_title()">
@@ -45,7 +45,7 @@ ${share_table(['swat', 'homes', 'etc'])}
 	    <tr>
 		<td colspan="6">		    
 		    <div class="pagination">
-			<p class="number-pages">${_('%d Shares Total' % len(shares))}</p>
+			<p class="number-pages">${_('%d Shares Total' % len([]))}</p>
 		    </div>
 		</td>
 	    </tr>

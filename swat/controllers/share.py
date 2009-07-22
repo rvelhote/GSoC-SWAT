@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # 
 import logging
-import param
+import param, shares
 
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect_to
@@ -57,6 +57,8 @@ class ShareController(BaseController):
 
         c.samba_lp = param.LoadParm()
         c.samba_lp.load_default()
+
+        c.share_list = shares.SharesContainer(c.samba_lp)
     
     def index(self):        
         """ Point of entry. Loads the Share List Template """
@@ -124,8 +126,22 @@ class ShareController(BaseController):
         return render_mako_def('/default/component/popups.mako', \
                                'select_user_group')
         
-    def remove(self):
-        pass
+    def remove(self, name):
+        backend = ShareBackendClassic(c.samba_lp.configfile, {'name':name})
+        deleted = backend.delete()
+        
+        message = ""
+        type = "cool"
+        
+        if deleted:
+            message = _("Share Deleted Sucessfuly")
+        else:
+            message = _("Did not Delete Share")
+            type = "warning"
+        
+        swat_messages.add(message, type)
+        
+        redirect_to(controller='share', action='index')
     
     def copy(self):
         pass
@@ -215,6 +231,16 @@ class ShareBackendClassic():
         after = self.__smbconf_content[pos['end']:]
         
         self.__save_smbconf([before, new_section, after])
+        
+        return True
+    
+    def delete(self):
+        pos = self.__get_section_position(self.__params["name"])
+
+        before = self.__smbconf_content[0:pos['start'] - 1]
+        after = self.__smbconf_content[pos['end']:]
+        
+        self.__save_smbconf([before, after])
         
         return True
     
