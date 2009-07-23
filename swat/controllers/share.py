@@ -92,7 +92,7 @@ class ShareController(BaseController):
             is_new = True
         
         if c.samba_lp.get("share backend") == "classic":
-            backend = ShareBackendClassic(c.samba_lp.configfile, request.params)
+            backend = ShareBackendClassic(c.samba_lp, request.params)
             stored = backend.store(is_new)
             
             if stored:
@@ -127,7 +127,7 @@ class ShareController(BaseController):
                                'select_user_group')
         
     def remove(self, name):
-        backend = ShareBackendClassic(c.samba_lp.configfile, {'name':name})
+        backend = ShareBackendClassic(c.samba_lp, {'name':name})
         deleted = backend.delete()
         
         message = ""
@@ -144,9 +144,9 @@ class ShareController(BaseController):
         redirect_to(controller='share', action='index')
     
     def copy(self, name):
-        backend = ShareBackendClassic(c.samba_lp.configfile, {'name':name})
+        backend = ShareBackendClassic(c.samba_lp, {'name':name})
         deleted = backend.copy()
-        
+    
         message = ""
         type = "cool"
         
@@ -154,21 +154,24 @@ class ShareController(BaseController):
             message = _("Share Duplicated Sucessfuly")
         else:
             message = _("Did not Duplicate Share")
-            type = "warning"
-        
+            type = "critical"
+
         swat_messages.add(message, type)
         
         redirect_to(controller='share', action='index')
     
-    def toggle(self):
-        pass
+    def toggle(self, name):
+        backend = ShareBackendClassic(c.samba_lp, {'name':name})
+        toggled = backend.toggle()
+        
+        redirect_to(controller='share', action='index')
 
 class ShareBackendClassic():
     """ Handles operations regarding the Classic Backend method to store share
     information. The classic method stores shares in the smb.conf file
     
     """
-    def __init__(self, smbconf, params):
+    def __init__(self, lp, params):
         """ Constructor. Loads the smb.conf contents into a List to be used
         by each of the operations allowed by this backend
         
@@ -177,13 +180,21 @@ class ShareBackendClassic():
         params -- request parameters passed by the share information form
         
         """
-        self.__smbconf = smbconf
+        self.__lp = lp
+        self.__smbconf = self.__lp.configfile
         self.__params = params
         self.__smbconf_content = []
         self.__error = ""
-        
+        self.__share_list = shares.SharesContainer(self.__lp)
+
         if not self.__load_smb_conf_content():
             pass
+        
+    def __share_name_exists(self, name):
+        if name not in self.__share_list:
+            return False
+        
+        return True
         
     def __load_smb_conf_content(self):
         """ Loads the smb.conf into a Lists """
@@ -231,12 +242,12 @@ class ShareBackendClassic():
                 break
             
             line_number = line_number + 1
-        
+
         return position
     
     def store(self, is_new=False):
         pos = self.__get_section_position(self.__params.get("share_name_old", ""))
-        section = self.__smbconf_content[pos['start'] + 1:pos['end']]
+        section = self.__smbconf_content[pos['start']:pos['end']]
         
         new_section = self.__recreate_section(self.__params.get("share_name", ""), section)
         
@@ -258,27 +269,49 @@ class ShareBackendClassic():
         return True
     
     def copy(self):
-        pos = self.__get_section_position(self.__params["name"])
-        section = self.__smbconf_content[pos['start']:pos['end']]
-
-        new_section = self.__recreate_section(
-                                "copy of " +
-                                self.__params["name"], section[1:])
+        # Todo: bug, can't repeat the same twice due to name conflict
+        new_name = "copy of " + self.__params["name"]
+                
+        if not self.__share_name_exists(new_name):
+            pos = self.__get_section_position(self.__params["name"])
+            section = self.__smbconf_content[pos['start']:pos['end']]
+            
+            new_section = self.__recreate_section(new_name, section)
         
-        before = self.__smbconf_content[0:pos['start'] - 1]
-        after = self.__smbconf_content[pos['end']:]
+            before = self.__smbconf_content[0:pos['start'] - 1]
+            after = self.__smbconf_content[pos['end']:]
 
-        self.__save_smbconf([before, section, new_section, after])
+            self.__save_smbconf([before, section, new_section, after])
         
-        return True
+            return True
+        
+        return False
     
-    def __recreate_section(self, name, section):
+    def toggle(self):
+        if self.__share_name_exists(self.__params["name"]):
+            pos = self.__get_section_position(self.__params["name"])
+            section = self.__smbconf_content[pos['start']:pos['end']]
+            
+            new_section = self.__recreate_section(self.__params["name"],
+                                                                section, True)
+        
+            before = self.__smbconf_content[0:pos['start'] - 1]
+            after = self.__smbconf_content[pos['end']:]
+
+            self.__save_smbconf([before, new_section, after])
+        
+            return True
+    
+    def __recreate_section(self, name, section, deactivate=False):
         import re
         
-        new_section = ['\n[' + name + ']\n']
+        if deactivate:
+            name = "//" + name
+        
+        new_section = ['\n\n[' + name + ']\n']
         already_handled = []
 
-        for line in section:
+        for line in section[1:]:
             line_param = re.search("(.*)=(.*)", line)
 
             if line_param is not None:
@@ -287,13 +320,14 @@ class ShareBackendClassic():
 
                 if 'share_' + param in self.__params:
                     line = "\t" + param + " = " + self.__params.get("share_" + param) + "\n"
-                    new_section.append(line)
                     already_handled.append('share_' + param)
                 else:
                     line = "\t" + param + " = " + value + "\n"
-                    new_section.append(line)
-            else:
-                new_section.append(line)
+                    
+            if deactivate:
+                line = "#" + line
+
+            new_section.append(line)
                 
         for param in self.__params:
             if param.startswith('share_') and param not in already_handled:
@@ -309,7 +343,6 @@ class ShareBackendClassic():
                 stream.write(line)
                 
         stream.close()
-        
     
     def set_error(self, message, type='critical'):
         pass
