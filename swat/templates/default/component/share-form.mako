@@ -44,7 +44,7 @@
 		    <li>
 			<p class="option-help">${_('Set the Share Name')}</p>
 			<label for="share-name" title="Set this Share's Name">${_('Name')}:</label>
-                        ${h.text("share_name", share, id="share-name", class_='big-text')}
+                        ${h.text("name", share, id="share-name", class_='big-text')}
 		    </li>
 		    
 		    <li>
@@ -245,7 +245,7 @@
         
         <div>
             ${h.hidden("task", request.environ['pylons.routes_dict']['action'])}
-            ${h.hidden("share_name_old", share)}
+            ${h.hidden("old_name", share)}
         </div>
         
     ${h.end_form()}
