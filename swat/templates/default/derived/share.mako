@@ -34,9 +34,9 @@ ${share_table(c.share_list)}
 	    <tr>
 		<td><input title="${_('Check All Items')}" type="checkbox" id="check-all"/></td>
 		<td>${_('#')}</td>
-		<td>${_('Name')}</td>
-		<td>${_('Path')}</td>
-		<td>${_('Comment')}</td>
+		<td style="width:100px;">${_('Name')}</td>
+		<td style="width:200px;">${_('Path')}</td>
+		<td style="width:252px;">${_('Comment')}</td>
 		<td></td>
 	    </tr>
 	</thead>
