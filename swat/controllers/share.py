@@ -88,7 +88,7 @@ class ShareController(BaseController):
         backend = None
         is_new = False
         
-        if request.params.get("task", "edit") == "new":
+        if request.params.get("task", "edit") == "add":
             is_new = True
         
         if c.samba_lp.get("share backend") == "classic":
@@ -265,14 +265,20 @@ class ShareBackendClassic():
         return position
     
     def store(self, is_new=False):
-        pos = self.__get_section_position(self.__share_old_name)
-        section = self.__smbconf_content[pos['start']:pos['end']]
+        section = []
+        
+        if not is_new:
+            pos = self.__get_section_position(self.__share_old_name)
+            section = self.__smbconf_content[pos['start']:pos['end']]
+            
+            before = self.__smbconf_content[0:pos['start'] - 1]
+            after = self.__smbconf_content[pos['end']:]
+        else:
+            before = self.__smbconf_content
+            after = []
         
         new_section = self.__recreate_section(self.__share_name, section)
-        
-        before = self.__smbconf_content[0:pos['start'] - 1]
-        after = self.__smbconf_content[pos['end']:]
-        
+
         self.__save_smbconf([before, new_section, after])
         
         return True
