@@ -84,7 +84,7 @@
 			<p class="option-help">${_('Sets a share to read-only.')}</p>
                         
                         ${h.hidden('share_read_only', 'no')}
-                        ${h.checkbox('share_read_only', 'yes', c.samba_lp.get("browsable", share), id='share-read-only', class_='big-margin')}
+                        ${h.checkbox('share_read_only', 'yes', c.samba_lp.get("read only", share), id='share-read-only', class_='big-margin')}
                         
 			<label class="checkbox" for="share-read-only" title="${_('Check to make this Share Read Only')}">${_('Read Only?')}</label>
 		    </li>
@@ -229,7 +229,7 @@
 			</ul>
 			
 			<div class="clear-both"></div>
-                    </li>                     
+                    </li>
                 </ol>
 	    </li>
 	</ul>
