@@ -4,7 +4,7 @@
 name:
     type: text
     help: 'Set the Share Name'
-    title: 'Set this Share's Name'
+    title: "Set this Share's Name"
     name: name
     label: 'Name'
     class: big-text
@@ -14,7 +14,7 @@ name:
 #
 path:
     type: text
-    help: 'Sets the path to the directory provided by a file share or used by a printer share. Set automatically in [homes] share to user\'s home directory, otherwise defaults to  /tmp. Honors the %u (user) and %m (machine) variables.'
+    help: "Sets the path to the directory provided by a file share or used by a printer share. Set automatically in [homes] share to user's home directory, otherwise defaults to  /tmp. Honors the %u (user) and %m (machine) variables."
     title: 'Set the Path to be Shared'
     name: path
     label: 'Path'
