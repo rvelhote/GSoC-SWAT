@@ -137,7 +137,7 @@
 			    <li><a title="${_('Open User/Group Selection Popup')}" href="${h.url_for(controller='share', action='users_groups')}?copyto=user-list-read" class="popup-selector"><img src="/default/images/icons/users.png" alt="${_('Select Users/Groups Icon')}" /></a></li>
 			</ol>
 			
-                        ${h.hidden('share_read_list', '', id='user-list-read-textbox')}
+                        ${h.hidden('share_read_list', c.samba_lp.get("read list", share), id='user-list-read-textbox')}
 
 			<ul id="user-list-read" class="user-list">
 			</ul>
@@ -158,7 +158,7 @@
 			    <li><a title="${_('Open User/Group Selection Popup')}" href="${h.url_for(controller='share', action='users_groups')}?copyto=user-list-write" class="popup-selector"><img src="/default/images/icons/users.png" alt="${_('Select Users/Groups Icon')}" /></a></li>
 			</ol>
 			
-                        ${h.hidden('share_write_list', '', id='user-list-write-textbox')}
+                        ${h.hidden('share_write_list', c.samba_lp.get("write list", share), id='user-list-write-textbox')}
 			
 			<ul id="user-list-write" class="user-list">
 			</ul>
@@ -179,7 +179,7 @@
 			    <li><a title="${_('Open User/Group Selection Popup')}" href="${h.url_for(controller='share', action='users_groups')}?copyto=user-list-admin" class="popup-selector"><img src="/default/images/icons/users.png" alt="${_('Select Users/Groups Icon')}" /></a></li>
 			</ol>
 
-                        ${h.hidden('share_admin_list', '', id='user-list-admin-textbox')}
+                        ${h.hidden('share_admin_list', c.samba_lp.get("admin list", share), id='user-list-admin-textbox')}
 			
 			<ul id="user-list-admin" class="user-list">
 			</ul>
@@ -203,7 +203,7 @@
                             <li><a title="${_('Add this Host')}" href="#" onclick="userGroup.addManual('share-insert-allowed-hosts', 'allowed-hosts-list');return false;"><img src="/default/images/icons/plus-small.png" alt="${_('Add User/Group Icon')}" /></a></li>
 			</ol>
 			
-                        ${h.hidden('share_hosts_allow', '', id='allowed-hosts-list-textbox')}
+                        ${h.hidden('share_hosts_allow', c.samba_lp.get("hosts allow", share), id='allowed-hosts-list-textbox')}
 			
 			<ul id="allowed-hosts-list" class="user-list">
 			</ul>
@@ -223,7 +223,7 @@
                             <li><a title="${_('Add this Host')}" href="#" onclick="userGroup.addManual('share-insert-deny-hosts', 'denied-hosts-list');return false;"><img src="/default/images/icons/plus-small.png" alt="${_('Add User/Group Icon')}" /></a></li>
 			</ol>
 			
-                        ${h.hidden('share_hosts_deny', '', id='denied-hosts-list-textbox')}
+                        ${h.hidden('share_hosts_deny', c.samba_lp.get("hosts deny", share), id='denied-hosts-list-textbox')}
 			
 			<ul id="denied-hosts-list" class="user-list">
 			</ul>

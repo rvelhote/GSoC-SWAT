@@ -352,7 +352,6 @@ class ShareBackendClassic():
         #   of the available parameters from the POST
         #
         for param, value in self.__params.items():
-            print param
             if len(value) > 0:
                 line = "\t" + param + " = " + value + "\n"
                 new_section.append(line)
