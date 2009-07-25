@@ -326,45 +326,36 @@ class ShareBackendClassic():
         
         new_section = ['\n[' + name + ']\n']
         
-        #for line in section[1:]:
+        #   Scan the current section in search for existing values. I could
+        #   just dump the content of params but this will keep other things
+        #   that the user might have written to the file; a comment on a param
+        #   for example
+        #
+        for line in section[1:]:
+            line_param = re.search("(.*)=(.*)", line)
             
-        
-        #if deactivate:
-        #    name = "//" + name
+            if line_param is not None:
+                param = line_param.group(1).strip()
+                value = line_param.group(2).strip()
+
+                if param in self.__params:
+                    if len(self.__params[param]) > 0:
+                        line = "\t" + param + " = " + self.__params[param] + "\n"
+                        del self.__params[param]
+                else:
+                    line = "\t" + param + " = " + value + "\n"
+            
+            new_section.append(line)
+            
+        #   Now we dump the params file.
+        #   With the already handled key=>values deleted we can safely add all
+        #   of the available parameters from the POST
         #
-        #new_section = ['\n\n[' + name + ']\n']
-        #already_handled = []
-        #
-        #for line in section[1:]:
-        #    line_param = re.search("(.*)=(.*)", line)
-        #
-        #    if line_param is not None:
-        #        value = line_param.group(2).strip()
-        #        param = line_param.group(1).strip()
-        #
-        #        if 'share_' + param in self.__params:
-        #            line = "\t" + param + " = " + self.__params.get("share_" + param) + "\n"
-        #        else:
-        #            line = "\t" + param + " = " + value + "\n"
-        #            
-        #        print param
-        #            
-        #        already_handled.append('share_' + param)
-        #            
-        #    if deactivate:
-        #        line = "#" + line
-        #
-        #    new_section.append(line)
-        #        
-        #for param in self.__params:
-        #    if param.startswith('share_') and param not in already_handled:
-        #        value = self.__params.get(param)
-        #        
-        #        if len(value) > 0:
-        #            param = param[6:].replace('_', ' ')
-        #            
-        #            line = "\t" + param + " = " + value + "\n"
-        #            new_section.append(line)
+        for param, value in self.__params.items():
+            print param
+            if len(value) > 0:
+                line = "\t" + param + " = " + value + "\n"
+                new_section.append(line)
 
         return new_section
     
