@@ -289,7 +289,7 @@ class ShareBackendClassic():
     
     def copy(self):
         # Todo: bug, can't repeat the same twice due to name conflict
-        new_name = "copy of " + self.__params["name"]
+        new_name = "copy of " + self.__share_name
                 
         if not self.__share_name_exists(new_name):
             pos = self.__get_section_position(self.__share_name)
