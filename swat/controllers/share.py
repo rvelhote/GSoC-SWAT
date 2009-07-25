@@ -109,7 +109,7 @@ class ShareController(BaseController):
 
     def apply(self):
         self.save()
-        redirect_to(controller='share', action='edit', name=request.params.get("share_name", ""))
+        redirect_to(controller='share', action='edit', name=request.params.get("name", ""))
     
     def cancel(self, name=''):
         message = _("Cancelled Share editing. No changes were saved!")
@@ -182,14 +182,33 @@ class ShareBackendClassic():
         """
         self.__lp = lp
         self.__smbconf = self.__lp.configfile
-        self.__params = params
+        
+        #   Important values
+        self.__share_name = params.get("name")
+        self.__share_old_name = params.get("old_name")
+        
+        #   Cleanup names from the 'share_' form into the valid Samba name
+        self.__params = self.__clean_params(params)
+        
         self.__smbconf_content = []
         self.__error = ""
         self.__share_list = shares.SharesContainer(self.__lp)
 
         if not self.__load_smb_conf_content():
             pass
+    
+    def __clean_params(self, params):
+        clean_params = {}
         
+        for param in params:
+            if param.startswith('share_'):
+                value = params.get(param)
+                new_param = param[6:].replace('_', ' ')
+
+                clean_params[new_param] = value
+
+        return clean_params
+
     def __share_name_exists(self, name):
         if name not in self.__share_list:
             return False
@@ -246,10 +265,10 @@ class ShareBackendClassic():
         return position
     
     def store(self, is_new=False):
-        pos = self.__get_section_position(self.__params.get("share_name_old", ""))
+        pos = self.__get_section_position(self.__params.get("old_share_name", ""))
         section = self.__smbconf_content[pos['start']:pos['end']]
         
-        new_section = self.__recreate_section(self.__params.get("share_name", ""), section)
+        new_section = self.__recreate_section(self.__params.get("name", ""), section)
         
         before = self.__smbconf_content[0:pos['start'] - 1]
         after = self.__smbconf_content[pos['end']:]
@@ -305,33 +324,47 @@ class ShareBackendClassic():
     def __recreate_section(self, name, section, deactivate=False):
         import re
         
-        if deactivate:
-            name = "//" + name
+        new_section = ['\n[' + name + ']\n']
         
-        new_section = ['\n\n[' + name + ']\n']
-        already_handled = []
-
-        for line in section[1:]:
-            line_param = re.search("(.*)=(.*)", line)
-
-            if line_param is not None:
-                value = line_param.group(2).strip()
-                param = line_param.group(1).strip()
-
-                if 'share_' + param in self.__params:
-                    line = "\t" + param + " = " + self.__params.get("share_" + param) + "\n"
-                    already_handled.append('share_' + param)
-                else:
-                    line = "\t" + param + " = " + value + "\n"
-                    
-            if deactivate:
-                line = "#" + line
-
-            new_section.append(line)
-                
-        for param in self.__params:
-            if param.startswith('share_') and param not in already_handled:
-                pass
+        #for line in section[1:]:
+            
+        
+        #if deactivate:
+        #    name = "//" + name
+        #
+        #new_section = ['\n\n[' + name + ']\n']
+        #already_handled = []
+        #
+        #for line in section[1:]:
+        #    line_param = re.search("(.*)=(.*)", line)
+        #
+        #    if line_param is not None:
+        #        value = line_param.group(2).strip()
+        #        param = line_param.group(1).strip()
+        #
+        #        if 'share_' + param in self.__params:
+        #            line = "\t" + param + " = " + self.__params.get("share_" + param) + "\n"
+        #        else:
+        #            line = "\t" + param + " = " + value + "\n"
+        #            
+        #        print param
+        #            
+        #        already_handled.append('share_' + param)
+        #            
+        #    if deactivate:
+        #        line = "#" + line
+        #
+        #    new_section.append(line)
+        #        
+        #for param in self.__params:
+        #    if param.startswith('share_') and param not in already_handled:
+        #        value = self.__params.get(param)
+        #        
+        #        if len(value) > 0:
+        #            param = param[6:].replace('_', ' ')
+        #            
+        #            line = "\t" + param + " = " + value + "\n"
+        #            new_section.append(line)
 
         return new_section
     
