@@ -265,10 +265,10 @@ class ShareBackendClassic():
         return position
     
     def store(self, is_new=False):
-        pos = self.__get_section_position(self.__params.get("old_share_name", ""))
+        pos = self.__get_section_position(self.__share_old_name)
         section = self.__smbconf_content[pos['start']:pos['end']]
         
-        new_section = self.__recreate_section(self.__params.get("name", ""), section)
+        new_section = self.__recreate_section(self.__share_name, section)
         
         before = self.__smbconf_content[0:pos['start'] - 1]
         after = self.__smbconf_content[pos['end']:]
@@ -278,7 +278,7 @@ class ShareBackendClassic():
         return True
     
     def delete(self):
-        pos = self.__get_section_position(self.__params["name"])
+        pos = self.__get_section_position(self.__share_name)
 
         before = self.__smbconf_content[0:pos['start'] - 1]
         after = self.__smbconf_content[pos['end']:]
@@ -292,7 +292,7 @@ class ShareBackendClassic():
         new_name = "copy of " + self.__params["name"]
                 
         if not self.__share_name_exists(new_name):
-            pos = self.__get_section_position(self.__params["name"])
+            pos = self.__get_section_position(self.__share_name)
             section = self.__smbconf_content[pos['start']:pos['end']]
             
             new_section = self.__recreate_section(new_name, section)
@@ -307,11 +307,11 @@ class ShareBackendClassic():
         return False
     
     def toggle(self):
-        if self.__share_name_exists(self.__params["name"]):
-            pos = self.__get_section_position(self.__params["name"])
+        if self.__share_name_exists(self.__share_name):
+            pos = self.__get_section_position(self.__share_name)
             section = self.__smbconf_content[pos['start']:pos['end']]
             
-            new_section = self.__recreate_section(self.__params["name"],
+            new_section = self.__recreate_section(self.__share_name,
                                                                 section, True)
         
             before = self.__smbconf_content[0:pos['start'] - 1]
