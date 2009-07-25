@@ -64,25 +64,37 @@
 		<ol class="col-2">
 		    <li>
 			<p class="option-help">${_('If checked, passwords are not needed for this share.')}</p>
-                        ${h.checkbox('share_guest_ok', 1, c.samba_lp.get("guest ok", share), id='share-guest-ok', class_='big-margin')}
+                        
+                        ${h.hidden('share_guest_ok', 'no')}
+                        ${h.checkbox('share_guest_ok', 'yes', c.samba_lp.get("guest ok", share), id='share-guest-ok', class_='big-margin')}
+                        
                         <label class="checkbox" for="share-guest-ok" title="${_('Check to make this Share Public')}">${_('Public?')}</label>                                    
 		    </li>
 		    
 		    <li>
 			<p class="option-help">${_('Allows a share to be announced in browse lists.')}</p>
-                        ${h.checkbox('share_browsable', 1, c.samba_lp.get("browsable", share), id='share-browsable', class_='big-margin')}
+                        
+                        ${h.hidden('share_browsable', 'no')}
+                        ${h.checkbox('share_browsable', 'yes', c.samba_lp.get("browsable", share), id='share-browsable', class_='big-margin')}
+                        
 			<label class="checkbox" for="share-browsable" title="${_('Check to make this share Browsable')}">${_('Browsable?')}</label>
 		    </li>
 		    
 		    <li>
 			<p class="option-help">${_('Sets a share to read-only.')}</p>
-                        ${h.checkbox('share_read_only', 1, c.samba_lp.get("browsable", share), id='share-read-only', class_='big-margin')}
+                        
+                        ${h.hidden('share_read_only', 'no')}
+                        ${h.checkbox('share_read_only', 'yes', c.samba_lp.get("browsable", share), id='share-read-only', class_='big-margin')}
+                        
 			<label class="checkbox" for="share-read-only" title="${_('Check to make this Share Read Only')}">${_('Read Only?')}</label>
 		    </li>
                     
 		    <li>
 			<p class="option-help">${_('Forces user of a share to do so as the guest account')}</p>
+                        
+                        ${h.hidden('share_guest_only', 'no')}
                         ${h.checkbox('share_guest_only', 1, c.samba_lp.get("guest only", share), id='share-guest-only', class_='big-margin')}
+                        
 			<label class="checkbox" for="share-guest-only" title="${_('Check to make this Share Guest Only')}">${_('Guest Only?')}</label>
 		    </li>                
 		</ol>
@@ -96,14 +108,16 @@
 			<p class="option-help">${_('Sets the maximum allowable permissions for new files (e.g., 0755). See also directory mask. To require certain permissions to be set, see force create mask/force directory mask.')}</p>
                         <p class="field-title">${_('Create Mask')}</p>
                         
-                        ${permission_zone('share_create_mask', 'create-mask')}
+                        ${permission_zone('create_mask', 'create-mask')}
+                        ${h.hidden('share_create_mask', '')}
 		    </li>
 		    
 		    <li>                                    
 			<p class="option-help">${_('Also called directory mode. Sets the maximum allowable permissions for newly created directories. To require certain permissions be set, see the force create mask and force directory mask options')}</p>
 			<p class="field-title">${_('Directory Mask')}</p>
 			
-                        ${permission_zone('share_directory_mask', 'directory-mask')}
+                        ${permission_zone('directory_mask', 'directory-mask')}
+                        ${h.hidden('share_directory_mask', '')}
 		    </li>
 		</ol>                            
 	    </li>
