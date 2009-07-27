@@ -251,16 +251,18 @@ class ShareBackendClassic():
         position['end'] = -1
         
         line_number = position['start'] + 1
-        found = True
 
         for line in self.__smbconf_content[line_number:]:
-            m = re.search("\[(.*)\]", line)
+            m = re.search("\[(.+)\]", line)
             
-            if m is not None and found:
+            if m is not None:
                 position['end'] = line_number - 1
                 break
             
             line_number = line_number + 1
+            
+        if position['end'] == -1:
+            position['end'] = len(self.__smbconf_content)
 
         return position
     
@@ -338,7 +340,7 @@ class ShareBackendClassic():
         #   for example
         #
         for line in section[1:]:
-            line_param = re.search("(.*)=(.*)", line)
+            line_param = re.search("(.+)=(.+)", line)
             
             if line_param is not None:
                 param = line_param.group(1).strip()
