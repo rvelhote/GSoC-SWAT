@@ -101,15 +101,7 @@
 		<ol class="col-2">
 		    <li>${put("guest-ok")}</li>
 		    <li>${put("browsable")}</li>
-		    
-		    <li>
-			<p class="option-help">${_('Sets a share to read-only.')}</p>
-                        
-                        ${h.hidden('share_read_only', 'no')}
-                        ${h.checkbox('share_read_only', 'yes', c.samba_lp.get("read only", share), id='share-read-only', class_='big-margin')}
-                        
-			<label class="checkbox" for="share-read-only" title="${_('Check to make this Share Read Only')}">${_('Read Only?')}</label>
-		    </li>
+		    <li>${put("read-only")}</li>
                     
 		    <li>
 			<p class="option-help">${_('Forces user of a share to do so as the guest account')}</p>
@@ -245,7 +237,15 @@
                             <li><a title="${_('Add this Host')}" href="#" onclick="userGroup.addManual('share-insert-deny-hosts', 'denied-hosts-list');return false;"><img src="/default/images/icons/plus-small.png" alt="${_('Add User/Group Icon')}" /></a></li>
 			</ol>
 
-                        ${h.hidden('share_hosts_deny', c.samba_lp.get("hosts deny", share), id='denied-hosts-list-textbox')}
+                        <%
+                        
+                        hosts_deny = ""
+                        if len(c.samba_lp.get("hosts deny", share)) > 0:
+                            hosts_deny = ", ".join(["%s" % value for value in c.samba_lp.get("hosts deny", share)])
+                        
+                        %>
+
+                        ${h.hidden('share_hosts_deny', hosts_deny, id='denied-hosts-list-textbox')}
 			
 			<ul id="denied-hosts-list" class="user-list">
 			</ul>

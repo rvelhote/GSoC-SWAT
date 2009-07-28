@@ -58,3 +58,16 @@ browsable:
     class: big-margin
     id: share-browsable
     
+
+#
+#   Browsable
+#
+read-only:
+    type: checkbox
+    help: 'Sets a share to read-only.'
+    title: 'Check to make this Share Read Only'
+    name: share_read_only
+    label: 'Read Only?'
+    class: big-margin
+    id: share-read-only
+    
