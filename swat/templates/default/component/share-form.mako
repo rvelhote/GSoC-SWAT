@@ -100,15 +100,7 @@
 		
 		<ol class="col-2">
 		    <li>${put("guest-ok")}</li>
-		    
-		    <li>
-			<p class="option-help">${_('Allows a share to be announced in browse lists.')}</p>
-                        
-                        ${h.hidden('share_browsable', 'no')}
-                        ${h.checkbox('share_browsable', 'yes', c.samba_lp.get("browsable", share), id='share-browsable', class_='big-margin')}
-                        
-			<label class="checkbox" for="share-browsable" title="${_('Check to make this share Browsable')}">${_('Browsable?')}</label>
-		    </li>
+		    <li>${put("browsable")}</li>
 		    
 		    <li>
 			<p class="option-help">${_('Sets a share to read-only.')}</p>

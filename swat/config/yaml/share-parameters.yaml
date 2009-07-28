@@ -56,4 +56,5 @@ browsable:
     name: share_browsable
     label: 'Browsable?'
     class: big-margin
+    id: share-browsable
     
