@@ -216,10 +216,26 @@
 			<ol class="field-ops">
                             <li><a title="${_('Add this Host')}" href="#" onclick="userGroup.addManual('share-insert-allowed-hosts', 'allowed-hosts-list');return false;"><img src="/default/images/icons/plus-small.png" alt="${_('Add User/Group Icon')}" /></a></li>
 			</ol>
+                        
+                        <%
+                        
+                        hosts_allow = ""
+                        if len(c.samba_lp.get("hosts allow", share)) > 0:
+                            hosts_allow = ", ".join(["%s" % value for value in c.samba_lp.get("hosts allow", share)])
+                        
+                        %>
 			
-                        ${h.hidden('share_hosts_allow', c.samba_lp.get("hosts allow", share), id='allowed-hosts-list-textbox')}
+                        ${h.hidden('share_hosts_allow', hosts_allow, id='allowed-hosts-list-textbox')}
 			
 			<ul id="allowed-hosts-list" class="user-list">
+                            <% i = 1 %>
+                            % for host in c.samba_lp.get("hosts allow", share):
+                                <li>
+                                    <a class="delete-link" id="delete-allowed-hosts-list-${i}" title="Remove this item from the list" href="#">${host}</a>
+                                </li>
+                                
+                                <% i = i + 1 %>
+                            % endfor
 			</ul>
 			
 			<div class="clear-both"></div>
@@ -248,6 +264,14 @@
                         ${h.hidden('share_hosts_deny', hosts_deny, id='denied-hosts-list-textbox')}
 			
 			<ul id="denied-hosts-list" class="user-list">
+                            <% i = 1 %>
+                            % for host in c.samba_lp.get("hosts deny", share):
+                                <li>
+                                    <a class="delete-link" id="delete-denied-hosts-list-${i}" title="Remove this item from the list" href="#">${host}</a>
+                                </li>
+                                
+                                <% i = i + 1 %>
+                            % endfor
 			</ul>
 			
 			<div class="clear-both"></div>

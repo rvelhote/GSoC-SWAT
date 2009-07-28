@@ -128,10 +128,24 @@ var ItemList = new Class({
     },
     
     initialize: function(options) {
-        this.setOptions(options);        
+        this.setOptions(options);
+        this.addRemoveEvent();
         this.request = new Request.HTML({
             update: this.options.element
         });
+    },
+    
+    addRemoveEvent: function() {
+        elements = $$("a.delete-link");
+        
+        if(elements) {
+            elements.each(function(a, i) {
+                a.addEvent('click', function(ev) {
+                    event = new Event(ev).stop();
+                    this.remove(ev.target);
+                }.bind(this));
+            }.bind(this));
+        }
     },
     
     effect: function(id, type) {
@@ -248,7 +262,6 @@ var ItemList = new Class({
         var elements = null;
         
         if(area && list && name.length > 0) {
-            console.log(area.getProperty("value"));
             if(operation == "add") {
                 area.setProperty("value", name +  "," + area.getProperty("value"));
             } else if(operation == "rem") {
