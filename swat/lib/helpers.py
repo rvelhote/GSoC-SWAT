@@ -212,6 +212,19 @@ class YamlConfig:
                 return ""
 
         return value
+    
+class ParamConfiguration(YamlConfig):
+    def __init__(self, filename):
+        filename = '%s' % (filename)
+        self.y_load(filename)
+        
+    def get_param(self, id):
+        tree = ('%s') % id
+        return self.y_get(tree)
+        
+    def get_value(self, id, tree):
+        tree = ('%s/%s') % (id, tree)
+        return self.y_get(tree)
 
 class ControllerConfiguration(YamlConfig):
     def __init__(self, controller, action='index'):
