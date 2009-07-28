@@ -23,7 +23,7 @@ from swat.lib.base import BaseController, render
 from pylons.templating import render_mako_def
 from pylons.i18n.translation import _
 from swat.lib.helpers import ControllerConfiguration, DashboardConfiguration, \
-BreadcrumbTrail, swat_messages
+BreadcrumbTrail, swat_messages, ParamConfiguration
 
 log = logging.getLogger(__name__)
 
@@ -81,6 +81,7 @@ class ShareController(BaseController):
         name -- the share name to load the information from
         
         """
+        c.p = ParamConfiguration('share-parameters')
         c.share_name = name
         return render('/default/derived/edit-share.mako')
         
