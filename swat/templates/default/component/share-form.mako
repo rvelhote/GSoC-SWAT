@@ -16,8 +16,49 @@
         % endfor
     </ul>
 </%def>
+    
+<%def name="help(id)">
+    <p class="option-help">${c.p.get_value(id, "help")}</p>
+</%def>
+
+<%doc>Text</%doc>
+<%def name="text(id, value)">
+    <label for="${c.p.get_value(id, "id")}" title="${c.p.get_value(id, "title")}">${c.p.get_value(id, "label")}:</label>
+    ${h.text(c.p.get_value(id, "name"), value, id=c.p.get_value(id, "id"), class_=c.p.get_value(id, "class"))}
+</%def>
+    
+<%doc>Boolean</%doc>
+<%def name="checkbox(id, value)">
+    ${h.hidden(c.p.get_value(id, "name"), 'no')}
+    ${h.checkbox(c.p.get_value(id, "name"), 'yes', value, id=c.p.get_value(id, "id"), class_=c.p.get_value(id, "class"))}
+    <label class="checkbox" for="${c.p.get_value(id, "id")}" title="${c.p.get_value(id, "title")}">${c.p.get_value(id, "label")}</label>                                    
+</%def>
+    
+<%doc>Choose which type to call</%doc>
+<%def name="put(id, param_value=None)">
+<%
+    type = c.p.get_value(id, "type")
+    
+    param_name = id.replace('-', '')
+    param_value = param_value or c.samba_lp.get(param_name, c.share_name)
+
+    help(id)
+
+    if type == "text":    
+        text(id, param_value)
+    elif type == "checkbox":
+        checkbox(id, param_value)
+%> 
+</%def>
 
 <%def name="write(share='')">
+<%
+
+    
+    
+    
+
+%>
 
     ${h.form('', method="post", id="share-form", class_="share-configuration")}
         <ol class="tab-list">
@@ -41,11 +82,7 @@
         <ul class="tab-list-items"> 
 	    <li id="content-tab1" class="active tab">
 		<ol class="col-1">
-		    <li>
-			<p class="option-help">${_('Set the Share Name')}</p>
-			<label for="share-name" title="Set this Share's Name">${_('Name')}:</label>
-                        ${h.text("name", share, id="share-name", class_='big-text')}
-		    </li>
+		    <li>${put("name", c.share_name)}</li>
 		    
 		    <li>
                         <p class="option-help">${_("Sets the path to the directory provided by a file share or used by a printer share. Set automatically in [homes] share to user\'s home directory, otherwise defaults to  /tmp. Honors the %u (user) and %m (machine) variables.")}</p>
@@ -62,14 +99,7 @@
 		</ol>
 		
 		<ol class="col-2">
-		    <li>
-			<p class="option-help">${_('If checked, passwords are not needed for this share.')}</p>
-                        
-                        ${h.hidden('share_guest_ok', 'no')}
-                        ${h.checkbox('share_guest_ok', 'yes', c.samba_lp.get("guest ok", share), id='share-guest-ok', class_='big-margin')}
-                        
-                        <label class="checkbox" for="share-guest-ok" title="${_('Check to make this Share Public')}">${_('Public?')}</label>                                    
-		    </li>
+		    <li>${put("guest-ok")}</li>
 		    
 		    <li>
 			<p class="option-help">${_('Allows a share to be announced in browse lists.')}</p>
@@ -222,7 +252,7 @@
 			<ol class="field-ops">
                             <li><a title="${_('Add this Host')}" href="#" onclick="userGroup.addManual('share-insert-deny-hosts', 'denied-hosts-list');return false;"><img src="/default/images/icons/plus-small.png" alt="${_('Add User/Group Icon')}" /></a></li>
 			</ol>
-			
+
                         ${h.hidden('share_hosts_deny', c.samba_lp.get("hosts deny", share), id='denied-hosts-list-textbox')}
 			
 			<ul id="denied-hosts-list" class="user-list">
