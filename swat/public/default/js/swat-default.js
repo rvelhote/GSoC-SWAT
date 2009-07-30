@@ -44,11 +44,25 @@ var TabGroup = new Class({
         
         var tabContainers = $$('.' + this.options.tabGroupClass);
         var children = null;
+        var clickedTabContent = null;
 
         tabContainers.each(function(el) {
             children = el.getChildren("li");
             
             children.each(function(c) {
+                
+                clickedTabContent = $("content-" + c.getProperty("id"));
+                
+                if(clickedTabContent) {
+                    if(Cookie.read(getCurrentUri() + "-tab") == c.getProperty("id")) {
+                        c.addClass("active");
+                        clickedTabContent.addClass("active");
+                    } else {
+                        c.removeClass("active");
+                        clickedTabContent.removeClass("active");
+                    }
+                }
+                
                 c.addEvent("click", function(event) {
                     event = new Event(event).preventDefault()
                     tabs.activateTab(this.getProperty("id"));
@@ -66,6 +80,8 @@ var TabGroup = new Class({
             if(clickedTab && clickedTabContent) {
                 clickedTab.addClass("active");
                 clickedTabContent.addClass("active");
+                
+                Cookie.write(getCurrentUri() + "-tab", clickedTab.getProperty("id"), {duration: 1});
         
                 var tabList = clickedTab.getParent().getChildren();
                 var numTabs = tabList.length;
@@ -267,3 +283,8 @@ var ItemList = new Class({
         }
     }
 });
+
+function getCurrentUri() {
+    var uri = new URI(window.location);
+    return uri.toRelative();
+}
