@@ -142,6 +142,7 @@ var ItemList = new Class({
             elements.each(function(a, i) {
                 a.addEvent('click', function(ev) {
                     event = new Event(ev).stop();
+                    this.options.copyTo = ev.target.getParent().getParent().getProperty("id");
                     this.remove(ev.target);
                 }.bind(this));
             }.bind(this));
@@ -170,21 +171,11 @@ var ItemList = new Class({
         if(name.length == 0) {
             return;
         }
-        
-        /**
-         *  Type is 'Group'
-         */
+
         if(type == "g") {
             name = "@" + name;
         }
-        
-        /**
-         *  Type is Hostname
-         */
-        if(type == "h") {
-            
-        }
-        
+
         if(this.exists(name)) {
             alert("Already Exists!");
             return;
@@ -198,6 +189,7 @@ var ItemList = new Class({
 
         newAnchor.addEvent('click', function(ev) {
             event = new Event(ev).stop();
+            this.options.copyTo = ev.target.getParent().getParent().getProperty("id");
             this.remove(ev.target);
         }.bind(this));
         
@@ -205,7 +197,7 @@ var ItemList = new Class({
         newLi.injectInside($(this.options.copyTo));
         
         this.effect(newElementId, "add");
-        this.updateHiddenList(name, "add");
+        this.updateHiddenList("add");
     },
     
     addManual: function(from, to) {
@@ -232,8 +224,8 @@ var ItemList = new Class({
         
         if(element) {
             this.effect(id, "remove");
-            this.updateHiddenList(element.get("text"), "rem")
             element.getParent().dispose();
+            this.updateHiddenList("rem")
         }
     },
     
@@ -256,17 +248,22 @@ var ItemList = new Class({
         return exists;
     },
     
-    updateHiddenList: function(name, operation) {
+    updateHiddenList: function(operation) {
         var area = $(this.options.copyTo + "-textbox");
         var list = $(this.options.copyTo);
         var elements = null;
-        
-        if(area && list && name.length > 0) {
-            if(operation == "add") {
-                area.setProperty("value", name +  "," + area.getProperty("value"));
-            } else if(operation == "rem") {
-                area.setProperty("value", area.getProperty("value").replace(name + ",", ''));
-            }
+
+        if(area && list) {
+            links = list.getElements("li a");
+            area.setProperty("value", "");
+            
+            links.each(function(link, i) {
+                console.log(link);
+                area.setProperty("value", area.getProperty("value") + "," + link.get("text"));
+            });
+            
+            
+            area.setProperty("value", area.getProperty("value").substring(1));
         }
     }
 });

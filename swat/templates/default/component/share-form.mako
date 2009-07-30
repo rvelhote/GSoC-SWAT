@@ -220,7 +220,7 @@
                         <%
                         
                         hosts_allow = ""
-                        if len(c.samba_lp.get("hosts allow", share)) > 0:
+                        if c.samba_lp.get("hosts allow", share) and  len(c.samba_lp.get("hosts allow", share)) > 0:
                             hosts_allow = ", ".join(["%s" % value for value in c.samba_lp.get("hosts allow", share)])
                         
                         %>
@@ -228,14 +228,16 @@
                         ${h.hidden('share_hosts_allow', hosts_allow, id='allowed-hosts-list-textbox')}
 			
 			<ul id="allowed-hosts-list" class="user-list">
-                            <% i = 1 %>
-                            % for host in c.samba_lp.get("hosts allow", share):
-                                <li>
-                                    <a class="delete-link" id="delete-allowed-hosts-list-${i}" title="Remove this item from the list" href="#">${host}</a>
-                                </li>
-                                
-                                <% i = i + 1 %>
-                            % endfor
+                            % if  c.samba_lp.get("hosts allow", share):
+                                <% i = 1 %>
+                                % for host in c.samba_lp.get("hosts allow", share):
+                                    <li>
+                                        <a class="delete-link" id="delete-allowed-hosts-list-${i}" title="Remove this item from the list" href="#">${host}</a>
+                                    </li>
+                                    
+                                    <% i = i + 1 %>
+                                % endfor
+                            % endif
 			</ul>
 			
 			<div class="clear-both"></div>
@@ -256,7 +258,7 @@
                         <%
                         
                         hosts_deny = ""
-                        if len(c.samba_lp.get("hosts deny", share)) > 0:
+                        if c.samba_lp.get("hosts deny", share) and len(c.samba_lp.get("hosts deny", share)) > 0:
                             hosts_deny = ", ".join(["%s" % value for value in c.samba_lp.get("hosts deny", share)])
                         
                         %>
@@ -264,14 +266,16 @@
                         ${h.hidden('share_hosts_deny', hosts_deny, id='denied-hosts-list-textbox')}
 			
 			<ul id="denied-hosts-list" class="user-list">
-                            <% i = 1 %>
-                            % for host in c.samba_lp.get("hosts deny", share):
-                                <li>
-                                    <a class="delete-link" id="delete-denied-hosts-list-${i}" title="Remove this item from the list" href="#">${host}</a>
-                                </li>
-                                
-                                <% i = i + 1 %>
-                            % endfor
+                            % if  c.samba_lp.get("hosts deny", share):
+                                <% i = 1 %>
+                                % for host in c.samba_lp.get("hosts deny", share):
+                                    <li>
+                                        <a class="delete-link" id="delete-denied-hosts-list-${i}" title="Remove this item from the list" href="#">${host}</a>
+                                    </li>
+                                    
+                                    <% i = i + 1 %>
+                                % endfor
+                            % endif
 			</ul>
 			
 			<div class="clear-both"></div>
