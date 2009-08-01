@@ -49,25 +49,26 @@ var TabGroup = new Class({
         tabContainers.each(function(el) {
             children = el.getChildren("li");
             
-            children.each(function(c) {
-                
-                clickedTabContent = $("content-" + c.getProperty("id"));
-                
-                if(clickedTabContent) {
-                    if(Cookie.read(getCurrentUri() + "-tab") == c.getProperty("id")) {
-                        c.addClass("active");
-                        clickedTabContent.addClass("active");
-                    } else {
-                        c.removeClass("active");
-                        clickedTabContent.removeClass("active");
+            if(children) {         
+                children.each(function(c) {
+                    clickedTabContent = $("content-" + c.getProperty("id"));
+                    
+                    if(clickedTabContent && Cookie.read(getCurrentUri() + "-tab")) {
+                        if(Cookie.read(getCurrentUri() + "-tab") == c.getProperty("id")) {
+                            c.addClass("active");
+                            clickedTabContent.addClass("active");
+                        } else {
+                            c.removeClass("active");
+                            clickedTabContent.removeClass("active");
+                        }
                     }
-                }
-                
-                c.addEvent("click", function(event) {
-                    event = new Event(event).preventDefault()
-                    tabs.activateTab(this.getProperty("id"));
+                    
+                    c.addEvent("click", function(event) {
+                        event = new Event(event).preventDefault()
+                        tabs.activateTab(this.getProperty("id"));
+                    });
                 });
-            });
+            }
         });
     },
     
