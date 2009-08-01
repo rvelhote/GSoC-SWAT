@@ -1,22 +1,3 @@
-<%def name="permission_zone(name, id)">
-    <% permissions = [["0", _("None")], ["4", _("Read Only")], ["2", _("Write Only")], ["6", _("Read and Write")]]%>
-    <% permissionGroups = [[_("Owner Can"), "owner", 6, 1], [_("Group Members Can"), "group", 4, 1], [_("Everyone Else Can"), "world", 4, 1]] %>
-    
-    <ul class="permissions-selection">
-        % for grp in permissionGroups:
-            <li>
-                <label for="${id}-${grp[1]}-rw">${grp[0]}:</label>                                
-                ${h.select(name + "_" + grp[1] + "_rw", grp[2], permissions, style="float:left;font-size:85%;", id=id + "-" + grp[1] + "-rw")}
-    
-                <span>
-                    ${h.checkbox(name + "_" + grp[1] + '_x', grp[3], True, style="margin-left:15px;", id=id + "-" + grp[1] + '-x')}
-                    <label class="checkbox" for="${id}-${grp[1]}-x">${_('Execute?')}</label>
-                </span>
-            </li>
-        % endfor
-    </ul>'
-</%def>
-
 <%doc>Help Text Associated with this Parameter</%doc>
 <%def name="help(id, no_margin=False)">
     <% extra_class = "" %>
@@ -156,15 +137,7 @@
 	    <li id="content-tab2">                            
 		<ol class="col-1">
 		    <li>${put("create-mask")}</li>
-                    
-		    
-		    <li>                                    
-			<p class="option-help">${_('Also called directory mode. Sets the maximum allowable permissions for newly created directories. To require certain permissions be set, see the force create mask and force directory mask options')}</p>
-			<p class="field-title">${_('Directory Mask')}</p>
-			
-                        ${permission_zone('directory_mask', 'directory-mask')}
-                        ${h.hidden('share_directory_mask', '')}
-		    </li>
+                    <li>${put("directory-mask")}</li>
 		</ol>                            
 	    </li>
 	    

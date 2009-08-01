@@ -85,7 +85,7 @@ guest-only:
     disabled: True
 
 #
-#
+#   Create Mask
 #
 create-mask:
     type: permissions
@@ -93,3 +93,13 @@ create-mask:
     title: 'Create Mask'
     name: share_create_mask
     permissions-name: create_mask
+    
+#
+#   Directory Mask
+#
+directory-mask:
+    type: permissions
+    help: 'Also called directory mode. Sets the maximum allowable permissions for newly created directories. To require certain permissions be set, see the force create mask and force directory mask options'
+    title: 'Directory Mask'
+    name: share_directory_mask
+    permissions-name: directory_mask
