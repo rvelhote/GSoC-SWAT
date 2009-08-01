@@ -121,15 +121,7 @@
 		    <li>${put("guest-ok")}</li>
 		    <li>${put("browsable")}</li>
 		    <li>${put("read-only")}</li>
-                    
-		    <li>
-			<p class="option-help">${_('Forces user of a share to do so as the guest account')}</p>
-                        
-                        ${h.hidden('share_guest_only', 'no')}
-                        ${h.checkbox('share_guest_only', 1, c.samba_lp.get("guest only", share), id='share-guest-only', class_='big-margin')}
-                        
-			<label class="checkbox" for="share-guest-only" title="${_('Check to make this Share Guest Only')}">${_('Guest Only?')}</label>
-		    </li>                
+                    <li>${put("guest-only")}</li>
 		</ol>
 		
 		<div class="clear-both"></div>
