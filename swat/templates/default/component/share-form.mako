@@ -55,7 +55,7 @@
 <%
     type = c.p.get_value(id, "type")
     
-    param_name = id.replace('-', '')
+    param_name = id.replace('-', ' ')
     param_value = param_value or c.samba_lp.get(param_name, c.share_name)
     
     help(id, c.p.get_value(id, "disabled"))
