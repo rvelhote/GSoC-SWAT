@@ -84,3 +84,12 @@ guest-only:
     id: share-guest-only
     disabled: True
 
+#
+#
+#
+create-mask:
+    type: permissions
+    help: 'Sets the maximum allowable permissions for new files (e.g., 0755). See also directory mask. To require certain permissions to be set, see force create mask/force directory mask.'
+    title: 'Create Mask'
+    name: share_create_mask
+    permissions-name: create_mask
