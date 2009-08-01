@@ -14,7 +14,7 @@
                 </span>
             </li>
         % endfor
-    </ul>
+    </ul>'
 </%def>
 
 <%doc>Help Text Associated with this Parameter</%doc>
@@ -44,6 +44,31 @@
     <label class="checkbox" for="${c.p.get_value(id, "id")}" title="${c.p.get_value(id, "title")}">${c.p.get_value(id, "label")}</label>                                    
 </%def>
     
+<%doc></%doc>
+<%def name="permissions(id, value)">
+    <p class="field-title">${c.p.get_value(id, "title")}</p>
+    
+    <% permissions = [["0", _("Do Nothing")], ["4", _("Read Only")], ["2", _("Write Only")], ["6", _("Read and Write")]]%>
+    <% permissionGroups = [[_("Owner Can"), "owner", 6, 1], [_("Group Members Can"), "group", 4, 1], [_("Everyone Else Can"), "world", 4, 1]] %>
+    <% name = c.p.get_value(id, 'permissions-name') %>
+    
+    <ul class="permissions-selection">
+        % for grp in permissionGroups:
+            <li>
+                <label for="${id}-${grp[1]}-rw">${grp[0]}:</label>                                
+                ${h.select(name + "_" + grp[1] + "_rw", grp[2], permissions, style="float:left;font-size:85%;", id=id + "-" + grp[1] + "-rw")}
+    
+                <span>
+                    ${h.checkbox(name + "_" + grp[1] + '_x', grp[3], True, style="margin-left:15px;", id=id + "-" + grp[1] + '-x')}
+                    <label class="checkbox" for="${id}-${grp[1]}-x">${_('Execute?')}</label>
+                </span>
+            </li>
+        % endfor
+    </ul>
+
+    ${h.hidden(c.p.get_value(id, 'name'), value)}
+</%def>
+    
 <%doc>Choose which type to call</%doc>
 <%def name="put(id, param_value=None)">
 <%
@@ -51,7 +76,6 @@
     
     param_name = id.replace('-', '')
     param_value = param_value or c.samba_lp.get(param_name, c.share_name)
-    
     
     help(id, c.p.get_value(id, "disabled"))
     
@@ -67,6 +91,8 @@
         text(id, param_value)
     elif type == "checkbox":
         checkbox(id, param_value)
+    elif type == "permissions":
+        permissions(id, param_value)
 %> 
 </%def>
 
@@ -129,13 +155,8 @@
 	    
 	    <li id="content-tab2">                            
 		<ol class="col-1">
-		    <li>                                    
-			<p class="option-help">${_('Sets the maximum allowable permissions for new files (e.g., 0755). See also directory mask. To require certain permissions to be set, see force create mask/force directory mask.')}</p>
-                        <p class="field-title">${_('Create Mask')}</p>
-                        
-                        ${permission_zone('create_mask', 'create-mask')}
-                        ${h.hidden('share_create_mask', '')}
-		    </li>
+		    <li>${put("create-mask")}</li>
+                    
 		    
 		    <li>                                    
 			<p class="option-help">${_('Also called directory mode. Sets the maximum allowable permissions for newly created directories. To require certain permissions be set, see the force create mask and force directory mask options')}</p>
