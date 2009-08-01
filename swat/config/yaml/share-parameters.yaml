@@ -45,6 +45,7 @@ guest-ok:
     label: 'Public?'
     class: big-margin
     id: share-guest-ok
+    disabled: True
 
 #
 #   Browsable
