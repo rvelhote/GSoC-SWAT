@@ -58,17 +58,29 @@ browsable:
     label: 'Browsable?'
     class: big-margin
     id: share-browsable
-    
 
 #
-#   Browsable
+#   Read Only
 #
 read-only:
     type: checkbox
-    help: 'Sets a share to read-only.'
+    help: 'Forces user of a share to do so as the guest account.'
     title: 'Check to make this Share Read Only'
     name: share_read_only
     label: 'Read Only?'
     class: big-margin
     id: share-read-only
     
+#
+#   Guest Only
+#
+guest-only:
+    type: checkbox
+    help: 'Sets a share to read-only.'
+    title: 'Check to make this Share Guest Only'
+    name: share_guest_only
+    label: 'Guest Only?'
+    class: big-margin
+    id: share-guest-only
+    disabled: True
+
