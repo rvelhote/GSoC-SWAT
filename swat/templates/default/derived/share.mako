@@ -70,9 +70,10 @@ ${share_table(c.share_list)}
 		
 		<tr id="row-${i}" title="${_('Edit Share')}" class="${tr_class}">
 		    <td><input onchange="selectShareRow(this);" name="select_share${i}" type="checkbox" id="check-row-${i}" /></td>
-		    <td>${i}</td>
-		    <td class='${home_class}'>${share}</td>
-		    <td>
+		    <td onclick="clickableRow('${h.url_for('share_action', action = 'edit', name = share)}');">${i}</td>
+                    
+		    <td onclick="clickableRow('${h.url_for('share_action', action = 'edit', name = share)}');" class='${home_class}'>${share}</td>
+		    <td onclick="clickableRow('${h.url_for('share_action', action = 'edit', name = share)}');">
 			
 			% if len(c.samba_lp.get('path', share)) > 0:
 			    ${c.samba_lp.get('path', share)}
@@ -80,7 +81,7 @@ ${share_table(c.share_list)}
 			    ${_('No Path Defined or Required')}
 			% endif
 		    </td>
-		    <td>
+		    <td onclick="clickableRow('${h.url_for('share_action', action = 'edit', name = share)}');">
 			% if c.samba_lp.get('comment', share):
 			    ${c.samba_lp.get('comment', share)}
 			% else:

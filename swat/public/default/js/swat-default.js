@@ -305,3 +305,7 @@ function selectShareRow(checkbox) {
         }
     }
 }
+
+function clickableRow(url) {
+    window.location = url;
+}
