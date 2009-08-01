@@ -16,9 +16,19 @@
         % endfor
     </ul>
 </%def>
+
+<%doc>Help Text Associated with this Parameter</%doc>
+<%def name="help(id, no_margin=False)">
+    <% extra_class = "" %>
+    % if no_margin:
+        <% extra_class = "no-margin" %>
+    % endif
     
-<%def name="help(id)">
-    <p class="option-help">${c.p.get_value(id, "help")}</p>
+    <p class="option-help ${extra_class}">${c.p.get_value(id, "help")}</p>
+</%def>
+    
+<%def name="disabled(id)">
+    <p class="disabled-param">${_("This parameter is not yet handled by Samba4!")}</p>
 </%def>
 
 <%doc>Text</%doc>
@@ -41,9 +51,18 @@
     
     param_name = id.replace('-', '')
     param_value = param_value or c.samba_lp.get(param_name, c.share_name)
+    
+    
+    help(id, c.p.get_value(id, "disabled"))
+    
+    if c.p.get_value(id, "disabled") == True:
+        disabled(id)
 
-    help(id)
-
+    #   locals() is not working here otherwise I could just call this once
+    #   based on type
+    #
+    #   TODO: figure out a way to use it for mako defs
+    #
     if type == "text":    
         text(id, param_value)
     elif type == "checkbox":

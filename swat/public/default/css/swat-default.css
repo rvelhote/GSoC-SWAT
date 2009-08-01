@@ -430,6 +430,22 @@ p.option-help {
     background-position:left -1px;
 }
 
+p.option-help.no-margin{
+    margin-bottom:0;
+}
+
+p.disabled-param {
+    font-size:77%;
+    color:#C24E13;
+    
+    margin-bottom:15px;
+    padding-left:15px;
+    
+    background-image:url("../images/icons/cross-small-circle.png");
+    background-repeat:no-repeat;
+    background-position:left -1px;
+}
+
 form.share-configuration label {
     float:left;
     display:block;
