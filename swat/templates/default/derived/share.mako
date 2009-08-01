@@ -68,8 +68,8 @@ ${share_table(c.share_list)}
 		    <% tr_class += " alternate-row " %>
 		% endif
 		
-		<tr title="${_('Edit Share')}" onclick='window.location="${h.url_for('share_action', action = 'edit', name = share)}";' class="${tr_class}">
-		    <td><input name="select_share${i}" type="checkbox"/></td>
+		<tr id="row-${i}" title="${_('Edit Share')}" class="${tr_class}">
+		    <td><input onchange="selectShareRow(this);" name="select_share${i}" type="checkbox" id="check-row-${i}" /></td>
 		    <td>${i}</td>
 		    <td class='${home_class}'>${share}</td>
 		    <td>

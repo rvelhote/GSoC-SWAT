@@ -376,7 +376,7 @@ table.list tbody {
 }
 
 table.list tbody tr:hover {
-    background-color:#E1E3DA;
+    background-color:#E1E3DA !important;
     cursor:pointer;
     color:#484848;
 }
@@ -390,6 +390,9 @@ table.list tfoot td {
     padding-top:10px;
 }
 
+table.list tr.selected-row {
+    background-color:#ffffcc !important;
+}
 
 table.list tr.alternate-row {
     background-color:#f8f8f8;

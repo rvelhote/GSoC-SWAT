@@ -289,3 +289,19 @@ function getCurrentUri() {
     var uri = new URI(window.location);
     return uri.toRelative();
 }
+
+function selectShareRow(checkbox) {
+    var rowId = "";
+    
+    if(checkbox) {
+        rowId = checkbox.id.substring(6);
+        
+        console.log(rowId);
+        
+        if(checkbox.checked) {
+            $(rowId).addClass("selected-row");
+        } else {
+            $(rowId).removeClass("selected-row");
+        }
+    }
+}
