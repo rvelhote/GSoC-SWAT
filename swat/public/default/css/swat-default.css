@@ -486,6 +486,7 @@ ol.col-2 > li {
     width:50%;
     display:block;
     margin-bottom:20px;
+    min-height:70px;
 }
 
 form.share-configuration span.field-with-ops {
