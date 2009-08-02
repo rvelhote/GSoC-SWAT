@@ -49,8 +49,17 @@
     ${h.hidden(c.p.get_value(id, 'name'), value, id=id)}
 </%def>
     
-<%def name="path_selector(id, op)">
-    <a href="${h.url_for(controller=c.p.get_value(id, 'field-ops-descriptor/' + op + '/link/controller'), action=c.p.get_value(id, 'field-ops-descriptor/' + op + '/link/action'))}?copyto=${c.p.get_value(id, 'id')}" class="popup-selector" title="${c.p.get_value(id, 'field-ops-descriptor/' + op + '/title')}"><img src="/default/images/icons/${c.p.get_value(id, 'field-ops-descriptor/' + op + '/image/name')}" alt="${c.p.get_value(id, 'field-ops-descriptor/' + op + '/image/alt')}" /></a>
+<%def name="popup(id, op)">
+    <% copy_to = c.p.get_value(id, 'field-ops-descriptor/' + op + '/link/copy-to') or c.p.get_value(id, 'id') %>
+    <a href="${h.url_for(controller=c.p.get_value(id, 'field-ops-descriptor/' + op + '/link/controller'), action=c.p.get_value(id, 'field-ops-descriptor/' + op + '/link/action'))}?copyto=${copy_to}" class="popup-selector" title="${c.p.get_value(id, 'field-ops-descriptor/' + op + '/title')}"><img src="/default/images/icons/${c.p.get_value(id, 'field-ops-descriptor/' + op + '/image/name')}" alt="${c.p.get_value(id, 'field-ops-descriptor/' + op + '/image/alt')}" /></a>
+</%def>
+    
+<%def name="manual_add(id, op)">
+    <% copy_to = c.p.get_value(id, 'field-ops-descriptor/' + op + '/link/copy-to') or c.p.get_value(id, 'id') %>
+    
+    <a href="#" onclick="userGroup.addManual('share-insert-read-user', 'user-list-read');return false;" title="${c.p.get_value(id, 'field-ops-descriptor/' + op + '/title')}"><img src="/default/images/icons/plus-small.png" alt="${_('Add User/Group Icon')}" /></a>
+    
+    <!-- <a href="${h.url_for(controller=c.p.get_value(id, 'field-ops-descriptor/' + op + '/link/controller'), action=c.p.get_value(id, 'field-ops-descriptor/' + op + '/link/action'))}?copyto=${copy_to}" class="popup-selector"><img src="/default/images/icons/${c.p.get_value(id, 'field-ops-descriptor/' + op + '/image/name')}" alt="${c.p.get_value(id, 'field-ops-descriptor/' + op + '/image/alt')}" /></a> -->
 </%def>
     
 <%def name="field_ops(id, ops)">
@@ -58,18 +67,31 @@
         <ol class="field-ops">
             % for op in ops:
                 <li>
-                    % if op == "path-selection":
-                        <% path_selector(id, op) %>
+                    % if op == "popup":
+                        <% popup(id, op) %>
+                    % elif op == "manual-add":
+                        <% manual_add(id, op) %>
                     % endif
                 </li>
             % endfor
         </ol>
     % endif
 </%def>
+        
+<%def name="list(id, value)">
+    <label for="${c.p.get_value(id, "id")}" title="${c.p.get_value(id, "title")}">${c.p.get_value(id, "label")}:</label>
+    ${h.text('', value, id=c.p.get_value(id, "id"), style="float:left;", class_=c.p.get_value(id, "class"))}
+    
+    <% field_ops(id, c.p.get_value(id, "field-ops")) %>
+    
+    ${h.hidden(c.p.get_value(id, "name"), value, id=c.p.get_value(id, "id") + '-list-textbox')}
+    <ul id="${c.p.get_value(id, "id")}-list" class="user-list"></ul>
+</%def>
     
 <%doc>Choose which type to call</%doc>
 <%def name="put(id, param_value=None)">
     <%
+
     type = c.p.get_value(id, "type")
     
     param_name = id.replace('-', ' ')
@@ -91,8 +113,11 @@
         checkbox(id, param_value)
     elif type == "permissions":
         permissions(id, param_value)
+    elif type == "list":
+        list(id, param_value)
 
-    field_ops(id, c.p.get_value(id, "field-ops"))
+    if type != "list":
+        field_ops(id, c.p.get_value(id, "field-ops"))
     
 %>
 
@@ -152,15 +177,18 @@
 	    
 	    <li id="content-tab3">
 		<ol class="col-1">
-		    <li>                                    
-			<p class="option-help">${_('List of users that are given read-write access to a read-only share.')}</p>
+		    <li>
+                        ${put("read-list")}
+			<!--<p class="option-help">${_('List of users that are given read-write access to a read-only share.')}</p>
 			
 			<span class="field-wrapper">
 			    <label for="share-insert-read-user" title="${_('Select Users/Groups that will have Read Access to this Share')}">${_('Read List')}:</label>
                             ${h.text("", "", id="share-insert-read-user", class_='big-text')}
 			</span>
+                    
+                    -->
 
-			<ol class="field-ops">
+			<!-- <ol class="field-ops">
 			    <li><a title="${_('Add this User/Group')}" href="#" onclick="userGroup.addManual('share-insert-read-user', 'user-list-read');return false;"><img src="/default/images/icons/plus-small.png" alt="${_('Add User/Group Icon')}" /></a></li>
 			    <li><a title="${_('Open User/Group Selection Popup')}" href="${h.url_for(controller='share', action='users_groups')}?copyto=user-list-read" class="popup-selector"><img src="/default/images/icons/users.png" alt="${_('Select Users/Groups Icon')}" /></a></li>
 			</ol>
@@ -168,7 +196,7 @@
                         ${h.hidden('share_read_list', c.samba_lp.get("read list", share), id='user-list-read-textbox')}
 
 			<ul id="user-list-read" class="user-list">
-			</ul>
+			</ul> -->
 			
 			<div class="clear-both"></div>
 		    </li>                    
