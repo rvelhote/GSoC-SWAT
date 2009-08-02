@@ -309,3 +309,17 @@ function selectShareRow(checkbox) {
 function clickableRow(url) {
     window.location = url;
 }
+
+function calcPermissions(base, copyTo) {
+    var owner = $(base + "-owner");
+    var group = $(base + "-group");
+    var world = $(base + "-world");
+    var target = $(copyTo);
+    
+    if(owner && group && world && copyTo) {
+        target.setProperty("value", "0" +
+                                owner.getProperty("value") +
+                                group.getProperty("value") +
+                                world.getProperty("value") + "L");
+    }
+}
