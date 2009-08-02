@@ -178,8 +178,7 @@ write-list:
             link:
                 copy-from: share-insert-write
                 copy-to: share-insert-write-list
-                
-    
+
 #
 #   Admin List
 #
@@ -216,3 +215,28 @@ admin-list:
             link:
                 copy-from: share-insert-admin
                 copy-to: share-insert-admin-list
+
+#
+#   Hosts Allow
+#
+hosts-allow:
+    type: list
+    help: 'A list of machines that can access a share or shares. If NULL (the default) any machine can access the share unless there is a hosts deny option.'
+    title: 'List of Hostnames that will be able to access this Share'
+    name: share_hosts_allow
+    label: 'Allowed Hosts'
+    class: big-text
+    id: share-insert-allowed-hosts
+    
+    field-ops:
+        - manual-add
+
+    field-ops-descriptor:
+        manual-add:
+            title: 'Add this Host. Separate by , to add more than one'
+            image:
+                name: plus-small.png
+                alt: 'Add Host Icon'
+            link:
+                copy-from: share-insert-allowed-hosts
+                copy-to: share-insert-allowed-hosts-list

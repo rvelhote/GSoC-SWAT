@@ -77,12 +77,29 @@
         
 <%def name="list(id, value)">
     <label for="${c.p.get_value(id, "id")}" title="${c.p.get_value(id, "title")}">${c.p.get_value(id, "label")}:</label>
-    ${h.text('', value, id=c.p.get_value(id, "id"), style="float:left;", class_=c.p.get_value(id, "class"))}
+    ${h.text('', '', id=c.p.get_value(id, "id"), style="float:left;", class_=c.p.get_value(id, "class"))}
     
     <% field_ops(id, c.p.get_value(id, "field-ops")) %>
+    <% list_values = "" %>
+
+    % if value and  len(value) > 0:
+        <% list_values = ", ".join(["%s" % v for v in value]) %>
+    % endif
     
-    ${h.hidden(c.p.get_value(id, "name"), value, id=c.p.get_value(id, "id") + '-list-textbox')}
-    <ul id="${c.p.get_value(id, "id")}-list" class="user-list"></ul>
+    ${h.hidden(c.p.get_value(id, "name"), list_values, id=c.p.get_value(id, "id") + '-list-textbox')}
+    <% list_id = c.p.get_value(id, "id") + "-list" %>
+    
+    <ul id="${list_id}" class="user-list">
+        % if list_values:
+            <% i = 1 %>
+            % for v in value:
+                <li>
+                    <a class="delete-link" id="delete-${list_id}-${i}" title="Remove this item from the list" href="#">${v}</a>
+                </li>
+                <% i = i + 1 %>
+            % endfor
+        % endif
+    </ul>
 </%def>
     
 <%doc>Choose which type to call</%doc>
@@ -182,8 +199,9 @@
 	    
 	    <li id="content-tab4">
                 <ol class="col-1">
-                    <li>
-			<p class="option-help">${_('A list of machines that can access a share or shares. If NULL (the default) any machine can access the share unless there is a hosts deny option.')}</p>
+                    <li>${put("hosts-allow")}</li>
+                        
+			<!-- <p class="option-help">${_('A list of machines that can access a share or shares. If NULL (the default) any machine can access the share unless there is a hosts deny option.')}</p>
 			
 			<span class="field-wrapper">
 			    <label for="share-insert-allowed-hosts" title="${_('List of Hostnames that will be able to access this Share')}">${_('Allowed Hosts')}:</label>
@@ -217,8 +235,8 @@
                             % endif
 			</ul>
 			
-			<div class="clear-both"></div>
-                    </li>
+			<div class="clear-both"></div> -->
+                    
                     
                     <li>
 			<p class="option-help">${_('A list of machines that cannot connect to a share or shares. ')}</p>
