@@ -28,26 +28,25 @@
 <%doc></%doc>
 <%def name="permissions(id, value)">
     <p class="field-title">${c.p.get_value(id, "title")}</p>
-    
-    <% permissions = [["0", _("Do Nothing")], ["4", _("Read Only")], ["2", _("Write Only")], ["6", _("Read and Write")]]%>
+    <% value = oct(value) %>
+
+    <% permissions = [["0", _("Do Nothing")], ["4", _("Read Only")], ["2", _("Write Only")], ["6", _("Read and Write")], ["5", _("Read and Execute")], ["7", _("Read, Write and Execute")]]%>
     <% permissionGroups = [[_("Owner Can"), "owner", 6, 1], [_("Group Members Can"), "group", 4, 1], [_("Everyone Else Can"), "world", 4, 1]] %>
     <% name = c.p.get_value(id, 'permissions-name') %>
     
     <ul class="permissions-selection">
+        <% i = 1 %>
+        
         % for grp in permissionGroups:
             <li>
-                <label for="${id}-${grp[1]}-rw">${grp[0]}:</label>                                
-                ${h.select(name + "_" + grp[1] + "_rw", grp[2], permissions, style="float:left;font-size:85%;", id=id + "-" + grp[1] + "-rw")}
-    
-                <span>
-                    ${h.checkbox(name + "_" + grp[1] + '_x', grp[3], True, style="margin-left:15px;", id=id + "-" + grp[1] + '-x')}
-                    <label class="checkbox" for="${id}-${grp[1]}-x">${_('Execute?')}</label>
-                </span>
+                <label for="${id}-${grp[1]}">${grp[0]}:</label>                                
+                ${h.select(name + "_" + grp[1], value[i], permissions, style="float:left;font-size:85%;", id=id + "-" + grp[1], onchange='calcPermissions("' + id + '", "' + id + '");')}
             </li>
+            <% i = i + 1 %>
         % endfor
     </ul>
 
-    ${h.hidden(c.p.get_value(id, 'name'), value)}
+    ${h.hidden(c.p.get_value(id, 'name'), value, id=id)}
 </%def>
     
 <%doc>Choose which type to call</%doc>
@@ -147,7 +146,7 @@
 			<p class="option-help">${_('List of users that are given read-write access to a read-only share.')}</p>
 			
 			<span class="field-with-ops">
-			    <label for="share-insert-writeuser" title="${_('Select Users/Groups that will have Read Access to this Share')}">${_('Read List')}:</label>
+			    <label for="share-insert-read-user" title="${_('Select Users/Groups that will have Read Access to this Share')}">${_('Read List')}:</label>
                             ${h.text("", "", id="share-insert-read-user", class_='big-text')}
 			</span>
 
