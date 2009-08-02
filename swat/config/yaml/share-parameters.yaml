@@ -23,10 +23,10 @@ path:
     id: share-path
     
     field-ops:
-        - path-selection
+        - popup
 
     field-ops-descriptor:
-        path-selection:
+        popup:
             title: 'Select the Share Location'
             image:
                 name: layer-select-point.png
@@ -104,4 +104,31 @@ directory-mask:
     title: 'Directory Mask'
     name: share_directory_mask
     permissions-name: directory_mask
+    
+#
+#
+#
+read-list:
+    type: list
+    help: 'List of users that are given read-write access to a read-only share.'
+    title: "Select Users/Groups that will have Read Access to this Share"
+    name: share_read_list
+    label: 'Read List'
+    class: big-text
+    id: share-insert-read
+
+    
+    field-ops:
+        - popup
+
+    field-ops-descriptor:
+        popup:
+            title: 'Open User/Group Selection Popup'
+            image:
+                name: users.png
+                alt: 'Select Users/Groups Icon'
+            link:
+                controller: share
+                action: users_groups
+                copy-to: share-insert-read-list
 
