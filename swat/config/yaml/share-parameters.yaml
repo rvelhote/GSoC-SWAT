@@ -240,3 +240,28 @@ hosts-allow:
             link:
                 copy-from: share-insert-allowed-hosts
                 copy-to: share-insert-allowed-hosts-list
+                
+#
+#   Hosts Deny
+#
+hosts-deny:
+    type: list
+    help: 'A list of machines that cannot connect to a share or shares.'
+    title: 'List of Hostnames that will not be able to access this Share'
+    name: share_hosts_deny
+    label: 'Denied Hosts'
+    class: big-text
+    id: share-insert-denied-hosts
+    
+    field-ops:
+        - manual-add
+
+    field-ops-descriptor:
+        manual-add:
+            title: 'Add this Host. Separate by , to add more than one'
+            image:
+                name: plus-small.png
+                alt: 'Add Host Icon'
+            link:
+                copy-from: share-insert-denied-hosts
+                copy-to: share-insert-denied-hosts-list
