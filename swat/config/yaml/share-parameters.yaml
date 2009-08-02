@@ -119,6 +119,7 @@ read-list:
 
     
     field-ops:
+        - manual-add
         - popup
 
     field-ops-descriptor:
@@ -131,4 +132,12 @@ read-list:
                 controller: share
                 action: users_groups
                 copy-to: share-insert-read-list
-
+                
+        manual-add:
+            title: 'Add this User/Group. Separate by , to add more than one'
+            image:
+                name: plus-small.png
+                alt: 'Add User/Group Icon'
+            link:
+                copy-from: share
+                copy-to: share-insert-read-list

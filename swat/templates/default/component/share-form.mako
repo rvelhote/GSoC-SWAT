@@ -56,10 +56,7 @@
     
 <%def name="manual_add(id, op)">
     <% copy_to = c.p.get_value(id, 'field-ops-descriptor/' + op + '/link/copy-to') or c.p.get_value(id, 'id') %>
-    
-    <a href="#" onclick="userGroup.addManual('share-insert-read-user', 'user-list-read');return false;" title="${c.p.get_value(id, 'field-ops-descriptor/' + op + '/title')}"><img src="/default/images/icons/plus-small.png" alt="${_('Add User/Group Icon')}" /></a>
-    
-    <!-- <a href="${h.url_for(controller=c.p.get_value(id, 'field-ops-descriptor/' + op + '/link/controller'), action=c.p.get_value(id, 'field-ops-descriptor/' + op + '/link/action'))}?copyto=${copy_to}" class="popup-selector"><img src="/default/images/icons/${c.p.get_value(id, 'field-ops-descriptor/' + op + '/image/name')}" alt="${c.p.get_value(id, 'field-ops-descriptor/' + op + '/image/alt')}" /></a> -->
+    <a href="#" onclick="userGroup.addManual(${c.p.get_value(id, "id")}, ${copy_to});return false;" title="${c.p.get_value(id, 'field-ops-descriptor/' + op + '/title')}"><img src="/default/images/icons/${c.p.get_value(id, 'field-ops-descriptor/' + op + '/image/name')}" alt="${c.p.get_value(id, 'field-ops-descriptor/' + op + '/image/alt')}" /></a>
 </%def>
     
 <%def name="field_ops(id, ops)">

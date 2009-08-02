@@ -278,8 +278,7 @@ var ItemList = new Class({
                 console.log(link);
                 area.setProperty("value", area.getProperty("value") + "," + link.get("text"));
             });
-            
-            
+
             area.setProperty("value", area.getProperty("value").substring(1));
         }
     }
