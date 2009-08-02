@@ -116,7 +116,7 @@ read-list:
     label: 'Read List'
     class: big-text
     id: share-insert-read
-
+    disabled: True
     
     field-ops:
         - manual-add

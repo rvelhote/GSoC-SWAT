@@ -56,7 +56,7 @@
     
 <%def name="manual_add(id, op)">
     <% copy_to = c.p.get_value(id, 'field-ops-descriptor/' + op + '/link/copy-to') or c.p.get_value(id, 'id') %>
-    <a href="#" onclick="userGroup.addManual(${c.p.get_value(id, "id")}, ${copy_to});return false;" title="${c.p.get_value(id, 'field-ops-descriptor/' + op + '/title')}"><img src="/default/images/icons/${c.p.get_value(id, 'field-ops-descriptor/' + op + '/image/name')}" alt="${c.p.get_value(id, 'field-ops-descriptor/' + op + '/image/alt')}" /></a>
+    <a href="#" onclick="userGroup.addManual('${c.p.get_value(id, "id")}', '${copy_to}');return false;" title="${c.p.get_value(id, 'field-ops-descriptor/' + op + '/title')}"><img src="/default/images/icons/${c.p.get_value(id, 'field-ops-descriptor/' + op + '/image/name')}" alt="${c.p.get_value(id, 'field-ops-descriptor/' + op + '/image/alt')}" /></a>
 </%def>
     
 <%def name="field_ops(id, ops)">
@@ -174,29 +174,7 @@
 	    
 	    <li id="content-tab3">
 		<ol class="col-1">
-		    <li>
-                        ${put("read-list")}
-			<!--<p class="option-help">${_('List of users that are given read-write access to a read-only share.')}</p>
-			
-			<span class="field-wrapper">
-			    <label for="share-insert-read-user" title="${_('Select Users/Groups that will have Read Access to this Share')}">${_('Read List')}:</label>
-                            ${h.text("", "", id="share-insert-read-user", class_='big-text')}
-			</span>
-                    
-                    -->
-
-			<!-- <ol class="field-ops">
-			    <li><a title="${_('Add this User/Group')}" href="#" onclick="userGroup.addManual('share-insert-read-user', 'user-list-read');return false;"><img src="/default/images/icons/plus-small.png" alt="${_('Add User/Group Icon')}" /></a></li>
-			    <li><a title="${_('Open User/Group Selection Popup')}" href="${h.url_for(controller='share', action='users_groups')}?copyto=user-list-read" class="popup-selector"><img src="/default/images/icons/users.png" alt="${_('Select Users/Groups Icon')}" /></a></li>
-			</ol>
-			
-                        ${h.hidden('share_read_list', c.samba_lp.get("read list", share), id='user-list-read-textbox')}
-
-			<ul id="user-list-read" class="user-list">
-			</ul> -->
-			
-			<div class="clear-both"></div>
-		    </li>                    
+		    <li>${put("read-list")}</li>
                     
 		    <li>                                    
 			<p class="option-help">${_('Specifies a list of users given read-only access to a writeable share.')}</p>
