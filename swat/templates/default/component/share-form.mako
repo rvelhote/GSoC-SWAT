@@ -15,7 +15,7 @@
 <%doc>Text</%doc>
 <%def name="text(id, value)">
     <label for="${c.p.get_value(id, "id")}" title="${c.p.get_value(id, "title")}">${c.p.get_value(id, "label")}:</label>
-    ${h.text(c.p.get_value(id, "name"), value, id=c.p.get_value(id, "id"), class_=c.p.get_value(id, "class"))}
+    ${h.text(c.p.get_value(id, "name"), value, id=c.p.get_value(id, "id"), style="float:left;", class_=c.p.get_value(id, "class"))}
 </%def>
     
 <%doc>Boolean</%doc>
@@ -49,9 +49,27 @@
     ${h.hidden(c.p.get_value(id, 'name'), value, id=id)}
 </%def>
     
+<%def name="path_selector(id, op)">
+    <a href="${h.url_for(controller=c.p.get_value(id, 'field-ops-descriptor/' + op + '/link/controller'), action=c.p.get_value(id, 'field-ops-descriptor/' + op + '/link/action'))}?copyto=${c.p.get_value(id, 'id')}" class="popup-selector" title="${c.p.get_value(id, 'field-ops-descriptor/' + op + '/title')}"><img src="/default/images/icons/${c.p.get_value(id, 'field-ops-descriptor/' + op + '/image/name')}" alt="${c.p.get_value(id, 'field-ops-descriptor/' + op + '/image/alt')}" /></a>
+</%def>
+    
+<%def name="field_ops(id, ops)">
+    % if ops != "":
+        <ol class="field-ops">
+            % for op in ops:
+                <li>
+                    % if op == "path-selection":
+                        <% path_selector(id, op) %>
+                    % endif
+                </li>
+            % endfor
+        </ol>
+    % endif
+</%def>
+    
 <%doc>Choose which type to call</%doc>
 <%def name="put(id, param_value=None)">
-<%
+    <%
     type = c.p.get_value(id, "type")
     
     param_name = id.replace('-', ' ')
@@ -73,7 +91,11 @@
         checkbox(id, param_value)
     elif type == "permissions":
         permissions(id, param_value)
-%> 
+
+    field_ops(id, c.p.get_value(id, "field-ops"))
+    
+%>
+
 </%def>
 
 <%def name="write(share='')">
@@ -108,19 +130,7 @@
 	    <li id="content-tab1" class="active tab">
 		<ol class="col-1">
 		    <li>${put("name", c.share_name)}</li>
-		    
-		    <li>
-                        <p class="option-help">${_("Sets the path to the directory provided by a file share or used by a printer share. Set automatically in [homes] share to user\'s home directory, otherwise defaults to  /tmp. Honors the %u (user) and %m (machine) variables.")}</p>
-                        
-			<span class="field-with-ops">
-                            <label for="share-path" title="${_('Set the Path to be Shared')}">${_('Path')}:</label>
-                            ${h.text("share_path", c.samba_lp.get("path", share), id="share-path", class_='big-text')}
-			</span>
-
-			<ol class="field-ops">
-			    <li><a href="${h.url_for(controller='share', action='path')}" class="popup-selector" title="${_('Select the Share Location')}"><img src="/default/images/icons/layer-select-point.png" alt="${_('Add User/Group Icon')}" /></a></li>
-			</ol>
-		    </li>                                                                
+		    <li>${put("path")}</li>
 		</ol>
 		
 		<ol class="col-2">
@@ -145,7 +155,7 @@
 		    <li>                                    
 			<p class="option-help">${_('List of users that are given read-write access to a read-only share.')}</p>
 			
-			<span class="field-with-ops">
+			<span class="field-wrapper">
 			    <label for="share-insert-read-user" title="${_('Select Users/Groups that will have Read Access to this Share')}">${_('Read List')}:</label>
                             ${h.text("", "", id="share-insert-read-user", class_='big-text')}
 			</span>
@@ -166,7 +176,7 @@
 		    <li>                                    
 			<p class="option-help">${_('Specifies a list of users given read-only access to a writeable share.')}</p>
 			
-			<span class="field-with-ops">
+			<span class="field-wrapper">
 			    <label for="share-insert-write-user" title="${_('Select Users/Groups that will have Write Access to this Share')}">${_('Write List')}:</label>
                             ${h.text("", "", id="share-insert-write-user", class_='big-text')}
 			</span>
@@ -187,7 +197,7 @@
                     <li>                                    
 			<p class="option-help">${_('List of users who will be granted root permissions on the share by Samba.')}</p>
 			
-			<span class="field-with-ops">
+			<span class="field-wrapper">
 			    <label for="share-insert-adminuser" title="${_('Select Users/Groups that will have Read Access to this Share')}">${_('Admin List')}:</label>
                             ${h.text("", "", id="share-insert-adminuser", class_='big-text')}
 			</span>
@@ -212,7 +222,7 @@
                     <li>
 			<p class="option-help">${_('A list of machines that can access a share or shares. If NULL (the default) any machine can access the share unless there is a hosts deny option.')}</p>
 			
-			<span class="field-with-ops">
+			<span class="field-wrapper">
 			    <label for="share-insert-allowed-hosts" title="${_('List of Hostnames that will be able to access this Share')}">${_('Allowed Hosts')}:</label>
                             ${h.text("", "", id="share-insert-allowed-hosts", class_='big-text')}
 			</span>
@@ -250,7 +260,7 @@
                     <li>
 			<p class="option-help">${_('A list of machines that cannot connect to a share or shares. ')}</p>
 			
-			<span class="field-with-ops">
+			<span class="field-wrapper">
 			    <label for="share-insert-deny-hosts" title="${_('List of Hostnames that will not be able to access this Share')}">${_('Denied Hosts')}:</label>
                             ${h.text("", "", id="share-insert-deny-hosts", class_='big-text')}
 			</span>

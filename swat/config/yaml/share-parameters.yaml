@@ -20,19 +20,20 @@ path:
     name: share_path
     label: 'Path'
     class: big-text
+    id: share-path
     
-    #
-    #   Field Operations with Path Selection
-    #
-    #field-ops:
-    #    type: path-selection
-    #        title: 'Select the Share Location'
-    #        image:
-    #            name: layer-select-point.png
-    #            alt: 'Select Path Icon'
-    #        link:
-    #            controller: share
-    #            action: path
+    field-ops:
+        - path-selection
+
+    field-ops-descriptor:
+        path-selection:
+            title: 'Select the Share Location'
+            image:
+                name: layer-select-point.png
+                alt: 'Select Path Icon'
+            link:
+                controller: share
+                action: path
 
 #
 #   Guest OK
@@ -103,3 +104,4 @@ directory-mask:
     title: 'Directory Mask'
     name: share_directory_mask
     permissions-name: directory_mask
+

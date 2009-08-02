@@ -482,6 +482,8 @@ form.share-configuration input.small-text {
 
 ol.col-1 > li {
     margin-bottom:30px;
+    overflow:auto;
+    padding:5px 0px;
 }
 
 ol.col-2 > li {
@@ -492,7 +494,7 @@ ol.col-2 > li {
     min-height:70px;
 }
 
-form.share-configuration span.field-with-ops {
+form.share-configuration span.field-wrapper {
     display:block;
     float:left;
 }
