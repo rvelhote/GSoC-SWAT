@@ -67,6 +67,9 @@ div.swat-content {
     padding:10px 25px 25px 25px;
     
     background-color:#ffffff;
+    
+    -moz-box-shadow:0 0 10px #888888;
+    -webkit-box-shadow:0 0 10px #888888;
 }
 
 div.clear-both {
