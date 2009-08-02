@@ -106,12 +106,12 @@ directory-mask:
     permissions-name: directory_mask
     
 #
-#
+#   Read List
 #
 read-list:
     type: list
     help: 'List of users that are given read-write access to a read-only share.'
-    title: "Select Users/Groups that will have Read Access to this Share"
+    title: 'Select Users/Groups that will have Read Access to this Share'
     name: share_read_list
     label: 'Read List'
     class: big-text
@@ -139,5 +139,80 @@ read-list:
                 name: plus-small.png
                 alt: 'Add User/Group Icon'
             link:
-                copy-from: share
+                copy-from: share-insert-read
                 copy-to: share-insert-read-list
+    
+#
+#   Write List
+#
+write-list:
+    type: list
+    help: 'Specifies a list of users given read-only access to a writeable share.'
+    title: 'Select Users/Groups that will have Write Access to this Share'
+    name: share_write_list
+    label: 'Write List'
+    class: big-text
+    id: share-insert-write
+    disabled: True
+    
+    field-ops:
+        - manual-add
+        - popup
+
+    field-ops-descriptor:
+        popup:
+            title: 'Open User/Group Selection Popup'
+            image:
+                name: users.png
+                alt: 'Select Users/Groups Icon'
+            link:
+                controller: share
+                action: users_groups
+                copy-to: share-insert-write-list
+                
+        manual-add:
+            title: 'Add this User/Group. Separate by , to add more than one'
+            image:
+                name: plus-small.png
+                alt: 'Add User/Group Icon'
+            link:
+                copy-from: share-insert-write
+                copy-to: share-insert-write-list
+                
+    
+#
+#   Admin List
+#
+admin-list:
+    type: list
+    help: 'List of users who will be granted root permissions on the share by Samba.'
+    title: 'Select Users/Groups that will have Read Access to this Share'
+    name: share_admin_list
+    label: 'Admin List'
+    class: big-text
+    id: share-insert-admin
+    disabled: True
+    
+    field-ops:
+        - manual-add
+        - popup
+
+    field-ops-descriptor:
+        popup:
+            title: 'Open User/Group Selection Popup'
+            image:
+                name: users.png
+                alt: 'Select Users/Groups Icon'
+            link:
+                controller: share
+                action: users_groups
+                copy-to: share-insert-admin-list
+                
+        manual-add:
+            title: 'Add this User/Group. Separate by , to add more than one'
+            image:
+                name: plus-small.png
+                alt: 'Add User/Group Icon'
+            link:
+                copy-from: share-insert-admin
+                copy-to: share-insert-admin-list

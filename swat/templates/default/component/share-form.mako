@@ -175,48 +175,8 @@
 	    <li id="content-tab3">
 		<ol class="col-1">
 		    <li>${put("read-list")}</li>
-                    
-		    <li>                                    
-			<p class="option-help">${_('Specifies a list of users given read-only access to a writeable share.')}</p>
-			
-			<span class="field-wrapper">
-			    <label for="share-insert-write-user" title="${_('Select Users/Groups that will have Write Access to this Share')}">${_('Write List')}:</label>
-                            ${h.text("", "", id="share-insert-write-user", class_='big-text')}
-			</span>
-
-			<ol class="field-ops">
-			    <li><a title="${_('Add this User/Group')}" href="#" onclick="userGroup.addManual('share-insert-write-user', 'user-list-write');return false;"><img src="/default/images/icons/plus-small.png" alt="${_('Add User/Group Icon')}" /></a></li>
-			    <li><a title="${_('Open User/Group Selection Popup')}" href="${h.url_for(controller='share', action='users_groups')}?copyto=user-list-write" class="popup-selector"><img src="/default/images/icons/users.png" alt="${_('Select Users/Groups Icon')}" /></a></li>
-			</ol>
-			
-                        ${h.hidden('share_write_list', c.samba_lp.get("write list", share), id='user-list-write-textbox')}
-			
-			<ul id="user-list-write" class="user-list">
-			</ul>
-			
-			<div class="clear-both"></div>
-		    </li>
-		    
-                    <li>                                    
-			<p class="option-help">${_('List of users who will be granted root permissions on the share by Samba.')}</p>
-			
-			<span class="field-wrapper">
-			    <label for="share-insert-adminuser" title="${_('Select Users/Groups that will have Read Access to this Share')}">${_('Admin List')}:</label>
-                            ${h.text("", "", id="share-insert-adminuser", class_='big-text')}
-			</span>
-			
-			<ol class="field-ops">
-                            <li><a title="${_('Add this User/Group')}" href="#" onclick="userGroup.addManual('share-insert-adminuser', 'user-list-admin');return false;"><img src="/default/images/icons/plus-small.png" alt="${_('Add User/Group Icon')}" /></a></li>
-			    <li><a title="${_('Open User/Group Selection Popup')}" href="${h.url_for(controller='share', action='users_groups')}?copyto=user-list-admin" class="popup-selector"><img src="/default/images/icons/users.png" alt="${_('Select Users/Groups Icon')}" /></a></li>
-			</ol>
-
-                        ${h.hidden('share_admin_list', c.samba_lp.get("admin list", share), id='user-list-admin-textbox')}
-			
-			<ul id="user-list-admin" class="user-list">
-			</ul>
-			
-			<div class="clear-both"></div>
-                    </li>
+		    <li>${put("write-list")}</li>
+		    <li>${put("admin-list")}</li>
 		</ol>                            
 	    </li>
 	    

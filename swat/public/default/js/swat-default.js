@@ -205,7 +205,7 @@ var ItemList = new Class({
         var newAnchor = new Element('a', {text:name, class:"delete-link", id:newElementId, title:"Remove this item from the list", href:"#"});
 
         newAnchor.addEvent('click', function(ev) {
-            event = new Event(ev).stop();
+            event = new Event(ev).preventDefault();
             this.options.copyTo = ev.target.getParent().getParent().getProperty("id");
             this.remove(ev.target);
         }.bind(this));
