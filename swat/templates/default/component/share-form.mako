@@ -28,7 +28,12 @@
 <%doc></%doc>
 <%def name="permissions(id, value)">
     <p class="field-title">${c.p.get_value(id, "title")}</p>
-    <% value = oct(value) %>
+    <%
+    
+    value = value or 0
+    value = oct(value)
+
+    %>
 
     <% permissions = [["0", _("Do Nothing")], ["4", _("Read Only")], ["2", _("Write Only")], ["6", _("Read and Write")], ["5", _("Read and Execute")], ["7", _("Read, Write and Execute")]]%>
     <% permissionGroups = [[_("Owner Can"), "owner", 6, 1], [_("Group Members Can"), "group", 4, 1], [_("Everyone Else Can"), "world", 4, 1]] %>
@@ -39,8 +44,18 @@
         
         % for grp in permissionGroups:
             <li>
-                <label for="${id}-${grp[1]}">${grp[0]}:</label>                                
-                ${h.select(name + "_" + grp[1], value[i], permissions, style="float:left;font-size:85%;", id=id + "-" + grp[1], onchange='calcPermissions("' + id + '", "' + id + '");')}
+                <label for="${id}-${grp[1]}">${grp[0]}:</label>
+                
+                <%
+                
+                try:
+                    perm_value = value[i]
+                except:
+                    perm_value = grp[2]
+                
+                %>
+                
+                ${h.select(name + "_" + grp[1], perm_value, permissions, style="float:left;font-size:85%;", id=id + "-" + grp[1], onchange='calcPermissions("' + id + '", "' + id + '");')}
             </li>
             <% i = i + 1 %>
         % endfor
@@ -109,7 +124,7 @@
     type = c.p.get_value(id, "type")
     
     param_name = id.replace('-', ' ')
-    param_value = param_value or c.samba_lp.get(param_name, c.share_name)
+    param_value = param_value or c.samba_lp.get(param_name, c.share_name) or ""
     
     help(id, c.p.get_value(id, "disabled"))
     
@@ -172,14 +187,12 @@
 		    <li>${put("path")}</li>
 		</ol>
 		
-		<ol class="col-2">
+		<ol class="col-2" style="overflow:auto;">
 		    <li>${put("guest-ok")}</li>
 		    <li>${put("browsable")}</li>
 		    <li>${put("read-only")}</li>
                     <li>${put("guest-only")}</li>
 		</ol>
-		
-		<div class="clear-both"></div>
 	    </li>
 	    
 	    <li id="content-tab2">                            
