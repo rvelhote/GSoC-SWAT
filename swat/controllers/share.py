@@ -81,9 +81,14 @@ class ShareController(BaseController):
         name -- the share name to load the information from
         
         """
-        c.p = ParamConfiguration('share-parameters')
-        c.share_name = name
-        return render('/default/derived/edit-share.mako')
+        
+        if name not in c.share_list:
+            swat_messages.add(_("Can't edit a Share that doesn't exist"), "warning")
+            redirect_to(controller='share', action='index')
+        else:
+            c.p = ParamConfiguration('share-parameters')
+            c.share_name = name
+            return render('/default/derived/edit-share.mako')
         
     def save(self):
         backend = None
@@ -141,8 +146,8 @@ class ShareController(BaseController):
         if deleted:
             message = _("Share Deleted Sucessfuly")
         else:
-            message = _("Did not Delete Share")
-            type = "warning"
+            message = backend.get_error_message()
+            type = backend.get_error_type()
         
         swat_messages.add(message, type)
         
@@ -158,16 +163,21 @@ class ShareController(BaseController):
         if deleted:
             message = _("Share Duplicated Sucessfuly")
         else:
-            message = _("Did not Duplicate Share")
-            type = "critical"
+            message = backend.get_error_message()
+            type = backend.get_error_type()
 
         swat_messages.add(message, type)
-        
         redirect_to(controller='share', action='index')
     
     def toggle(self, name):
         backend = ShareBackendClassic(c.samba_lp, {'name':name})
         toggled = backend.toggle()
+        
+        if toggled:
+            message = _("Share Toggled successfuly")
+            swat_messages.add(message)
+        else:
+            swat_messages.add(backend.get_error_message(), backend.get_error_type())
         
         redirect_to(controller='share', action='index')
 
@@ -202,10 +212,9 @@ class ShareBackendClassic():
         #   Errors
         self.__error = {}
         self.__error['message'] = ""
-        self.__error['type'] = "cool"
+        self.__error['type'] = "critical"
 
-        if not self.__load_smb_conf_content():
-            pass
+        self.__load_smb_conf_content()
     
     def __clean_params(self, params):
         clean_params = {}
@@ -240,8 +249,38 @@ class ShareBackendClassic():
             self.__smbconf_content = stream.readlines()
             stream.close()
             
+        print self.__smbconf_content
+            
         return file_exists
     
+    def __section_exists(self, name):
+        """ Checks if a section exists in the loaded smb.conf file. Also reloads
+        the contents of the backend so we can always check against an updated
+        copy without reloading LoadParm.
+        
+        I think it's better to reload param.LoadParm but I'll keep it like this
+        for now :)
+        
+        Keyword arguments:
+        name -- the share name
+        
+        Returns a Boolean value indicating if the section exists or not
+        
+        """
+        self.__load_smb_conf_content()
+        
+        exists = False
+        position = -1
+        
+        try:
+            position = self.__smbconf_content.index('[' + name + ']\n')
+            exists = True
+        except ValueError:
+            self.set_error("Share doesn't exist!", "critical")
+            position = -1
+        
+        return exists
+        
     def __get_section_position(self, name):
         """ Gets the position (in terms of line numbers) of where the section
         we are handling starts and ends.
@@ -256,7 +295,6 @@ class ShareBackendClassic():
         import re
         
         position = {}
-        
         position['start'] = self.__smbconf_content.index('[' + name + ']\n')
         position['end'] = -1
         
@@ -284,11 +322,20 @@ class ShareBackendClassic():
             self.set_error(_("Can't create Share with an empty name"), "critical")
         else:
             if not is_new:
-                pos = self.__get_section_position(self.__share_old_name)
-                section = self.__smbconf_content[pos['start']:pos['end']]
                 
-                before = self.__smbconf_content[0:pos['start'] - 1]
-                after = self.__smbconf_content[pos['end']:]
+                if self.__share_name_exists(self.__share_old_name):
+                    pos = self.__get_section_position(self.__share_old_name)
+                    section = self.__smbconf_content[pos['start']:pos['end']]
+                    
+                    before = self.__smbconf_content[0:pos['start'] - 1]
+                    after = self.__smbconf_content[pos['end']:]
+                else:
+                    #
+                    #   Have to break it here to avoid "tricks" downstairs :P
+                    #
+                    self.set_error(_("You are trying to save a Share\
+                                    that doesn't exist"), "critical")
+                    return False
             else:
                 before = self.__smbconf_content
                 after = []
@@ -296,53 +343,67 @@ class ShareBackendClassic():
             new_section = self.__recreate_section(self.__share_name, section)
             self.__save_smbconf([before, new_section, after])
             
-            stored = True
-        
+            if self.__section_exists(self.__share_name):
+                stored = True
+            else:
+                self.set_error(_("Could not add/edit that Share. No idea why..."), "warning")
+
         return stored
     
     def delete(self):
-        pos = self.__get_section_position(self.__share_name)
+        deleted = False
+        
+        if self.__share_name_exists(self.__share_name):
+            pos = self.__get_section_position(self.__share_name)
+    
+            before = self.__smbconf_content[0:pos['start'] - 1]
+            after = self.__smbconf_content[pos['end']:]
+            
+            self.__save_smbconf([before, after])
 
-        before = self.__smbconf_content[0:pos['start'] - 1]
-        after = self.__smbconf_content[pos['end']:]
+            if self.__section_exists(self.__share_name):
+                self.set_error(_("Could not delete that Share.\
+                                 The Share is still in the Backend.\
+                                 No idea why..."), "critical")
+            else:
+                deleted = True
+        else:
+            self.set_error(_("Can't delete a Share that doesn't exist!"), "warning")
         
-        self.__save_smbconf([before, after])
-        
-        return True
+        return deleted
     
     def copy(self):
         # Todo: bug, can't repeat the same twice due to name conflict
-        new_name = "copy of " + self.__share_name
+        new_name = _("copy of") + " " + self.__share_name
+        copied = False
                 
         if not self.__share_name_exists(new_name):
-            pos = self.__get_section_position(self.__share_name)
-            section = self.__smbconf_content[pos['start']:pos['end']]
+            if self.__share_name_exists(self.__share_name):
+                pos = self.__get_section_position(self.__share_name)
+                section = self.__smbconf_content[pos['start']:pos['end']]
+                
+                new_section = self.__recreate_section(new_name, section)
             
-            new_section = self.__recreate_section(new_name, section)
+                before = self.__smbconf_content[0:pos['start'] - 1]
+                after = self.__smbconf_content[pos['end']:]
+    
+                self.__save_smbconf([before, section, new_section, after])
+                
+                if self.__section_exists(new_name):
+                    copied = True
+                else:
+                    self.set_error(_("Could not copy that Share. No idea why..."), "warning")
+            else:
+                self.set_error(_("Did not duplicate Share because the original doesn't exist!"), "critical")
         
-            before = self.__smbconf_content[0:pos['start'] - 1]
-            after = self.__smbconf_content[pos['end']:]
-
-            self.__save_smbconf([before, section, new_section, after])
+        else:
+            self.set_error(_("Did not duplicate Share because the copy already exists!"), "critical")
         
-            return True
-        
-        return False
+        return copied
     
     def toggle(self):
-        if self.__share_name_exists(self.__share_name):
-            pos = self.__get_section_position(self.__share_name)
-            section = self.__smbconf_content[pos['start']:pos['end']]
-            
-            new_section = self.__recreate_section(self.__share_name,
-                                                                section, True)
-        
-            before = self.__smbconf_content[0:pos['start'] - 1]
-            after = self.__smbconf_content[pos['end']:]
-
-            self.__save_smbconf([before, new_section, after])
-        
-            return True
+        self.set_error("Toggle Not Implemented", "warning")
+        return False
     
     def __recreate_section(self, name, section, deactivate=False):
         import re
