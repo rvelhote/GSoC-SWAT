@@ -248,9 +248,7 @@ class ShareBackendClassic():
         if file_exists:
             self.__smbconf_content = stream.readlines()
             stream.close()
-            
-        print self.__smbconf_content
-            
+
         return file_exists
     
     def __section_exists(self, name):
@@ -443,13 +441,34 @@ class ShareBackendClassic():
         return new_section
     
     def __save_smbconf(self, what):
-        stream = open(self.__smbconf, 'w')
+        import shutil
+        import os
+        
+        stream = open(self.__smbconf + ".new", 'w')
+        ok = True
         
         for area in what:
             for line in area:
-                stream.write(line)
+                try:
+                    stream.write(line)
+                except:
+                    ok = False   
+                    break;
                 
-        stream.close()
+            if not ok:
+                break
+        
+        if ok:
+            try:
+                shutil.move(self.__smbconf, self.__smbconf + ".old")
+                shutil.move(self.__smbconf + ".new", self.__smbconf)
+            except:
+                pass
+
+        try:
+            os.remove(self.__smbconf + ".new")
+        except:
+            pass
     
     def set_error(self, message, type='critical'):
         self.__error['message'] = message
