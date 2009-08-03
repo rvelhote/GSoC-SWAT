@@ -45,7 +45,7 @@ ${share_table(c.share_list)}
 	    <tr>
 		<td colspan="6">		    
 		    <div class="pagination">
-			<p class="number-pages">${_('%d Shares Total' % len([]))}</p>
+			<p class="number-pages">${_('%d Shares Total' % len(shares.keys()))}</p>
 		    </div>
 		</td>
 	    </tr>
