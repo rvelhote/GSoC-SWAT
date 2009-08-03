@@ -24,6 +24,7 @@ path:
     
     field-ops:
         - popup
+        - modifiers
 
     field-ops-descriptor:
         popup:
@@ -34,6 +35,27 @@ path:
             link:
                 controller: share
                 action: path
+                
+        modifiers:
+            title: 'Select the Modifiers'
+            image:
+                name: layer-select-point.png
+                alt: 'Select Path Icon'
+            list:
+                - user
+                - machine
+            copy-to: share-path
+                
+    modifiers-descriptor:
+        user:
+            title: 'User'
+            value: '%u'
+            
+        machine:
+            title: 'Machine'
+            value: '%m'
+                    
+                
 
 #
 #   Guest OK

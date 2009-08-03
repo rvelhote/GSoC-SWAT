@@ -74,6 +74,20 @@
     <a href="#" onclick="userGroup.addManual('${c.p.get_value(id, "id")}', '${copy_to}');return false;" title="${c.p.get_value(id, 'field-ops-descriptor/' + op + '/title')}"><img src="/default/images/icons/${c.p.get_value(id, 'field-ops-descriptor/' + op + '/image/name')}" alt="${c.p.get_value(id, 'field-ops-descriptor/' + op + '/image/alt')}" /></a>
 </%def>
     
+<%def name="modifiers(id, op)">
+    <% modifier_list = c.p.get_value(id, 'field-ops-descriptor/' + op + '/list') %>
+    
+    % if len(modifier_list) > 0:
+        <select style="font-size:77%;" onchange="var p = $('share-path'); p.setProperty('value', p.getProperty('value') + this.value);">
+            % for m in modifier_list:
+                <option value="${c.p.get_value(id, 'modifiers-descriptor/' + m + '/value')}">
+                    ${c.p.get_value(id, 'modifiers-descriptor/' + m + '/title')}
+                </option>
+            % endfor
+        </select>
+    % endif
+</%def>
+    
 <%def name="field_ops(id, ops)">
     % if ops != "":
         <ol class="field-ops">
@@ -83,6 +97,8 @@
                         <% popup(id, op) %>
                     % elif op == "manual-add":
                         <% manual_add(id, op) %>
+                    % elif op == "modifiers":
+                        <% modifiers(id, op) %>
                     % endif
                 </li>
             % endfor
