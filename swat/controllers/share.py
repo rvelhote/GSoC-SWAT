@@ -100,7 +100,7 @@ class ShareController(BaseController):
                 message = _("Share Information was Saved")
                 swat_messages.add(message)
             else:
-                swat_messages.add(backend.get_error(), backend.get_error_type())
+                swat_messages.add(backend.get_error_message(), backend.get_error_type())
         else:
             message = _("Your chosen backend is not yet supported")
             swat_messages.add(message)
@@ -110,7 +110,11 @@ class ShareController(BaseController):
 
     def apply(self):
         self.save()
-        redirect_to(controller='share', action='edit', name=request.params.get("name", ""))
+
+        if len(request.params.get("name", "")) == 0:
+            redirect_to(controller='share', action='add')
+        else:
+            redirect_to(controller='share', action='edit', name=request.params.get("name", ""))
     
     def cancel(self, name=''):
         message = _("Cancelled Share editing. No changes were saved!")
@@ -194,6 +198,11 @@ class ShareBackendClassic():
         self.__smbconf_content = []
         self.__error = ""
         self.__share_list = shares.SharesContainer(self.__lp)
+        
+        #   Errors
+        self.__error = {}
+        self.__error['message'] = ""
+        self.__error['type'] = "cool"
 
         if not self.__load_smb_conf_content():
             pass
@@ -268,23 +277,28 @@ class ShareBackendClassic():
         return position
     
     def store(self, is_new=False):
+        stored = False
         section = []
         
-        if not is_new:
-            pos = self.__get_section_position(self.__share_old_name)
-            section = self.__smbconf_content[pos['start']:pos['end']]
-            
-            before = self.__smbconf_content[0:pos['start'] - 1]
-            after = self.__smbconf_content[pos['end']:]
+        if len(self.__share_name) == 0:
+            self.set_error(_("Can't create Share with an empty name"), "critical")
         else:
-            before = self.__smbconf_content
-            after = []
+            if not is_new:
+                pos = self.__get_section_position(self.__share_old_name)
+                section = self.__smbconf_content[pos['start']:pos['end']]
+                
+                before = self.__smbconf_content[0:pos['start'] - 1]
+                after = self.__smbconf_content[pos['end']:]
+            else:
+                before = self.__smbconf_content
+                after = []
+            
+            new_section = self.__recreate_section(self.__share_name, section)
+            self.__save_smbconf([before, new_section, after])
+            
+            stored = True
         
-        new_section = self.__recreate_section(self.__share_name, section)
-
-        self.__save_smbconf([before, new_section, after])
-        
-        return True
+        return stored
     
     def delete(self):
         pos = self.__get_section_position(self.__share_name)
@@ -377,7 +391,11 @@ class ShareBackendClassic():
         stream.close()
     
     def set_error(self, message, type='critical'):
-        pass
+        self.__error['message'] = message
+        self.__error['type'] = type
 
-    def get_error(self):
-        pass
+    def get_error_message(self):
+        return self.__error['message'] or _('I have nooooo idea...')
+    
+    def get_error_type(self):
+        return self.__error['type'] or 'critical'
