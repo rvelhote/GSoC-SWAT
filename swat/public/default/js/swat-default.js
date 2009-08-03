@@ -322,3 +322,18 @@ function calcPermissions(base, copyTo) {
                                 world.getProperty("value") + "L");
     }
 }
+
+function checkAllRows(parent, base) {
+    var checkboxes = $$("input[id^=" + base + "]");
+    var op = parent.checked ? "check" : "uncheck";
+    
+    if(checkboxes) {
+        checkboxes.each(function(c) {
+            if(op == "check") {
+                c.checked = true;
+            } else {
+                c.checked = false;
+            }
+        });
+    }
+}

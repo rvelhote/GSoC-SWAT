@@ -32,7 +32,7 @@ ${share_table(c.share_list)}
     <table summary="${_('List of Shares for the current Samba Server')}" class="list" id="share-list">
 	<thead>
 	    <tr>
-		<td><input title="${_('Check All Items')}" type="checkbox" id="check-all"/></td>
+		<td><input title="${_('Check All Items')}" onchange="checkAllRows(this, 'check-row')" type="checkbox" id="check-all"/></td>
 		<td>${_('#')}</td>
 		<td style="width:100px;">${_('Name')}</td>
 		<td style="width:200px;">${_('Path')}</td>
