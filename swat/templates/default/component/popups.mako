@@ -69,7 +69,7 @@
     <% users = h.get_user_list() %>
     
     <h1>${_('User List')}</h1>
-    <ul class="popup-list user-list">
+    <ul class="popup-list usr-list">
         % for g in users:
             <li>
                 <span>${g}</span>
@@ -85,7 +85,7 @@
     <% groups = h.get_group_list() %>
     
     <h1>${_('Group List')}</h1>
-    <ul class="popup-list group-list">
+    <ul class="popup-list grp-list">
         % for g in groups:
             <li>
                 <span>${g.gr_name}</span>

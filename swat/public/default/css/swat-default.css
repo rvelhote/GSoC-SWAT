@@ -790,11 +790,12 @@ ul.path-list a.add {
 }
 
 /** User and Group List */
-ul.user-list {
+ul.usr-list {
     margin-bottom:25px;
 }
 
-ul.user-list li span {
+ul.grp-list li span,
+ul.usr-list li span {
     float:left;
     display:block;
     height:16px;
@@ -802,4 +803,8 @@ ul.user-list li span {
     background-image:url('/default/images/icons/user.png');
     background-position:left center;
     background-repeat:no-repeat;
+}
+
+ul.grp-list li span {
+    background-image:url('/default/images/icons/users.png');
 }
