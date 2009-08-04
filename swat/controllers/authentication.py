@@ -32,10 +32,7 @@ class AuthenticationController(BaseController):
             
         if len_password == 0:
             swat_messages.add('Password cannot be empty', 'critical')
-            
-        if username not in self.allow_usernames:
-            swat_messages.add('That username is not allowed to login to SWAT')        
-        
+
         if pam.authenticate(username, password):
             swat_messages.add('Authentication successful!')
             return username
