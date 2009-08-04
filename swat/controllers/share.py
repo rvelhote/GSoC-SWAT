@@ -357,11 +357,11 @@ class ShareBackendClassic():
         """ Gets the position (in terms of line numbers) of where the section
         we are handling starts and ends.
         
-        Returns a dictionary containing the start and end line numbers.
-        
         Keyword arguments
         name -- the name of the current section. normally the share name we are
         taking care of
+        
+        Returns a dictionary containing the start and end line numbers.
         
         """
         import re
@@ -437,6 +437,11 @@ class ShareBackendClassic():
         return stored
     
     def delete(self):
+        """ Deletes a share from the backend
+        
+        Returns a boolean value indicating if the Share was deleted sucessfuly
+        
+        """
         deleted = False
         
         if self.__share_name_exists(self.__share_name):
@@ -459,7 +464,15 @@ class ShareBackendClassic():
         return deleted
     
     def copy(self):
-        # Todo: bug, can't repeat the same twice due to name conflict
+        """ Copies a Share.
+        
+        Returns a boolean value indicating if the Share was copied sucessfuly
+        
+        BUG: Can't repeat the same share twice due to name conflict. If you try
+        to copy 'test' once it will create 'copy of test'. If you try copy again
+        it will fail because 'copy of test' already exists.
+        
+        """
         new_name = _("copy of") + " " + self.__share_name
         copied = False
                 
@@ -491,7 +504,18 @@ class ShareBackendClassic():
         self.set_error("Toggle Not Implemented", "warning")
         return False
     
-    def __recreate_section(self, name, section, deactivate=False):
+    def __recreate_section(self, name, section):
+        """ Recreate the section we are editing/adding with the new values
+        
+        Keyword arguments:
+        name -- the name of the section
+        section -- split list of the smb.conf contents containing just the
+        information from the chosen section. to obtain the section "coordinates"
+        call self.__get_section_position(name)
+        
+        Returns the new section to write to the backend
+        
+        """
         import re
         
         new_section = ['\n[' + name + ']\n']
@@ -529,6 +553,7 @@ class ShareBackendClassic():
         return new_section
     
     def __save_smbconf(self, what):
+        """ Saves the changes made to smb.conf """
         import shutil
         import os
         
@@ -559,11 +584,21 @@ class ShareBackendClassic():
             pass
     
     def set_error(self, message, type='critical'):
+        """ Sets the error message to indicate what has failed with the operation
+        that was being done using this Backend
+        
+        Keyword arguments:
+        message -- the error message
+        type -- the type of error
+        
+        """
         self.__error['message'] = message
         self.__error['type'] = type
 
     def get_error_message(self):
+        """ Gets the current error message """
         return self.__error['message'] or _('I have nooooo idea...')
     
     def get_error_type(self):
+        """ Gets the current error type """
         return self.__error['type'] or 'critical'
