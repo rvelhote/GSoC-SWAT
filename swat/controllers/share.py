@@ -137,15 +137,30 @@ class ShareController(BaseController):
         redirect_to(controller='share', action='index')
         
     def path(self):
+        """ Returns the contents of the selected folder. Usually called via
+        AJAX using the Popup that allows the user to select a path
+        
+        """
         path = request.params.get('path', '/')
         return render_mako_def('/default/component/popups.mako', 'select_path', \
                                current=path)
         
     def users_groups(self):
+        """ Returns the HTML containing a list of the System's Users and Groups.
+        Usually called via AJAX using the Popup that allows the user to select
+        Users and Groups.
+        
+        """
         return render_mako_def('/default/component/popups.mako', \
                                'select_user_group')
         
     def remove(self, name):
+        """ Deletes a Share from the current Backend
+        
+        Keyword arguments:
+        name -- the name of the share to be deleted
+        
+        """
         if c.samba_lp.get("share backend") == "classic":
             backend = ShareBackendClassic(c.samba_lp, {'name':name})
             deleted = backend.delete()
@@ -167,8 +182,14 @@ class ShareController(BaseController):
         redirect_to(controller='share', action='index')
     
     def copy(self, name):
+        """ Clones the chosen Share
+        
+        Keyword arguments:
+        name -- the name of the share to be duplicated
+        
+        """
         if c.samba_lp.get("share backend") == "classic":
-            backend = ShareBackendClassic(c.samba_lp, {'name':name})
+            backend = ShareBackendClassic(c.samba_lp, {'name': name})
             deleted = backend.copy()
         
             message = ""
@@ -188,6 +209,15 @@ class ShareController(BaseController):
         redirect_to(controller='share', action='index')
     
     def toggle(self, name):
+        """ Toggles a Share's state (enabled/disabled).
+        
+        At the moment it is disabled because I'm not sure how I can implement
+        this sucessfuly.
+        
+        Keyword arguments:
+        name -- the name of the share to be toggled
+        
+        """
         if c.samba_lp.get("share backend") == "classic":
             backend = ShareBackendClassic(c.samba_lp, {'name':name})
             toggled = backend.toggle()
@@ -239,6 +269,17 @@ class ShareBackendClassic():
         self.__load_smb_conf_content()
     
     def __clean_params(self, params):
+        """ Copies all parameters starting with 'share_' in the current request
+        object to a clean dictionary.
+        
+        All parameters submited through the form related to the share always
+        use the prefix. This is so I can distinguish them from other random
+        parameters that may be around.
+        
+        Keyword arguments:
+        params -- contains the request.params object from Pylons
+        
+        """
         clean_params = {}
         
         for param in params:
@@ -251,13 +292,24 @@ class ShareBackendClassic():
         return clean_params
 
     def __share_name_exists(self, name):
+        """ Checks if a Share exists in the ShareContainer object
+        
+        Keyword arguments:
+        name -- the name of the share to check
+        
+        """
         if name not in self.__share_list:
             return False
         
         return True
         
     def __load_smb_conf_content(self):
-        """ Loads the smb.conf into a Lists """
+        """ Loads the smb.conf into a List using readlines()
+        
+        Returns a boolean value indicating if the file's content was loaded or
+        not.
+        
+        """
         file_exists = False
         
         try:
@@ -335,6 +387,20 @@ class ShareBackendClassic():
         return position
     
     def store(self, is_new=False):
+        """ Store a Share, either from an edit or add.
+        
+        Breaks down the current smb.conf to find the chosen section (if editing)
+        and recreates that section with the new values. Maintains comments that
+        may be around that section.
+        
+        If we are adding a new share it's just added to the end of the file
+        
+        Keyword arguments:
+        is_new -- indicates if it's a new share (or not)
+        
+        Returns a boolean value indicating if the share was stored correctly
+        
+        """
         stored = False
         section = []
         
