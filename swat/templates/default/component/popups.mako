@@ -1,27 +1,41 @@
-<%doc>Should move the non-presentation code into a helper</%doc>
+<%doc>Creates a list of Folders in a specified folder</%doc>
 <%def name="select_path(current='/')">
-    <% import os %>
+    <%
+    
+    import os
+    
+    up_link = h.url_for(controller='share', action='path', path=os.path.split(current)[:1])
+    
+    %>
 
+    <h1>${current}</h1>
     <ul class="popup-list path-list">
-        <li><a style="float:left;display:block;height:16px;padding-left:20px;background-image:url('/default/images/icons/arrow-return-090.png');background-position:left center;background-repeat:no-repeat;" onclick="path.get('${h.url_for(controller = 'share', action = 'path', path = os.path.split(current)[:1])}');return false;" title="${_('Parent Folder')}" href="#">...</a>
+        <li><a class="up" onclick="path.get('${up_link}');return false;" title="${_('Parent Folder')}" href="#">...</a>
         
         % try:
             <%
         
             folders = os.listdir(current)
-            has_dirs = False %>
+            has_dirs = False
+            
+            %>
             
             % if len(folders) > 0:
                 % for f in folders:
                     <% path = os.path.join(current, f) %>
                     
                     % if os.path.isdir(path):
+                    
+                        <% link = h.url_for(controller = 'share', action = 'path', path = path) %>
+                        
                         <li>
-                            <a style="float:left;display:block;height:16px;padding-left:20px;background-image:url('/default/images/icons/folders.png');background-position:left center;background-repeat:no-repeat;" id="path-selector" onclick="path.get('${h.url_for(controller = 'share', action = 'path', path = path)}'); return false;" title="${_('List this Folder')}" href="#">
+                            <a class="folder" onclick="path.get('${link}'); return false;" title="${_('List this Folder')}" href="#">
                                 ${f}
                             </a>
                             
-                            <a title="${_('Copy this Path to the Textbox')}" onclick="path.add('${path}');return false;" href="#"><img alt="Add Icon" class="add" src="/default/images/icons/plus-small.png" /></a>
+                            <a class="add" title="${_('Copy this Path to the Textbox')}" onclick="path.add('${path}');return false;" href="#">
+                                <img alt="Add Icon" class="add" src="/default/images/icons/plus-small.png" />
+                            </a>
                         </li>
                         
                         <% has_dirs = True %>
@@ -35,6 +49,7 @@
             % else:
                 <li>${_('Nothing to see here')}</li>
             % endif
+            
         % except OSError:
             <li>${_("Ooops, can't go there...")}</li>
         % endtry
@@ -50,7 +65,7 @@
     
     %>
     
-    <h1 style="font-weight:bold;border-bottom:1px solid #484848;margin-bottom:10px;">${_('User List')}</h1>
+    <h1>${_('User List')}</h1>
     <ul class="popup-list group-list" style="margin-bottom:25px;">
         % for g in users:
             <li>
@@ -60,7 +75,7 @@
         % endfor
     </ul>
 
-    <h1 style="font-weight:bold;border-bottom:1px solid #484848;margin-bottom:10px;">${_('Group List')}</h1>
+    <h1>${_('Group List')}</h1>
     <ul class="popup-list group-list">
         % for g in groups:
             <li>

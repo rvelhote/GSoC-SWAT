@@ -740,7 +740,7 @@ div.bulk-operations.bulk-bottom {
     margin-bottom:0;
 }
 
-/** Path Selection Popup **/
+/** Popups **/
 ul.popup-list {
     font-size:85%;
     overflow:auto;
@@ -753,12 +753,40 @@ ul.popup-list li {
     width:140px;
 }
 
-ul.popup-list img.folder {
-    display:inline;
-    margin-right:5px;
+/** must... change... this.... arrrrgh */
+#TB_ajaxContent h1 {
+    border-bottom-color:#484848;
+    border-bottom-style:solid;
+    border-bottom-width:1px;
+    font-weight:bold;
+    margin-bottom:10px;
 }
 
-ul.popup-list img.add {
-    display:inline;
-    margin-left:5px;
+/** Path Selection */
+ul.path-list a{
+    float:left;
+    display:block;
+    height:16px;
+    padding-left:20px;
+    background-position:left center;
+    background-repeat:no-repeat;
 }
+
+ul.path-list a.up {
+    background-image:url('/default/images/icons/arrow-return-090.png');
+}
+
+ul.path-list a.folder {
+    background-image:url('/default/images/icons/folders.png');
+    color:#484848;
+}
+
+ul.path-list a:hover.folder {
+    color:orange;
+}
+
+ul.path-list a.add {
+    float:none;
+}
+
+/** */
