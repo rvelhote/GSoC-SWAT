@@ -56,30 +56,39 @@
     </ul>
 </%def>
 
-<%doc>Should move the non-presentation code into a helper</%doc>
 <%def name="select_user_group()">
     <%
-
-    groups = h.get_group_list()
-    users = h.get_user_list()
+    
+    user_list()
+    group_list()
     
     %>
+</%def>
+    
+<%def name="user_list()">
+    <% users = h.get_user_list() %>
     
     <h1>${_('User List')}</h1>
-    <ul class="popup-list group-list" style="margin-bottom:25px;">
+    <ul class="popup-list user-list">
         % for g in users:
             <li>
-                <span style="float:left;display:block;height:16px;padding-left:20px;background-image:url('/default/images/icons/user.png');background-position:left center;background-repeat:no-repeat;">${g}</span>
-                <a title="${_('Add this User/Group to the List')}" onclick="userGroup.add('${g}', 'u');return false;" href="#"><img class="add" src="/default/images/icons/plus-small.png" /></a>
+                <span>${g}</span>
+                <a title="${_('Add this User/Group to the List')}" onclick="userGroup.add('${g}', 'u');return false;" href="#">
+                    <img class="add" src="/default/images/icons/plus-small.png" />
+                </a>
             </li>
         % endfor
     </ul>
+</%def>
 
+<%def name="group_list()">
+    <% groups = h.get_group_list() %>
+    
     <h1>${_('Group List')}</h1>
     <ul class="popup-list group-list">
         % for g in groups:
             <li>
-                <span style="float:left;display:block;height:16px;padding-left:20px;background-image:url('/default/images/icons/users.png');background-position:left center;background-repeat:no-repeat;">${g.gr_name}</span>
+                <span>${g.gr_name}</span>
                 <a title="${_('Add this User/Group to the List')}" onclick="userGroup.add('${g.gr_name}', 'g');return false;" href="#"><img class="add" src="/default/images/icons/plus-small.png" /></a>
             </li>
         % endfor

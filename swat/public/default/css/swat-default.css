@@ -789,4 +789,17 @@ ul.path-list a.add {
     float:none;
 }
 
-/** */
+/** User and Group List */
+ul.user-list {
+    margin-bottom:25px;
+}
+
+ul.user-list li span {
+    float:left;
+    display:block;
+    height:16px;
+    padding-left:20px;
+    background-image:url('/default/images/icons/user.png');
+    background-position:left center;
+    background-repeat:no-repeat;
+}
