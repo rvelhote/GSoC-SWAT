@@ -1,42 +1,16 @@
+Howto
+-----
+1. Get the GIT scripts in the Download area
+link: http://cloud.github.com/downloads/rvelhote/GSoC-SWAT/swat-git-scripts.tar.gz
 
-=======
-Method1
-=======
+2. run ./install
+This will download and install Pylons into a Python Virtual Environment; Clone the GIT repository; Install the necessary dependencies for SWAT
 
-This method uses the pre-packaged .egg file.
+3. run ./run
+This will initiate the Server at http://localhost:5000. At the moment I am using PAM for authentication so just use your regular system username/password. If for some reason you can't authenticate, just go to http://localhost:5000/share/index because the authentication check is, for now, only in the dashboard.
 
-1. Download the file 'swat-deployment-1.tar.gz' in the downloads
-area
+There are also two other scripts called "pull" and "pull-and-run". 'pull' will just do a "git pull"; 'pull-and-run' will call the pull and run scripts. This will make sure you are up-to-date before you run SWAT.
 
-2. Unpack
-
-3. Execute 
-     # ./deploy-swat
-
-chmod +x first. This will create a Python virtual environment 
-so it won't mess with your current Python stuff and it will
-download the required packages to run Pylons (and SWAT :D)
-
-4. Execute 
-     # ./run-swat. 
-
-chmod +x first. If all goes well the server will start in port 5000.
-
-5. Open your browser and go to the address http://localhost:5000
-
-=======
-Method2
-=======
-
-This method requires you to create the .egg file and pull the git
-repository
-
-1. git-pull this repository
-
-2. enter the main dir and run
-     # python setup.py bdist_egg
-
-3. The generated .egg file is under the {dist} folder.
-Right now the best way is to follow method nº1, starting at step 2 
-and replace the .egg file in the unpacked content. After replacing
-just continue with the rest of method nº 1
+Notes:
+- Don't forget to chmod +x the scripts
+- If you have problems saving information to the backend (only smb.conf supported for now) check the permissions for your smb.conf and directory
