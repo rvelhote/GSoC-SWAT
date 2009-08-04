@@ -118,8 +118,13 @@ var PathSelector = new Class({
     initialize: function(options) {
         this.setOptions(options);
         this.request = new Request.HTML({
-            update: this.options.element
+            update: this.options.element,
+            onComplete: this.bindEvents
         });
+    },
+    
+    bindEvents: function() {
+        console.log("get to the binding man!");
     },
     
     get: function(url) {

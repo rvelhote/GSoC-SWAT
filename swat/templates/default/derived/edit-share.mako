@@ -25,6 +25,14 @@
         userGroup = new ItemList({element: 'TB_ajaxContent'});
         tabs = new TabGroup();
         formSubmission = new FormSubmit({formId: 'share-form'});
+        
+        
+        
+        
+        var pathSelectors = $$("a.path-selection");
+        pathSelectors.each(function(p) {
+            
+        });
     });
 </script>
 
