@@ -91,6 +91,7 @@ class ShareController(BaseController):
             return render('/default/derived/edit-share.mako')
         
     def save(self):
+        """ Save a Share. We enter here either from the 'edit' or 'add' """
         backend = None
         is_new = False
         
@@ -107,13 +108,17 @@ class ShareController(BaseController):
             else:
                 swat_messages.add(backend.get_error_message(), backend.get_error_type())
         else:
-            message = _("Your chosen backend is not yet supported")
+            message = _("Your chosen backend is not yet supported", "critical")
             swat_messages.add(message)
 
         if request.environ['pylons.routes_dict']['action'] == "save":
             redirect_to(controller='share', action='index')
 
     def apply(self):
+        """ Apply changes done to a Share. This action is merely an alias for
+        the save action but it redirects to the Share's edit page instead
+        
+        """
         self.save()
 
         if len(request.params.get("name", "")) == 0:
@@ -137,47 +142,60 @@ class ShareController(BaseController):
                                'select_user_group')
         
     def remove(self, name):
-        backend = ShareBackendClassic(c.samba_lp, {'name':name})
-        deleted = backend.delete()
-        
-        message = ""
-        type = "cool"
-        
-        if deleted:
-            message = _("Share Deleted Sucessfuly")
+        if c.samba_lp.get("share backend") == "classic":
+            backend = ShareBackendClassic(c.samba_lp, {'name':name})
+            deleted = backend.delete()
+            
+            message = ""
+            type = "cool"
+            
+            if deleted:
+                message = _("Share Deleted Sucessfuly")
+            else:
+                message = backend.get_error_message()
+                type = backend.get_error_type()
+            
+            swat_messages.add(message, type)
         else:
-            message = backend.get_error_message()
-            type = backend.get_error_type()
-        
-        swat_messages.add(message, type)
+            message = _("Your chosen backend is not yet supported", "critical")
+            swat_messages.add(message)
         
         redirect_to(controller='share', action='index')
     
     def copy(self, name):
-        backend = ShareBackendClassic(c.samba_lp, {'name':name})
-        deleted = backend.copy()
-    
-        message = ""
-        type = "cool"
+        if c.samba_lp.get("share backend") == "classic":
+            backend = ShareBackendClassic(c.samba_lp, {'name':name})
+            deleted = backend.copy()
         
-        if deleted:
-            message = _("Share Duplicated Sucessfuly")
-        else:
-            message = backend.get_error_message()
-            type = backend.get_error_type()
+            message = ""
+            type = "cool"
+            
+            if deleted:
+                message = _("Share Duplicated Sucessfuly")
+            else:
+                message = backend.get_error_message()
+                type = backend.get_error_type()
 
-        swat_messages.add(message, type)
+            swat_messages.add(message, type)
+        else:
+            message = _("Your chosen backend is not yet supported", "critical")
+            swat_messages.add(message)
+            
         redirect_to(controller='share', action='index')
     
     def toggle(self, name):
-        backend = ShareBackendClassic(c.samba_lp, {'name':name})
-        toggled = backend.toggle()
-        
-        if toggled:
-            message = _("Share Toggled successfuly")
-            swat_messages.add(message)
+        if c.samba_lp.get("share backend") == "classic":
+            backend = ShareBackendClassic(c.samba_lp, {'name':name})
+            toggled = backend.toggle()
+            
+            if toggled:
+                message = _("Share Toggled successfuly")
+                swat_messages.add(message)
+            else:
+                swat_messages.add(backend.get_error_message(), backend.get_error_type())
         else:
-            swat_messages.add(backend.get_error_message(), backend.get_error_type())
+            message = _("Your chosen backend is not yet supported", "critical")
+            swat_messages.add(message)
         
         redirect_to(controller='share', action='index')
 
