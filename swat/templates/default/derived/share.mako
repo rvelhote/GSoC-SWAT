@@ -32,12 +32,12 @@ ${share_table(c.share_list)}
     <table summary="${_('List of Shares for the current Samba Server')}" class="list" id="share-list">
 	<thead>
 	    <tr>
-		<td><input title="${_('Check All Items')}" onchange="checkAllRows(this, 'check-row')" type="checkbox" id="check-all"/></td>
-		<td>${_('#')}</td>
-		<td style="width:100px;">${_('Name')}</td>
-		<td style="width:200px;">${_('Path')}</td>
-		<td style="width:252px;">${_('Comment')}</td>
-		<td></td>
+		<td class="check-all"><input title="${_('Check All Items')}" onchange="checkAllRows(this, 'check-row')" type="checkbox" id="check-all"/></td>
+		<td class="share-row-id">${_('#')}</td>
+		<td class="share-name">${_('Name')}</td>
+		<td class="share-path">${_('Path')}</td>
+		<td class="share-comment">${_('Comment')}</td>
+		<td class="share-quick-operations"></td>
 	    </tr>
 	</thead>
 	
@@ -76,7 +76,6 @@ ${share_table(c.share_list)}
                     
 		    <td onclick="clickableRow('${h.url_for('share_action', action = 'edit', name = share)}');" class='${home_class}'>${share}</td>
 		    <td onclick="clickableRow('${h.url_for('share_action', action = 'edit', name = share)}');">
-			
 			% if len(c.samba_lp.get('path', share)) > 0:
 			    ${c.samba_lp.get('path', share)}
 			% else:
@@ -95,7 +94,7 @@ ${share_table(c.share_list)}
 		    </td>                            
 		</tr>
 		
-		<% i += 1 %>
+		<% i = i + 1 %>
 	    
 	    % endfor
 	</tbody>

@@ -412,6 +412,13 @@ table.list td.home-directory {
     padding-left:25px;
 }
 
+table.list thead td.check-all{}
+table.list thead td.share-row-id{}
+table.list thead td.share-name{width:100px;}
+table.list thead td.share-path{width:200px;}
+table.list thead td.share-comment{width:252px;}
+table.list thead td.share-quick-operations{}
+
 ul.quick-tasks li {
     display:inline;
 }
