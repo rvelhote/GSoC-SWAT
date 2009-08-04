@@ -116,7 +116,7 @@ class ShareController(BaseController):
 
     def apply(self):
         """ Apply changes done to a Share. This action is merely an alias for
-        the save action but it redirects to the Share's edit page instead
+        the save action but it redirects to the Share's edit page instead.
         
         """
         self.save()
@@ -127,9 +127,13 @@ class ShareController(BaseController):
             redirect_to(controller='share', action='edit', name=request.params.get("name", ""))
     
     def cancel(self, name=''):
-        message = _("Cancelled Share editing. No changes were saved!")
+        """ Cancel the current editing/addition of the current Share """
+        if request.params.get("task", "edit") == "add":
+            message = _("Cancelled New Share. No Share was added!")
+        elif request.params.get("task", "edit") == "edit":
+            message = _("Cancelled Share editing. No changes were saved!")
+        
         swat_messages.add(message, "warning")
-            
         redirect_to(controller='share', action='index')
         
     def path(self):
