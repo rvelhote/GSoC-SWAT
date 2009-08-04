@@ -68,7 +68,7 @@ function TB_show(caption, url) {
         tb.setOpacity(0);
 	tb.addClass("round-2px");
 	
-	tb.innerHTML += "<div id='TB_title'><div id='TB_ajaxWindowTitle'></div><div id='TB_closeAjaxWindow'><a href='#' id='TB_closeWindowButton'>close</a></div></div><div id='TB_ajaxContent'>xxxxxxxxxxxxxxxx</div>";
+	tb.innerHTML += "<div id='TB_title'><div id='TB_ajaxWindowTitle'></div><div id='TB_closeAjaxWindow'><a href='#' id='TB_closeWindowButton'>close</a></div></div><div id='TB_ajaxContent'></div>";
 	$("TB_closeWindowButton").onclick = TB_remove;
 	
 	tb.makeDraggable({handle:'TB_title'})
