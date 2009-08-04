@@ -66,7 +66,7 @@
     
 <%def name="popup(id, op)">
     <% copy_to = c.p.get_value(id, 'field-ops-descriptor/' + op + '/link/copy-to') or c.p.get_value(id, 'id') %>
-    <a href="${h.url_for(controller=c.p.get_value(id, 'field-ops-descriptor/' + op + '/link/controller'), action=c.p.get_value(id, 'field-ops-descriptor/' + op + '/link/action'))}?copyto=${copy_to}" class="popup-selector" title="${c.p.get_value(id, 'field-ops-descriptor/' + op + '/title')}"><img src="/default/images/icons/${c.p.get_value(id, 'field-ops-descriptor/' + op + '/image/name')}" alt="${c.p.get_value(id, 'field-ops-descriptor/' + op + '/image/alt')}" /></a>
+    <a href="${h.url_for(controller=c.p.get_value(id, 'field-ops-descriptor/' + op + '/link/controller'), action=c.p.get_value(id, 'field-ops-descriptor/' + op + '/link/action'))}?copyto=${copy_to}" class="popup-selector ${op}" title="${c.p.get_value(id, 'field-ops-descriptor/' + op + '/title')}"><img src="/default/images/icons/${c.p.get_value(id, 'field-ops-descriptor/' + op + '/image/name')}" alt="${c.p.get_value(id, 'field-ops-descriptor/' + op + '/image/alt')}" /></a>
 </%def>
     
 <%def name="manual_add(id, op)">
@@ -93,7 +93,7 @@
         <ol class="field-ops">
             % for op in ops:
                 <li>
-                    % if op == "popup":
+                    % if op == "user-group-selection" or op == "path-selection":
                         <% popup(id, op) %>
                     % elif op == "manual-add":
                         <% manual_add(id, op) %>

@@ -23,11 +23,11 @@ path:
     id: share-path
     
     field-ops:
-        - popup
+        - path-selection
         - modifiers
 
     field-ops-descriptor:
-        popup:
+        path-selection:
             title: 'Select the Share Location'
             image:
                 name: layer-select-point.png
@@ -142,10 +142,10 @@ read-list:
     
     field-ops:
         - manual-add
-        - popup
+        - user-group-selection
 
     field-ops-descriptor:
-        popup:
+        user-group-selection:
             title: 'Open User/Group Selection Popup'
             image:
                 name: users.png
@@ -179,10 +179,10 @@ write-list:
     
     field-ops:
         - manual-add
-        - popup
+        - user-group-selection
 
     field-ops-descriptor:
-        popup:
+        user-group-selection:
             title: 'Open User/Group Selection Popup'
             image:
                 name: users.png
@@ -216,10 +216,10 @@ admin-list:
     
     field-ops:
         - manual-add
-        - popup
+        - user-group-selection
 
     field-ops-descriptor:
-        popup:
+        user-group-selection:
             title: 'Open User/Group Selection Popup'
             image:
                 name: users.png
