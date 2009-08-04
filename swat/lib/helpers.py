@@ -497,3 +497,22 @@ def python_libs_exist():
             exist = True
     
     return exist
+
+def get_group_list():
+    import grp
+    return grp.getgrall()
+
+def get_user_list():
+    users = []
+    groups = get_group_list()
+
+    for g in groups:
+        if len(g.gr_mem) > 0:
+            users.extend(g.gr_mem)
+
+    users = set(users)
+    
+    return users
+
+def get_path():
+    pass
