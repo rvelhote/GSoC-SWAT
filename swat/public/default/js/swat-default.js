@@ -294,9 +294,6 @@ function selectShareRow(checkbox) {
     
     if(checkbox) {
         rowId = checkbox.id.substring(6);
-        
-        console.log(rowId);
-        
         if(checkbox.checked) {
             $(rowId).addClass("selected-row");
         } else {
@@ -334,6 +331,8 @@ function checkAllRows(parent, base) {
             } else {
                 c.checked = false;
             }
+            
+            selectShareRow(c);
         });
     }
 }
