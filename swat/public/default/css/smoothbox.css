@@ -7,7 +7,7 @@
  *   http://www.opensource.org/licenses/mit-license.php
  */
 
-#TB_window {
+div.popup-main-window {
 	position: absolute;
 	background: #ffffff;
 	z-index: 102;
@@ -15,32 +15,34 @@
 	text-align:left;
 }
 
-#TB_caption{
+#TB_caption {
 	height:25px;
 	padding:7px 30px 10px 25px;
 	float:left;
 }
 
-#TB_closeWindow{
+div.popup-main-window-close {
 	height:25px;
 	padding:11px 25px 10px 0;
 	float:right;
 }
 
-#TB_closeAjaxWindow{
+a.popup-main-window-close {
 	padding:5px 10px 7px 0;
 	margin-bottom:1px;
 	text-align:right;
 	float:right;
+	display:block;
 }
 
-#TB_ajaxWindowTitle{
+span.popup-main-window-title {
 	float:left;
 	padding:7px 0 5px 10px;
 	margin-bottom:1px;
+	display:block;
 }
 
-#TB_title{
+div.popup-main-window-title-bar {
 	background-color:#EAEAE8;
 	height:27px;
 	font-size:85%;
@@ -48,7 +50,7 @@
 	cursor:move;
 }
 
-#TB_ajaxContent{
+div.popup-main-window-content {
 	/*clear:both;*/
 	padding:25px;
 	overflow-y:auto;

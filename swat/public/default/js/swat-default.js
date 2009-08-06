@@ -371,29 +371,29 @@ var Popup = new Class({
             /**
              *
              */
-            var mainWindow = new Element('div').setProperty('id', this.options.window);
+            var mainWindow = new Element('div', {opacity: 0, id: this.options.window, class:'popup-main-window round-2px'});
             mainWindow.injectInside(document.body);
             
-            var titleBar = new Element('div').setProperty('id', this.options.window + "-title-bar");
+            var titleBar = new Element('div', {'id': this.options.window + "-title-bar", 'class': 'popup-main-window-title-bar'});
             titleBar.injectInside(mainWindow);
             
-            var titleBarTitle = new Element('div').setProperty('id', this.options.window + "-title");
-            var titleBarClose = new Element('div').setProperty('id', this.options.window + "-close").injectInside(titleBar);
+            var titleBarTitle = new Element('span', {'id': this.options.window + "-title", class:'popup-main-window-title'});
+            var titleBarClose = new Element('a', {'text': 'close', 'id': this.options.window + "-close", class:'popup-main-window-close'});
             
             titleBarTitle.injectInside(titleBar);
             titleBarClose.injectInside(titleBar);
             
-            var titleBarCloseLink = new Element('a', {'href': '#', 'id': this.options.window + "-close-link"});
-            titleBarCloseLink.injectInside(titleBarClose);
+            //var titleBarCloseLink = new Element('a', {'href': '#', 'id': this.options.window + "-close-link"});
+            //titleBarCloseLink.injectInside(titleBarClose);
             
-            var mainWindowContent = new Element('div').setProperty('id', this.options.window + "-content");
+            var mainWindowContent = new Element('div', {'id': this.options.window + "-content", class:'popup-main-window-content'});
             mainWindowContent.injectInside(mainWindow);
             
             /**
              *
              */
             titleBarTitle.set("text", this.options.trigger.getProperty("title") || this.options.trigger.getProperty("name") || "");
-            titleBarCloseLink.addEvent('click', this.hide.bind(this));
+            titleBarClose.addEvent('click', this.hide.bind(this));
             mainWindow.makeDraggable({handle: titleBar.getProperty("id")});
             
             this.options.trigger.addEvent("click", this.makeRequest.bind(this));
