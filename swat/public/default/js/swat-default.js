@@ -146,30 +146,21 @@ var ItemList = new Class({
     options: {
         //request: null,
         /*element: '',*/
-        copyTo: ''
+        copyTo: null,
+        copyFromManual: null
     },
     
     initialize: function(options) {
         this.setOptions(options);
-        //this.addRemoveEvent();
-       /* this.request = new Request.HTML({
-            update: this.options.element
-        });*/
+
+        this.options.copyFromManual = $(this.options.copyTo.getProperty("id") + "-manual-text");
+
+        var manualButton = $(this.options.copyTo.getProperty("id") + "-manual");        
+        manualButton.addEvent('click', function(e) {
+            new Event(e).preventDefault();
+            this.addManual();
+        }.bindWithEvent(this));
     },
-    
-    /*addRemoveEvent: function() {
-        elements = $$("a.delete-link");
-        
-        if(elements) {
-            elements.each(function(a, i) {
-                a.addEvent('click', function(ev) {
-                    event = new Event(ev).stop();
-                    this.options.copyTo = ev.target.getParent().getParent();
-                    this.remove(ev.target);
-                }.bind(this));
-            }.bind(this));
-        }
-    },*/
     
     effect: function(id, type) {
         var element = $(id);
@@ -184,10 +175,6 @@ var ItemList = new Class({
             }
         }
     },
-    //
-    //get: function(url) {
-    //    this.request.get(url);
-    //},
     
     add: function(name, type) {
         if(name.length == 0) {
@@ -222,24 +209,16 @@ var ItemList = new Class({
         this.updateHiddenList("add");
     },
     
-   /* addManual: function(from, to) {
-        var items = null;
-        var numItems = 0;
-        
-        from = $(from);
-        this.options.copyTo = to;
-        
-        if(from) {
-            items = from.value.split(',');
-            numItems = items.length;
+    addManual: function() {
+        items = this.options.copyFromManual.getProperty("value").split(',');
+        numItems = items.length;
 
-            for(var i = 0; i < numItems; i++) {
-                this.add(items[i].trim());
-            }
-            
-            from.value = "";
+        for(var i = 0; i < numItems; i++) {
+            this.add(items[i].trim());
         }
-    },*/
+        
+        this.options.copyFromManual.setProperty("value", "");
+    },
     
     remove: function(id, forReal) {
         var element = $(id);
@@ -430,7 +409,6 @@ var Popup = new Class({
 var UserGroupSelector = new Class({
     Extends: Popup,
     list: null,
-    /*copyTo: null,*/
     
     initialize: function(id, element) {
         var href = element.getProperty("href");
@@ -464,12 +442,13 @@ var UserGroupSelector = new Class({
                 elements.each(function(element) {
                     link = element.getElement("a");
                     
-                    link.addEvent('click', function(e, el) {
+                    link.addEvent('click', function(e, el, lnk) {
                         new Event(e).preventDefault();
-                        
+
                         value = el.getElement("span").get("text");
-                        this.list.add(value, "g");
-                    }.bindWithEvent(this, element));
+                        this.list.add(value, lnk.hasClass("group") ? "g" : "u");
+                        
+                    }.bindWithEvent(this, [element, link]));
                 }.bind(this));
             }.bind(this));
         }
