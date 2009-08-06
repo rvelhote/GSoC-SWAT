@@ -374,6 +374,8 @@ var Popup = new Class({
             var mainWindow = new Element('div', {opacity: 0, id: this.options.window, class:'popup-main-window round-2px'});
             mainWindow.injectInside(document.body);
             
+            mainWindow.setStyles({top:0, left:0});
+            
             var titleBar = new Element('div', {'id': this.options.window + "-title-bar", 'class': 'popup-main-window-title-bar'});
             titleBar.injectInside(mainWindow);
             
@@ -402,15 +404,7 @@ var Popup = new Class({
             //console.log(this.htmlRequest);
             
             this.options.window = mainWindow;
-            //tb = $(this.options.window);
-            
-            //tb.setOpacity(0);
-            //tb.addClass("round-2px");
-            
-            //tb.innerHTML += "<div id='" + this.options.window + "-title'><div id='TB_ajaxWindowTitle'></div><div id='TB_closeAjaxWindow'><a href='#' id='TB_closeWindowButton'>close</a></div></div><div id='TB_ajaxContent'></div>";
-            //$("TB_closeWindowButton").onclick = TB_remove;
-            
-            //tb.makeDraggable({handle:'TB_title'})
+            this.position();
         }
     },
     
@@ -420,9 +414,12 @@ var Popup = new Class({
     
     show: function() {
         if(!this.isActive) {
-            console.log(this.options.window);
+            this.position();
+            
             this.options.window.set('tween', {duration: 150});
             this.options.window.fade("in");
+            
+            this.isActive = true;
         }
     },
     
@@ -434,13 +431,19 @@ var Popup = new Class({
         }
     },
     
-    hide: function() {
-        console.log("hiding");
+    hide: function(ev) {
+        new Event(ev).preventDefault();
         
-        
+        if(this.isActive) {
+            this.options.window.set('tween', {duration: 150});
+            this.options.window.fade("out");
+            this.isActive = false;
+        }
     },
     
     position: function() {
+        this.options.window.setStyle("left", (window.getScrollLeft() + (window.getWidth() - this.options.window.getStyle("width").toInt()) / 2) + 'px');
+	this.options.window.setStyle("top", (window.getScrollTop() + (window.getHeight() - this.options.window.getStyle("height").toInt()) / 2) + 'px');
     },
     
     parseUrl: function() {

@@ -15,12 +15,6 @@ div.popup-main-window {
 	text-align:left;
 }
 
-#TB_caption {
-	height:25px;
-	padding:7px 30px 10px 25px;
-	float:left;
-}
-
 div.popup-main-window-close {
 	height:25px;
 	padding:11px 25px 10px 0;
@@ -33,6 +27,7 @@ a.popup-main-window-close {
 	text-align:right;
 	float:right;
 	display:block;
+	cursor:pointer !important;
 }
 
 span.popup-main-window-title {
@@ -63,7 +58,3 @@ div.popup-main-window-content {
 	min-height:200px;
 	max-height:340px;
 }
-
-/*#TB_ajaxContent p{*/
-/*	padding:5px 0px 5px 0px;*/
-/*}*/
