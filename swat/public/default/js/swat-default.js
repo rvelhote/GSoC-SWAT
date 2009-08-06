@@ -355,6 +355,7 @@ var Popup = new Class({
     isActive: false,
     htmlRequest: null,
     title: "",
+    updateCallback: null,
     
     initialize: function(options) {
         this.setOptions(options);
@@ -390,9 +391,11 @@ var Popup = new Class({
             titleBarTitle.set("text", this.options.trigger.getProperty("title") || this.options.trigger.getProperty("name") || "");
             titleBarClose.addEvent('click', this.hide.bind(this));
             mainWindow.makeDraggable({handle: titleBar.getProperty("id")});
-            
-            this.options.trigger.addEvent("click", this.makeRequest.bind(this));
+    
             this.htmlRequest = new Request.HTML({method: 'get', update: mainWindowContent.getProperty("id"), onComplete: this.show.bind(this)})
+            this.options.trigger.addEvent("click", function(e) {
+                this.makeRequest(e, this.options.url);
+            }.bind(this));
             
             this.options.window = mainWindow;
             this.position();
@@ -400,6 +403,8 @@ var Popup = new Class({
     },
     
     show: function() {
+        this.updateCallback();
+        
         if(!this.isActive) {
             this.position();
             
@@ -410,12 +415,9 @@ var Popup = new Class({
         }
     },
     
-    makeRequest: function(ev) {
+    makeRequest: function(ev, url) {
         new Event(ev).preventDefault();
-        
-        if(!this.isActive) {
-            this.htmlRequest.get(this.options.url);
-        }
+        this.htmlRequest.get(url);
     },
     
     hide: function(ev) {
@@ -424,6 +426,7 @@ var Popup = new Class({
         if(this.isActive) {
             this.options.window.set('tween', {duration: 150});
             this.options.window.fade("out");
+            
             this.isActive = false;
         }
     },
@@ -453,5 +456,52 @@ var Path = new Class({
         
         this.parent({trigger: element, window: id + "-window", url: href});
         this.copyTo = this.parseUrl();
+        
+        this.updateCallback = this.bind;
+    },
+    
+    bind: function() {
+        var pathList = this.options.window.getElement("ul");
+        var paths = null;
+        var addLink = null;
+
+        if(pathList) {
+            paths = pathList.getChildren("li");
+
+            if(paths) {
+                paths.each(function(f) {
+                    addLink = f.getElement("a.add");
+                    gotoLink = f.getElement("a.folder");
+
+                    if(addLink) {
+                        addValue = f.getElement("input[type=hidden]").getProperty("value");
+                        addLink.addEvent('click', function(e, value) {
+                            new Event(e).preventDefault();
+                            this.add(value);
+                        }.bindWithEvent(this, addValue));
+                    }
+                    
+                    if(gotoLink) {
+                        gotoValue = gotoLink.getProperty("href");
+                        gotoLink.addEvent('click', function(e, path) {
+                            new Event(e).preventDefault();
+                            this.makeRequest(e, path);
+                        }.bindWithEvent(this, gotoValue));
+                    }
+                }.bind(this));
+            }
+        }
+    },
+
+    add: function(path) {
+        if(this.copyTo) {
+            this.copyTo.setProperty("value", path);
+        }
+    },
+    
+    remove: function() {
+        if(this.copyTo) {
+            this.copyTo.setProperty("value") = "";
+        }
     }
 });    
