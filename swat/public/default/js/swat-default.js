@@ -346,19 +346,67 @@ var Popup = new Class({
     Implements: [Options, Events],
     
     options: {
-        elementName: "",
-        contentElementName: "",
-        triggerName: "",
-        url: ""
+        url: "",
+        window: "",
+        trigger: null
     },
     
     trigger: null,
     copyTo: null,
     isActive: false,
     htmlRequest: null,
+    title: "",
     
     initialize: function(options) {
         this.setOptions(options);
+        
+        if(this.options.trigger) {
+            this.parseUrl();
+            this.setup();
+        }
+    },
+    
+    setup: function() {
+        if(this.options.trigger) {
+            /**
+             *
+             */
+            var mainWindow = new Element('div').setProperty('id', this.options.window);
+            mainWindow.injectInside(document.body);
+            
+            var titleBar = new Element('div').setProperty('id', this.options.window + "-title-bar");
+            titleBar.injectInside(mainWindow);
+            
+            var titleBarTitle = new Element('div').setProperty('id', this.options.window + "-title");
+            var titleBarClose = new Element('div').setProperty('id', this.options.window + "-close").injectInside(titleBar);
+            
+            titleBarTitle.injectInside(titleBar);
+            titleBarClose.injectInside(titleBar);
+            
+            var titleBarCloseLink = new Element('a', {'href': '#', 'id': this.options.window + "-close-link"});
+            titleBarCloseLink.injectInside(titleBarClose);
+            
+            var mainWindowContent = new Element('div').setProperty('id', this.options.window + "-content");
+            mainWindowContent.injectInside(mainWindow);
+            
+            /**
+             *
+             */
+            titleBarTitle.set("text", this.options.trigger.getProperty("title") || this.options.trigger.getProperty("name") || "");
+            titleBarCloseLink.addEvent('click', this.hide);
+            mainWindow.makeDraggable({handle: titleBar.getProperty("id")});
+            
+            this.options.trigger.addEvent("click", this.show);
+            //tb = $(this.options.window);
+            
+            //tb.setOpacity(0);
+            //tb.addClass("round-2px");
+            
+            //tb.innerHTML += "<div id='" + this.options.window + "-title'><div id='TB_ajaxWindowTitle'></div><div id='TB_closeAjaxWindow'><a href='#' id='TB_closeWindowButton'>close</a></div></div><div id='TB_ajaxContent'></div>";
+            //$("TB_closeWindowButton").onclick = TB_remove;
+            
+            //tb.makeDraggable({handle:'TB_title'})
+        }
     },
     
     bind: function() {
@@ -366,17 +414,22 @@ var Popup = new Class({
     },
     
     show: function() {
-        
+        console.log("showing");
     },
     
     hide: function() {
-        
+        console.log("hiding");
     },
     
     position: function() {
     },
     
-    parse: function() {
+    parseUrl: function() {
+        var queryString = this.options.url.match(/\?(.+)/)[1];
+        var params = queryString.parseQueryString();
+    
+        var element = $(params['copyto']);
+        this.copyTo = element ? element : null;
     }
 });
 
@@ -391,6 +444,6 @@ var Path = new Class({
         var href = element.getProperty("href");
         element.setProperty("id", id);
         
-        this.parent({triggerName: id, elementName: id + "-window", contentElementName: id + "-content", url: href});
+        this.parent({trigger: element, window: id + "-window", url: href});
     }
 });    
