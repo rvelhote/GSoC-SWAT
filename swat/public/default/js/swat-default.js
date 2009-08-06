@@ -120,15 +120,12 @@ var ItemList = new Class({
     Implements: [Options, Events],
     
     options: {
-        //request: null,
-        /*element: '',*/
         copyTo: null,
         copyFromManual: null
     },
     
     initialize: function(options) {
         this.setOptions(options);
-
         this.options.copyFromManual = $(this.options.copyTo.getProperty("id") + "-manual-text");
 
         var manualButton = $(this.options.copyTo.getProperty("id") + "-manual");        
