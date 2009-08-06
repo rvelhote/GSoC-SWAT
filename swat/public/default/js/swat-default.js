@@ -352,7 +352,6 @@ var Popup = new Class({
     },
     
     trigger: null,
-    copyTo: null,
     isActive: false,
     htmlRequest: null,
     title: "",
@@ -361,7 +360,6 @@ var Popup = new Class({
         this.setOptions(options);
         
         if(this.options.trigger) {
-            this.parseUrl();
             this.setup();
         }
     },
@@ -374,8 +372,6 @@ var Popup = new Class({
             var mainWindow = new Element('div', {opacity: 0, id: this.options.window, class:'popup-main-window round-2px'});
             mainWindow.injectInside(document.body);
             
-            mainWindow.setStyles({top:0, left:0});
-            
             var titleBar = new Element('div', {'id': this.options.window + "-title-bar", 'class': 'popup-main-window-title-bar'});
             titleBar.injectInside(mainWindow);
             
@@ -384,10 +380,7 @@ var Popup = new Class({
             
             titleBarTitle.injectInside(titleBar);
             titleBarClose.injectInside(titleBar);
-            
-            //var titleBarCloseLink = new Element('a', {'href': '#', 'id': this.options.window + "-close-link"});
-            //titleBarCloseLink.injectInside(titleBarClose);
-            
+
             var mainWindowContent = new Element('div', {'id': this.options.window + "-content", class:'popup-main-window-content'});
             mainWindowContent.injectInside(mainWindow);
             
@@ -401,15 +394,9 @@ var Popup = new Class({
             this.options.trigger.addEvent("click", this.makeRequest.bind(this));
             this.htmlRequest = new Request.HTML({method: 'get', update: mainWindowContent.getProperty("id"), onComplete: this.show.bind(this)})
             
-            //console.log(this.htmlRequest);
-            
             this.options.window = mainWindow;
             this.position();
         }
-    },
-    
-    bind: function() {
-        
     },
     
     show: function() {
@@ -451,21 +438,20 @@ var Popup = new Class({
         var params = queryString.parseQueryString();
     
         var element = $(params['copyto']);
-        this.copyTo = element ? element : null;
+        return element ? element : null;
     }
 });
 
 var Path = new Class({
     Extends: Popup,
-    Implements: Options,
-    
-    options: {
-    },
+
+    copyTo: null,
     
     initialize: function(id, element) {
         var href = element.getProperty("href");
         element.setProperty("id", id);
         
         this.parent({trigger: element, window: id + "-window", url: href});
+        this.copyTo = this.parseUrl();
     }
 });    
