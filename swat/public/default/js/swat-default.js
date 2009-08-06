@@ -248,10 +248,21 @@ var ManualItemList = new Class({
     initialize: function(options) {
         this.parent(options);
         this.setOptions(options);
-
+        
+        this.bindEvents();
+    },
+    
+    bindEvents: function() {
         this.options.trigger.addEvent('click', function(e) {
             new Event(e).preventDefault();
             this.addManual();
+        }.bind(this));        
+        
+        this.options.copyFrom.addEvent('keyup', function(e) {
+            new Event(e).preventDefault();
+            if (e.code == 13) {
+                this.addManual();
+            }
         }.bind(this));
     },
     
