@@ -57,6 +57,8 @@ class ShareController(BaseController):
             
         c.samba_lp = param.LoadParm()
         c.samba_lp.load_default()
+        
+        c.share_list = {}
 
         if c.samba_lp.get("share backend") == "classic":
             c.share_list = shares.SharesContainer(c.samba_lp)
