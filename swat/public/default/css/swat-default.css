@@ -753,8 +753,7 @@ ul.popup-list li {
     width:140px;
 }
 
-/** must... change... this.... arrrrgh */
-#TB_ajaxContent h1 {
+div.popup-main-window-content h1 {
     border-bottom-color:#484848;
     border-bottom-style:solid;
     border-bottom-width:1px;
