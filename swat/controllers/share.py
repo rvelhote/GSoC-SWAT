@@ -54,11 +54,15 @@ class ShareController(BaseController):
             
             c.breadcrumb = BreadcrumbTrail(c.config)
             c.breadcrumb.build()
-
+            
         c.samba_lp = param.LoadParm()
         c.samba_lp.load_default()
 
-        c.share_list = shares.SharesContainer(c.samba_lp)
+        if c.samba_lp.get("share backend") == "classic":
+            c.share_list = shares.SharesContainer(c.samba_lp)
+        else:
+            message = _("Your chosen backend is not yet supported", "critical")
+            swat_messages.add(message)           
     
     def index(self):        
         """ Point of entry. Loads the Share List Template """
