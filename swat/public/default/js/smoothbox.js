@@ -10,7 +10,7 @@
 
 
 
-window.addEvent('domready', TB_init);
+//window.addEvent('domready', TB_init);
 
 var TB_isActive = false;
 var TB_htmlRequest = null;

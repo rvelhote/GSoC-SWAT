@@ -393,10 +393,15 @@ var Popup = new Class({
              *
              */
             titleBarTitle.set("text", this.options.trigger.getProperty("title") || this.options.trigger.getProperty("name") || "");
-            titleBarCloseLink.addEvent('click', this.hide);
+            titleBarCloseLink.addEvent('click', this.hide.bind(this));
             mainWindow.makeDraggable({handle: titleBar.getProperty("id")});
             
-            this.options.trigger.addEvent("click", this.show);
+            this.options.trigger.addEvent("click", this.makeRequest.bind(this));
+            this.htmlRequest = new Request.HTML({method: 'get', update: mainWindowContent.getProperty("id"), onComplete: this.show.bind(this)})
+            
+            //console.log(this.htmlRequest);
+            
+            this.options.window = mainWindow;
             //tb = $(this.options.window);
             
             //tb.setOpacity(0);
@@ -414,11 +419,25 @@ var Popup = new Class({
     },
     
     show: function() {
-        console.log("showing");
+        if(!this.isActive) {
+            console.log(this.options.window);
+            this.options.window.set('tween', {duration: 150});
+            this.options.window.fade("in");
+        }
+    },
+    
+    makeRequest: function(ev) {
+        new Event(ev).preventDefault();
+        
+        if(!this.isActive) {
+            this.htmlRequest.get(this.options.url);
+        }
     },
     
     hide: function() {
         console.log("hiding");
+        
+        
     },
     
     position: function() {
