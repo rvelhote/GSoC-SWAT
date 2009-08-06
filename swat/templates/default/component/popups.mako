@@ -10,7 +10,7 @@
 
     <h1>${current}</h1>
     <ul class="popup-list path-list">
-        <li><a class="up" onclick="path.get('${up_link}');return false;" title="${_('Parent Folder')}" href="#">...</a>
+        <li><a class="up" title="${_('Parent Folder')}" href="#">...</a>
         
         % try:
             <%
@@ -29,11 +29,13 @@
                         <% link = h.url_for(controller = 'share', action = 'path', path = path) %>
                         
                         <li>
-                            <a class="folder" onclick="path.get('${link}'); return false;" title="${_('List this Folder')}" href="#">
+                            <a class="folder" title="${_('List this Folder')}" href="${link}">
                                 ${f}
                             </a>
                             
-                            <a class="add" title="${_('Copy this Path to the Textbox')}" onclick="path.add('${path}');return false;" href="#">
+                            <input type="hidden" name="path" value="${path}" />
+                            
+                            <a class="add" title="${_('Copy this Path to the Textbox')}" href="#">
                                 <img alt="Add Icon" class="add" src="/default/images/icons/plus-small.png" />
                             </a>
                         </li>
