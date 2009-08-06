@@ -21,17 +21,18 @@
 
 <script type="text/javascript">
     window.addEvent('domready', function() {
-        path = new PathSelector({element: 'TB_ajaxContent', copyTo: 'share-path'});
-        userGroup = new ItemList({element: 'TB_ajaxContent'});
-        tabs = new TabGroup();
-        formSubmission = new FormSubmit({formId: 'share-form'});
+        //path = new PathSelector({element: 'TB_ajaxContent', copyTo: 'share-path'});
+        //userGroup = new ItemList({element: 'TB_ajaxContent'});
+        //tabs = new TabGroup();
+        //formSubmission = new FormSubmit({formId: 'share-form'});
         
         
         
         
         var pathSelectors = $$("a.path-selection");
-        pathSelectors.each(function(p) {
-            
+        var popupId = "path-selector-";
+        pathSelectors.each(function(p, i) {
+            new Path(popupId + "" + (i + 1), p);
         });
     });
 </script>

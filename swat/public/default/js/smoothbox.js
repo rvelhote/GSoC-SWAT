@@ -8,40 +8,7 @@
  *   http://www.opensource.org/licenses/mit-license.php
  */
 
-window.addEvent("domready", function() {
-    var Popup = new Class({
-	Implements: [Options, Events],
-	
-	options: {
-	    elementName: "TB_window",
-	    contentElementName: "TB_ajaxContent",
-	    triggerName: ""
-	},
-	
-	isActive: false,
-	htmlRequest: null,
-	
-	initialize: function(trigger) {
-	    this.setOptions(options);
-	}
-    });
-    
-    var Path = new Class({
-	Extends: Popup,
-	Implements: Options,
-	
-	options: {
-	},
-	
-	initialize: function(options, popupOptions) {
-	    this.setOptions(options)
-	    this.parent(popupOptions);
-	}
-    });
 
-    p = new Path();
-    
-});
 
 window.addEvent('domready', TB_init);
 

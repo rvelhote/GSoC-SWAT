@@ -341,3 +341,56 @@ function checkAllRows(parent, base) {
         });
     }
 }
+
+var Popup = new Class({
+    Implements: [Options, Events],
+    
+    options: {
+        elementName: "",
+        contentElementName: "",
+        triggerName: "",
+        url: ""
+    },
+    
+    trigger: null,
+    copyTo: null,
+    isActive: false,
+    htmlRequest: null,
+    
+    initialize: function(options) {
+        this.setOptions(options);
+    },
+    
+    bind: function() {
+        
+    },
+    
+    show: function() {
+        
+    },
+    
+    hide: function() {
+        
+    },
+    
+    position: function() {
+    },
+    
+    parse: function() {
+    }
+});
+
+var Path = new Class({
+    Extends: Popup,
+    Implements: Options,
+    
+    options: {
+    },
+    
+    initialize: function(id, element) {
+        var href = element.getProperty("href");
+        element.setProperty("id", id);
+        
+        this.parent({triggerName: id, elementName: id + "-window", contentElementName: id + "-content", url: href});
+    }
+});    
