@@ -75,12 +75,12 @@ class ShareController(BaseController):
         calling the edit template but with an empty share name
         
         """
-        return self.edit('')
+        return self.edit('', True)
     
     def add_assistant(self):
         pass
     
-    def edit(self, name):
+    def edit(self, name, is_new=False):
         """ Edit a share. Loads the Share Edition Template.
         
         Keyword arguments:
@@ -88,7 +88,7 @@ class ShareController(BaseController):
         
         """
         
-        if name not in c.share_list:
+        if name not in c.share_list and not is_new:
             swat_messages.add(_("Can't edit a Share that doesn't exist"), "warning")
             redirect_to(controller='share', action='index')
         else:
