@@ -23,13 +23,21 @@
     window.addEvent('domready', function() {
         //path = new PathSelector({element: 'TB_ajaxContent', copyTo: 'share-path'});
         //userGroup = new ItemList({element: 'TB_ajaxContent'});
+        
+        
         tabs = new TabGroup();
         formSubmission = new FormSubmit({formId: 'share-form'});
         
         var pathSelectors = $$("a.path-selection");
         var popupId = "path-selector-";
         pathSelectors.each(function(p, i) {
-            new Path(popupId + "" + (i + 1), p);
+            new PathSelector(popupId + "" + (i + 1), p);
+        });
+        
+        var userGroupSelectors = $$("a.user-group-selection");
+        popupId = "usergroup-selector-";
+        userGroupSelectors.each(function(p, i) {
+            new UserGroupSelector(popupId + "" + (i + 1), p);
         });
     });
 </script>

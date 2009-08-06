@@ -106,70 +106,70 @@ var TabGroup = new Class({
 /**
  *  Path Selection
  */
-var PathSelector = new Class({
-    Implements: [Options, Events],
-    
-    options: {
-        request: null,
-        element: '',
-        copyTo: ''
-    },
-    
-    initialize: function(options) {
-        this.setOptions(options);
-        this.request = new Request.HTML({
-            update: this.options.element,
-            onComplete: this.bindEvents
-        });
-    },
-    
-    bindEvents: function() {
-        console.log("get to the binding man!");
-    },
-    
-    get: function(url) {
-        this.request.get(url);
-    },
-    
-    add: function(path) {
-        $(this.options.copyTo).value = path;
-    },
-    
-    remove: function() {
-        $(this.options.copyTo).value = "";
-    }
-});
+//var PathSelector = new Class({
+//    Implements: [Options, Events],
+//    
+//    options: {
+//        request: null,
+//        element: '',
+//        copyTo: ''
+//    },
+//    
+//    initialize: function(options) {
+//        this.setOptions(options);
+//        this.request = new Request.HTML({
+//            update: this.options.element,
+//            onComplete: this.bindEvents
+//        });
+//    },
+//    
+//    bindEvents: function() {
+//        console.log("get to the binding man!");
+//    },
+//    
+//    get: function(url) {
+//        this.request.get(url);
+//    },
+//    
+//    add: function(path) {
+//        $(this.options.copyTo).value = path;
+//    },
+//    
+//    remove: function() {
+//        $(this.options.copyTo).value = "";
+//    }
+//});
 
 var ItemList = new Class({
     Implements: [Options, Events],
     
     options: {
-        request: null,
-        element: '',
+        //request: null,
+        /*element: '',*/
         copyTo: ''
     },
     
     initialize: function(options) {
         this.setOptions(options);
-        this.addRemoveEvent();
-        this.request = new Request.HTML({
+        //this.addRemoveEvent();
+       /* this.request = new Request.HTML({
             update: this.options.element
-        });
+        });*/
     },
     
-    addRemoveEvent: function() {
+    /*addRemoveEvent: function() {
         elements = $$("a.delete-link");
         
         if(elements) {
             elements.each(function(a, i) {
                 a.addEvent('click', function(ev) {
                     event = new Event(ev).stop();
-                    this.options.copyTo = ev.target.getParent().getParent().getProperty("id");
+                    this.options.copyTo = ev.target.getParent().getParent();
                     this.remove(ev.target);
                 }.bind(this));
             }.bind(this));
         }
-    },
+    },*/
     
     effect: function(id, type) {
         var element = $(id);
@@ -184,10 +184,10 @@ var ItemList = new Class({
             }
         }
     },
-    
-    get: function(url) {
-        this.request.get(url);
-    },
+    //
+    //get: function(url) {
+    //    this.request.get(url);
+    //},
     
     add: function(name, type) {
         if(name.length == 0) {
@@ -203,26 +203,26 @@ var ItemList = new Class({
             return;
         }
         
-        var numElements = $(this.options.copyTo).getChildren().length;
-        var newElementId = 'delete-' + this.options.copyTo + '-' + (numElements + 1);
+        var numElements = this.options.copyTo.getChildren().length;
+        var newElementId = 'delete-' + this.options.copyTo.getProperty("id") + '-' + (numElements + 1);
         
         var newLi = new Element('li');
         var newAnchor = new Element('a', {text:name, class:"delete-link", id:newElementId, title:"Remove this item from the list", href:"#"});
 
         newAnchor.addEvent('click', function(ev) {
             event = new Event(ev).preventDefault();
-            this.options.copyTo = ev.target.getParent().getParent().getProperty("id");
+            this.options.copyTo = ev.target.getParent().getParent();
             this.remove(ev.target);
         }.bind(this));
         
         newAnchor.injectInside(newLi);
-        newLi.injectInside($(this.options.copyTo));
+        newLi.injectInside(this.options.copyTo);
         
         this.effect(newElementId, "add");
         this.updateHiddenList("add");
     },
     
-    addManual: function(from, to) {
+   /* addManual: function(from, to) {
         var items = null;
         var numItems = 0;
         
@@ -239,7 +239,7 @@ var ItemList = new Class({
             
             from.value = "";
         }
-    },
+    },*/
     
     remove: function(id, forReal) {
         var element = $(id);
@@ -252,7 +252,7 @@ var ItemList = new Class({
     },
     
     exists: function(name) {
-        var elements = $(this.options.copyTo).getChildren();
+        var elements = this.options.copyTo.getChildren();
         var n = elements.length;
         var a = null;
         
@@ -271,16 +271,15 @@ var ItemList = new Class({
     },
     
     updateHiddenList: function(operation) {
-        var area = $(this.options.copyTo + "-textbox");
-        var list = $(this.options.copyTo);
+        var area = $(this.options.copyTo.getProperty("id") + "-textbox");
+        var list = this.options.copyTo;
         var elements = null;
 
         if(area && list) {
             links = list.getElements("li a");
             area.setProperty("value", "");
-            
+
             links.each(function(link, i) {
-                console.log(link);
                 area.setProperty("value", area.getProperty("value") + "," + link.get("text"));
             });
 
@@ -428,7 +427,56 @@ var Popup = new Class({
     }
 });
 
-var Path = new Class({
+var UserGroupSelector = new Class({
+    Extends: Popup,
+    list: null,
+    /*copyTo: null,*/
+    
+    initialize: function(id, element) {
+        var href = element.getProperty("href");
+        element.setProperty("id", id);
+        
+        this.parent({window: id + "-window", title: element.getProperty("title")});
+        
+        this.htmlRequest = new Request.HTML({   method: 'get',
+                                                update: this.options.window.getProperty("id") + "-content",
+                                                onComplete: function() {
+                                                    this.show();
+                                                    this.bind();
+                                                }.bind(this)
+                                            
+                                            });
+        
+        element.addEvent("click", function(e) {
+            new Event(e).preventDefault();
+            this.makeRequest(href);
+        }.bind(this));
+        
+        this.list = new ItemList({copyTo: this.parseUrl(href)});
+    },
+    
+    bind: function() {
+        var lists = this.options.window.getElements("ul");
+        
+        if(lists) {
+            lists.each(function(l) {
+                var elements = l.getChildren("li");
+                elements.each(function(element) {
+                    link = element.getElement("a");
+                    
+                    link.addEvent('click', function(e, el) {
+                        new Event(e).preventDefault();
+                        
+                        value = el.getElement("span").get("text");
+                        this.list.add(value, "g");
+                    }.bindWithEvent(this, element));
+                }.bind(this));
+            }.bind(this));
+        }
+    }
+});
+
+var PathSelector = new Class({
     Extends: Popup,
 
     copyTo: null,
@@ -443,6 +491,7 @@ var Path = new Class({
         this.htmlRequest = new Request.HTML({   method: 'get',
                                                 update: this.options.window.getProperty("id") + "-content",
                                                 onComplete: function() {
+                                                    this.show();
                                                     this.bind();
                                                 }.bind(this)
                                             
@@ -455,8 +504,6 @@ var Path = new Class({
     },
     
     bind: function() {
-        this.show();
-        
         var pathList = this.options.window.getElement("ul");
         var paths = null;
         var addLink = null;

@@ -75,7 +75,8 @@
         % for g in users:
             <li>
                 <span>${g}</span>
-                <a title="${_('Add this User/Group to the List')}" onclick="userGroup.add('${g}', 'u');return false;" href="#">
+                <!--onclick="userGroup.add('${g}', 'u');return false;"-->
+                <a class="add user" title="${_('Add this User/Group to the List')}" href="#">
                     <img class="add" src="/default/images/icons/plus-small.png" />
                 </a>
             </li>
@@ -91,7 +92,8 @@
         % for g in groups:
             <li>
                 <span>${g.gr_name}</span>
-                <a title="${_('Add this User/Group to the List')}" onclick="userGroup.add('${g.gr_name}', 'g');return false;" href="#"><img class="add" src="/default/images/icons/plus-small.png" /></a>
+                <!-- onclick="userGroup.add('${g.gr_name}', 'g');return false;"-->
+                <a class="add group" title="${_('Add this User/Group to the List')}" href="#"><img class="add" src="/default/images/icons/plus-small.png" /></a>
             </li>
         % endfor
     </ul>
