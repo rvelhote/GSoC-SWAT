@@ -1,6 +1,7 @@
-window.addEvent("domready", function() {    
-});
-
+/**
+ *  
+ *
+ */
 var FormSubmit = new Class({
     Implements: [Options, Events],
 
@@ -32,6 +33,12 @@ var FormSubmit = new Class({
     }
 });
 
+/**
+ *  TabGroup
+ *
+ *  Creates a Tab Group for a list
+ *
+ */
 var TabGroup = new Class({
     Implements: [Options, Events],
 
@@ -104,42 +111,11 @@ var TabGroup = new Class({
 });
 
 /**
- *  Path Selection
+ *  ItemList
+ *  
+ *  Class that handles items that require a dynamic list
+ *
  */
-//var PathSelector = new Class({
-//    Implements: [Options, Events],
-//    
-//    options: {
-//        request: null,
-//        element: '',
-//        copyTo: ''
-//    },
-//    
-//    initialize: function(options) {
-//        this.setOptions(options);
-//        this.request = new Request.HTML({
-//            update: this.options.element,
-//            onComplete: this.bindEvents
-//        });
-//    },
-//    
-//    bindEvents: function() {
-//        console.log("get to the binding man!");
-//    },
-//    
-//    get: function(url) {
-//        this.request.get(url);
-//    },
-//    
-//    add: function(path) {
-//        $(this.options.copyTo).value = path;
-//    },
-//    
-//    remove: function() {
-//        $(this.options.copyTo).value = "";
-//    }
-//});
-
 var ItemList = new Class({
     Implements: [Options, Events],
     
@@ -267,11 +243,17 @@ var ItemList = new Class({
     }
 });
 
+/**
+ *
+ */
 function getCurrentUri() {
     var uri = new URI(window.location);
     return uri.toRelative();
 }
 
+/**
+ *  Makes a certain row highligh if its checkbox is selected
+ */
 function selectShareRow(checkbox) {
     var rowId = "";
     
@@ -285,10 +267,19 @@ function selectShareRow(checkbox) {
     }
 }
 
+/**
+ *  In the edit share table, it specified the url to go to when we click on
+ *  a row
+ *
+ */
 function clickableRow(url) {
     window.location = url;
 }
 
+/**
+ *  Sets the permissions based on the chosen select boxes
+ *  
+ */
 function calcPermissions(base, copyTo) {
     var owner = $(base + "-owner");
     var group = $(base + "-group");
@@ -303,6 +294,10 @@ function calcPermissions(base, copyTo) {
     }
 }
 
+/**
+ *  Checks all rows in a base table
+ *
+ */
 function checkAllRows(parent, base) {
     var checkboxes = $$("input[id^=" + base + "]");
     var op = parent.checked ? "check" : "uncheck";
@@ -320,6 +315,12 @@ function checkAllRows(parent, base) {
     }
 }
 
+/**
+ *  Popup Class
+ *
+ *  Selectors that require a popup will extend this class.
+ *
+ */
 var Popup = new Class({
     Implements: [Options, Events],
     
@@ -406,6 +407,13 @@ var Popup = new Class({
     }
 });
 
+/**
+ *
+ *  User/Group Selector Class
+ *
+ *  Handles the Popup that allows the user to select a user or a group
+ *
+ */
 var UserGroupSelector = new Class({
     Extends: Popup,
     list: null,
@@ -455,6 +463,13 @@ var UserGroupSelector = new Class({
     }
 });
 
+/**
+ *
+ *  Path Selector Class
+ *
+ *  Handles the Popup that allows the user to select a Path
+ *
+ */
 var PathSelector = new Class({
     Extends: Popup,
 
