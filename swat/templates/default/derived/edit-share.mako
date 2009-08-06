@@ -26,9 +26,6 @@
         tabs = new TabGroup();
         formSubmission = new FormSubmit({formId: 'share-form'});
         
-        
-        
-        
         var pathSelectors = $$("a.path-selection");
         var popupId = "path-selector-";
         pathSelectors.each(function(p, i) {

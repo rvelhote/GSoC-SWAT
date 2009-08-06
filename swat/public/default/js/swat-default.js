@@ -346,65 +346,49 @@ var Popup = new Class({
     Implements: [Options, Events],
     
     options: {
-        url: "",
-        window: "",
-        trigger: null
+        title: "",
+        window: ""
     },
     
-    trigger: null,
     isActive: false,
     htmlRequest: null,
-    title: "",
-    updateCallback: null,
     
     initialize: function(options) {
         this.setOptions(options);
-        
-        if(this.options.trigger) {
-            this.setup();
-        }
+        this.setup();
     },
     
     setup: function() {
-        if(this.options.trigger) {
-            /**
-             *
-             */
-            var mainWindow = new Element('div', {opacity: 0, id: this.options.window, class:'popup-main-window round-2px'});
-            mainWindow.injectInside(document.body);
-            
-            var titleBar = new Element('div', {'id': this.options.window + "-title-bar", 'class': 'popup-main-window-title-bar'});
-            titleBar.injectInside(mainWindow);
-            
-            var titleBarTitle = new Element('span', {'id': this.options.window + "-title", class:'popup-main-window-title'});
-            var titleBarClose = new Element('a', {'text': 'close', 'id': this.options.window + "-close", class:'popup-main-window-close'});
-            
-            titleBarTitle.injectInside(titleBar);
-            titleBarClose.injectInside(titleBar);
+        /**
+         *
+         */
+        var mainWindow = new Element('div', {opacity: 0, id: this.options.window, class:'popup-main-window round-2px'});
+        mainWindow.injectInside(document.body);
+        
+        var titleBar = new Element('div', {'id': this.options.window + "-title-bar", 'class': 'popup-main-window-title-bar'});
+        titleBar.injectInside(mainWindow);
+        
+        var titleBarTitle = new Element('span', {'id': this.options.window + "-title", class:'popup-main-window-title'});
+        var titleBarClose = new Element('a', {'text': 'close', 'id': this.options.window + "-close", class:'popup-main-window-close'});
+        
+        titleBarTitle.injectInside(titleBar);
+        titleBarClose.injectInside(titleBar);
 
-            var mainWindowContent = new Element('div', {'id': this.options.window + "-content", class:'popup-main-window-content'});
-            mainWindowContent.injectInside(mainWindow);
-            
-            /**
-             *
-             */
-            titleBarTitle.set("text", this.options.trigger.getProperty("title") || this.options.trigger.getProperty("name") || "");
-            titleBarClose.addEvent('click', this.hide.bind(this));
-            mainWindow.makeDraggable({handle: titleBar.getProperty("id")});
-    
-            this.htmlRequest = new Request.HTML({method: 'get', update: mainWindowContent.getProperty("id"), onComplete: this.show.bind(this)})
-            this.options.trigger.addEvent("click", function(e) {
-                this.makeRequest(e, this.options.url);
-            }.bind(this));
-            
-            this.options.window = mainWindow;
-            this.position();
-        }
+        var mainWindowContent = new Element('div', {'id': this.options.window + "-content", class:'popup-main-window-content'});
+        mainWindowContent.injectInside(mainWindow);
+        
+        /**
+         *
+         */
+        titleBarTitle.set("text", this.options.title);
+        titleBarClose.addEvent('click', this.hide.bind(this));
+        mainWindow.makeDraggable({handle: titleBar.getProperty("id")});
+
+        this.options.window = mainWindow;
+        this.position();
     },
     
     show: function() {
-        this.updateCallback();
-        
         if(!this.isActive) {
             this.position();
             
@@ -415,8 +399,7 @@ var Popup = new Class({
         }
     },
     
-    makeRequest: function(ev, url) {
-        new Event(ev).preventDefault();
+    makeRequest: function(url) {
         this.htmlRequest.get(url);
     },
     
@@ -436,8 +419,8 @@ var Popup = new Class({
 	this.options.window.setStyle("top", (window.getScrollTop() + (window.getHeight() - this.options.window.getStyle("height").toInt()) / 2) + 'px');
     },
     
-    parseUrl: function() {
-        var queryString = this.options.url.match(/\?(.+)/)[1];
+    parseUrl: function(href) {
+        var queryString = href.match(/\?(.+)/)[1];
         var params = queryString.parseQueryString();
     
         var element = $(params['copyto']);
@@ -454,13 +437,26 @@ var Path = new Class({
         var href = element.getProperty("href");
         element.setProperty("id", id);
         
-        this.parent({trigger: element, window: id + "-window", url: href});
-        this.copyTo = this.parseUrl();
+        this.parent({window: id + "-window", title: element.getProperty("title")});
+        this.copyTo = this.parseUrl(href);
+
+        this.htmlRequest = new Request.HTML({   method: 'get',
+                                                update: this.options.window.getProperty("id") + "-content",
+                                                onComplete: function() {
+                                                    this.bind();
+                                                }.bind(this)
+                                            
+                                            });
         
-        this.updateCallback = this.bind;
+        element.addEvent("click", function(e) {
+            new Event(e).preventDefault();
+            this.makeRequest(href);
+        }.bind(this));
     },
     
     bind: function() {
+        this.show();
+        
         var pathList = this.options.window.getElement("ul");
         var paths = null;
         var addLink = null;
@@ -472,7 +468,7 @@ var Path = new Class({
                 paths.each(function(f) {
                     addLink = f.getElement("a.add");
                     gotoLink = f.getElement("a.folder, a.up");
-
+                    
                     if(addLink) {
                         addValue = f.getElement("input[type=hidden]").getProperty("value");
                         addLink.addEvent('click', function(e, value) {
@@ -485,7 +481,7 @@ var Path = new Class({
                         gotoValue = gotoLink.getProperty("href");
                         gotoLink.addEvent('click', function(e, path) {
                             new Event(e).preventDefault();
-                            this.makeRequest(e, path);
+                            this.makeRequest(path);
                         }.bindWithEvent(this, gotoValue));
                     }
                 }.bind(this));
