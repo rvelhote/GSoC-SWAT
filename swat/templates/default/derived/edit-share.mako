@@ -39,6 +39,14 @@
         userGroupSelectors.each(function(p, i) {
             new UserGroupSelector(popupId + "" + (i + 1), p);
         });
+        
+        var manualAdd = $$("a.manual-add");
+        manualAdd.each(function(p, i) {
+            var copyfrom = $(getUrlParam(p.getProperty("href"), "copyfrom"));
+            var copyto = $(getUrlParam(p.getProperty("href"), "copyto"));
+            
+            new ManualItemList({trigger: p, copyFrom: copyfrom, copyTo: copyto});
+        });
     });
 </script>
 

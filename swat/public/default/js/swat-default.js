@@ -120,19 +120,26 @@ var ItemList = new Class({
     Implements: [Options, Events],
     
     options: {
-        copyTo: null,
-        copyFromManual: null
+        copyTo: null
     },
     
     initialize: function(options) {
         this.setOptions(options);
-        this.options.copyFromManual = $(this.options.copyTo.getProperty("id") + "-manual-text");
-
-        var manualButton = $(this.options.copyTo.getProperty("id") + "-manual");        
-        manualButton.addEvent('click', function(e) {
-            new Event(e).preventDefault();
-            this.addManual();
-        }.bindWithEvent(this));
+        this.addRemoveEvent();
+    },
+    
+    addRemoveEvent: function() {
+        elements = this.options.copyTo.getChildren();
+        
+        if(elements) {
+            elements.each(function(a, i) {
+                a.addEvent('click', function(ev) {
+                    event = new Event(ev).stop();
+                    this.options.copyTo = ev.target.getParent().getParent();
+                    this.remove(ev.target);
+                }.bind(this));
+            }.bind(this));
+        }
     },
     
     effect: function(id, type) {
@@ -181,18 +188,7 @@ var ItemList = new Class({
         this.effect(newElementId, "add");
         this.updateHiddenList("add");
     },
-    
-    addManual: function() {
-        items = this.options.copyFromManual.getProperty("value").split(',');
-        numItems = items.length;
 
-        for(var i = 0; i < numItems; i++) {
-            this.add(items[i].trim());
-        }
-        
-        this.options.copyFromManual.setProperty("value", "");
-    },
-    
     remove: function(id, forReal) {
         var element = $(id);
         
@@ -237,6 +233,37 @@ var ItemList = new Class({
 
             area.setProperty("value", area.getProperty("value").substring(1));
         }
+    }
+});
+
+var ManualItemList = new Class({
+    Implements: Options,
+    Extends: ItemList,
+    
+    options: {
+        copyFrom: null,
+        trigger: null
+    },
+    
+    initialize: function(options) {
+        this.parent(options);
+        this.setOptions(options);
+
+        this.options.trigger.addEvent('click', function(e) {
+            new Event(e).preventDefault();
+            this.addManual();
+        }.bind(this));
+    },
+    
+    addManual: function() {
+        items = this.options.copyFrom.getProperty("value").split(',');
+        numItems = items.length;
+
+        for(var i = 0; i < numItems; i++) {
+            this.add(items[i].trim());
+        }
+        
+        this.options.copyFrom.setProperty("value", "");
     }
 });
 
@@ -310,6 +337,13 @@ function checkAllRows(parent, base) {
             selectShareRow(c);
         });
     }
+}
+
+function getUrlParam(href, what) {
+    var queryString = href.match(/\?(.+)/)[1];
+    var params = queryString.parseQueryString();
+
+    return params[what];
 }
 
 /**

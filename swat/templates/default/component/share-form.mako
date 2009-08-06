@@ -71,7 +71,8 @@
     
 <%def name="manual_add(id, op)">
     <% copy_to = c.p.get_value(id, 'field-ops-descriptor/' + op + '/link/copy-to') or c.p.get_value(id, 'id') %>
-    <a href="#" id="${c.p.get_value(id, 'field-ops-descriptor/' + op + '/link/copy-to')}-manual" title="${c.p.get_value(id, 'field-ops-descriptor/' + op + '/title')}"><img src="/default/images/icons/${c.p.get_value(id, 'field-ops-descriptor/' + op + '/image/name')}" alt="${c.p.get_value(id, 'field-ops-descriptor/' + op + '/image/alt')}" /></a>
+    <% copy_from = c.p.get_value(id, 'field-ops-descriptor/' + op + '/link/copy-from') or c.p.get_value(id, 'id') %>
+    <a class="${op}" href="?copyto=${copy_to}&amp;copyfrom=${copy_from}" title="${c.p.get_value(id, 'field-ops-descriptor/' + op + '/title')}"><img src="/default/images/icons/${c.p.get_value(id, 'field-ops-descriptor/' + op + '/image/name')}" alt="${c.p.get_value(id, 'field-ops-descriptor/' + op + '/image/alt')}" /></a>
 </%def>
     
 <%def name="modifiers(id, op)">
@@ -108,7 +109,7 @@
         
 <%def name="list(id, value)">
     <label for="${c.p.get_value(id, "id")}" title="${c.p.get_value(id, "title")}">${c.p.get_value(id, "label")}:</label>
-    ${h.text('', '', id=c.p.get_value(id, "id") + "-list-manual-text", style="float:left;", class_=c.p.get_value(id, "class"))}
+    ${h.text('', '', id=c.p.get_value(id, "id"), style="float:left;", class_=c.p.get_value(id, "class"))}
     
     <% field_ops(id, c.p.get_value(id, "field-ops")) %>
     <% list_values = "" %>
