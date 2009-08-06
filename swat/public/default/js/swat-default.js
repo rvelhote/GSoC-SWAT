@@ -471,7 +471,7 @@ var Path = new Class({
             if(paths) {
                 paths.each(function(f) {
                     addLink = f.getElement("a.add");
-                    gotoLink = f.getElement("a.folder");
+                    gotoLink = f.getElement("a.folder, a.up");
 
                     if(addLink) {
                         addValue = f.getElement("input[type=hidden]").getProperty("value");

@@ -10,7 +10,7 @@
 
     <h1>${current}</h1>
     <ul class="popup-list path-list">
-        <li><a class="up" title="${_('Parent Folder')}" href="#">...</a>
+        <li><a class="up" title="${_('Parent Folder')}" href="${up_link}">...</a>
         
         % try:
             <%
