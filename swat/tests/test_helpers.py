@@ -14,23 +14,47 @@
 # You should have received a copy of the GNU General Public License
 # 
 from swat.lib.helpers import *
+from swat.tests import *
 from pylons import config
 
-class TestMenuConfiguration():
+from mako.template import Template, ModuleTemplate
+from mako.lookup import TemplateLookup
+from mako import exceptions
+
+class TestMenuConfiguration(TestController):
     def setUp(self):
+	""" open the menu configuration yamls """
 	self.phony_instance = MenuConfiguration("topaaaaaaa", config['yaml.testfiles'])
 	self.instance = MenuConfiguration("top", config['yaml.testfiles'])
 
     def test_get_phony_menu_items(self):
+	""" checks if the phony menu item is empty as it should """
 	items = self.phony_instance.get_items()
 	assert len(items) == 0, 'Non-existing menu should return empty dictionary'
 	
     def test_get_menu_items(self):
+	""" check if there's anything at all in the valid menu yaml """
 	items = self.instance.get_items()
 	assert len(items) > 0, 'Existing menu should return at least one item'
     
-    def test_loop_through(self):
+    def test_check_for_control_item(self):
+	""" checks if the control item is present in the test menu file """
 	items = self.instance.get_items()
+	assert 'dashboard' in items, 'test menu should have the dashboard item in it'
+	
+    def test_loop_through(self):
+	""" test for the mandatory configuration parameters """
+	items = self.instance.get_items()
+	for item in items:
+	    assert len(self.instance.get_item_configuration(item, 'link/controller')) > 0, 'must have controller defined'
+	    assert len(self.instance.get_item_configuration(item, 'link/action')) > 0, 'must have action defined'
+	    assert len(self.instance.get_item_configuration(item, 'link/name')) > 0, 'must have name defined'
+    
+    def test_menu_render(self):
+	pass
+
+
+       
     
 #
 #    def test_get_menu_valid_type(self):
