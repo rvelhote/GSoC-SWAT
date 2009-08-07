@@ -53,22 +53,32 @@ class TestMenuConfiguration(TestController):
     def test_menu_render(self):
 	pass
 
+class TestYamlConfig():
+    def setUp(self):
+	self.yaml = YamlConfig()
+	self.yaml.y_load("yamlconfig", config['yaml.testfiles'])
+	
+    def test_depth(self):
+	value = self.yaml.y_get("dashboard/link/name/title/controller/action/dashboard/link/name/title/controller/finally")
+	assert value == 'yay', 'final result shoud be yay'
+	
+    def test_fake_value(self):
+	value = self.yaml.y_get("these/pretzels/are/making/me/thirsty")
+	assert len(value) == 0, 'empty result'
+	
+    def test_malformed_yaml(self):
+	yaml_malformed = YamlConfig()
+	yaml_malformed.y_load("yamlmalformed", config['yaml.testfiles'])
+	
+	assert len(yaml_malformed.yaml_contents) == 0, "should be empty"
+	
+    def test_fake_file(self):
+	yaml_gone = YamlConfig()
+	yaml_gone.y_load("yamlthatdoesntexist", config['yaml.testfiles'])
+	
+	assert len(yaml_gone.yaml_contents) == 0, "should be empty"
+	
 
-       
-    
-#
-#    def test_get_menu_valid_type(self):
-#	type = "top"
-#	assert len(get_menu(type)) > 0, 'Length of the  returned list should be > 0'
-#
-#    def test_get_menu_invalid_type(self):
-#	type = "vandelayindustries"
-#	assert len(get_menu(type)) == 0, 'When the menu doesn\'t exist an empty list should be returned'
-
-#class TestSambaServerStatus():
-#    def test_get_samba_server_status(self):
-#	status = get_samba_server_status()
-#        assert status == "up" or status == "down", 'Status should always be "up" or "down"'
 #
 #class TestDashboardConfiguration():
 #    def setUp(self):
