@@ -138,8 +138,12 @@ class YamlConfig:
         else:
             file_exists = True
     
-        if file_exists:        
-            self.yaml_contents = yaml.safe_load(stream)
+        if file_exists:
+            try:
+                self.yaml_contents = yaml.safe_load(stream)
+            except Exception, msg:
+                log.fatal("error parsing the yaml file! -- " + str(msg))
+                
             stream.close()
     
     def y_get(self, tree):
