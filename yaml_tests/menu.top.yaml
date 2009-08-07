@@ -1,0 +1,9 @@
+actions:
+    - dashboard
+
+dashboard:
+    link:
+        name: 'dashboard'
+        title: ''
+        controller: dashboard
+        action: index
