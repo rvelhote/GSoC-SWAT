@@ -1,0 +1,12 @@
+dashboard:
+    link:
+        name:
+            title:
+                controller:
+                    action:
+                        dashboard:
+                            link:
+                                name:
+                                    title:
+                                        controller:
+                                            finally: yay
