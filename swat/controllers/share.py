@@ -119,6 +119,12 @@ class ShareController(BaseController):
 
         if request.environ['pylons.routes_dict']['action'] == "save":
             redirect_to(controller='share', action='index')
+        elif stored:
+            redirect_to(controller='share', action='edit', name=request.params.get("name", ""))
+        elif is_new :
+            redirect_to(controller='share', action='add')
+        else:
+            redirect_to(controller='share', action='edit', name=request.params.get("old_name", ""))
 
     def apply(self):
         """ Apply changes done to a Share. This action is merely an alias for
@@ -126,11 +132,6 @@ class ShareController(BaseController):
         
         """
         self.save()
-
-        if len(request.params.get("name", "")) == 0:
-            redirect_to(controller='share', action='add')
-        else:
-            redirect_to(controller='share', action='edit', name=request.params.get("name", ""))
     
     def cancel(self, name=''):
         """ Cancel the current editing/addition of the current Share """
@@ -456,14 +457,13 @@ class ShareBackendClassic():
             before = self.__smbconf_content[0:pos['start'] - 1]
             after = self.__smbconf_content[pos['end']:]
             
-            self.__save_smbconf([before, after])
-
-            if self.__section_exists(self.__share_name):
-                self.set_error(_("Could not delete that Share.\
-                                 The Share is still in the Backend.\
-                                 No idea why..."), "critical")
-            else:
-                deleted = True
+            if self.__save_smbconf([before, after]):
+                if self.__section_exists(self.__share_name):
+                    self.set_error(_("Could not delete that Share.\
+                                     The Share is still in the Backend.\
+                                     No idea why..."), "critical")
+                else:
+                    deleted = True
         else:
             self.set_error(_("Can't delete a Share that doesn't exist!"), "warning")
         
@@ -492,12 +492,11 @@ class ShareBackendClassic():
                 before = self.__smbconf_content[0:pos['start'] - 1]
                 after = self.__smbconf_content[pos['end']:]
     
-                self.__save_smbconf([before, section, new_section, after])
-                
-                if self.__section_exists(new_name):
-                    copied = True
-                else:
-                    self.set_error(_("Could not copy that Share. No idea why..."), "warning")
+                if self.__save_smbconf([before, section, new_section, after]):
+                    if self.__section_exists(new_name):
+                        copied = True
+                    else:
+                        self.set_error(_("Could not copy that Share. No idea why..."), "warning")
             else:
                 self.set_error(_("Did not duplicate Share because the original doesn't exist!"), "critical")
         
@@ -578,10 +577,12 @@ class ShareBackendClassic():
                             stream.write(line)
                         except UnicodeEncodeError, msg:
                             log.fatal("Can't write line; " + line + "; " + str(msg))
+                            self.set_error(_("Could not write data into the backend.") + " -- " + str(msg), "critical")
                             abort = True
                             break
                         except Exception, msg:
                             log.fatal("Can't write line; " + line + "; " + str(msg))
+                            self.set_error(_("Could not write data into the backend.") + " -- " + str(msg), "critical")
                             abort = True
                             break
                     
@@ -596,8 +597,10 @@ class ShareBackendClassic():
                         shutil.move(self.__smbconf + ".new", self.__smbconf)
                     except IOError, msg:
                         log.fatal("Can't replace old smb.conf; " + str(msg))
+                        self.set_error(_("Could not replace old backend configuration with new one") + " -- " + str(msg), "critical")
                     except Exception, msg:
                         log.fatal("Can't replace old smb.conf; " + str(msg))
+                        self.set_error(_("Could not replace old backend configuration with new one") + " -- " + str(msg), "critical")
                     else:
                         written = True
                     
@@ -607,12 +610,11 @@ class ShareBackendClassic():
                         log.warning("could not remove temporary save file")
             else:
                 log.info("Nothing to write. Won't touch smb.conf")
+                self.set_error(_("Nothing to write. Won't touch smb.conf") + " -- " + str(msg), "warning")
         except IOError, msg:
             log.fatal("can't write changes to temporary file; " + str(msg))
-            self.set_error(_("Can't write changes to temporay file. Writing aborted!"))
-        else:
-            log.warning("else!")
-            
+            self.set_error(_("Can't write changes to temporay file. Writing aborted!") + " -- " + str(msg), "critical")
+
         return written
 
     def has_error(self):
