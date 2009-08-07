@@ -433,12 +433,12 @@ class ShareBackendClassic():
                 after = []
             
             new_section = self.__recreate_section(self.__share_name, section)
-            self.__save_smbconf([before, new_section, after])
             
-            if self.__section_exists(self.__share_name):
-                stored = True
-            else:
-                self.set_error(_("Could not add/edit that Share. No idea why..."), "warning")
+            if self.__save_smbconf([before, new_section, after]):
+                if self.__section_exists(self.__share_name):
+                    stored = True
+                else:
+                    self.set_error(_("Could not add/edit that Share. No idea why..."), "warning")
 
         return stored
     
@@ -563,31 +563,60 @@ class ShareBackendClassic():
         import shutil
         import os
         
-        stream = open(self.__smbconf + ".new", 'w')
-        ok = True
+        written = False
+        abort = False
+        stream = None
         
-        for area in what:
-            for line in area:
-                try:
-                    stream.write(line)
-                except:
-                    ok = False   
-                    break;
-                
-            if not ok:
-                break
-        
-        if ok:
-            try:
-                shutil.move(self.__smbconf, self.__smbconf + ".old")
-                shutil.move(self.__smbconf + ".new", self.__smbconf)
-            except:
-                pass
-
         try:
-            os.remove(self.__smbconf + ".new")
-        except:
-            pass
+            stream = open(self.__smbconf + ".new", 'w')
+            
+            if len(what) > 0:
+                
+                for area in what:
+                    for line in area:
+                        try:
+                            stream.write(line)
+                        except UnicodeEncodeError, msg:
+                            log.fatal("Can't write line; " + line + "; " + str(msg))
+                            abort = True
+                            break
+                        except Exception, msg:
+                            log.fatal("Can't write line; " + line + "; " + str(msg))
+                            abort = True
+                            break
+                    
+                    if abort:
+                        break
+                    
+                if abort:
+                    log.warning("Did not write anything to the temporary file;")
+                else:
+                    try:
+                        shutil.move(self.__smbconf, self.__smbconf + ".old")
+                        shutil.move(self.__smbconf + ".new", self.__smbconf)
+                    except IOError, msg:
+                        log.fatal("Can't replace old smb.conf; " + str(msg))
+                    except Exception, msg:
+                        log.fatal("Can't replace old smb.conf; " + str(msg))
+                    else:
+                        written = True
+                    
+                    try:    
+                        os.remove(self.__smbconf + ".new")
+                    except:
+                        log.warning("could not remove temporary save file")
+            else:
+                log.info("Nothing to write. Won't touch smb.conf")
+        except IOError, msg:
+            log.fatal("can't write changes to temporary file; " + str(msg))
+            self.set_error(_("Can't write changes to temporay file. Writing aborted!"))
+        else:
+            log.warning("else!")
+            
+        return written
+
+    def has_error(self):
+        return len(self.__error['message']) == 0
     
     def set_error(self, message, type='critical'):
         """ Sets the error message to indicate what has failed with the operation
@@ -603,7 +632,7 @@ class ShareBackendClassic():
 
     def get_error_message(self):
         """ Gets the current error message """
-        return self.__error['message'] or _('I have nooooo idea...')
+        return self.__error['message']
     
     def get_error_type(self):
         """ Gets the current error type """
