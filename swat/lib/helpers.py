@@ -128,9 +128,11 @@ class YamlConfig:
         """
         file_exists = False
         self.yaml_contents = {}
+        
+        dir = dir or config['yaml.config']
     
         try:
-            stream = open('%s/%s.yaml' % (config['yaml.config'], filename), 'r')
+            stream = open('%s/%s.yaml' % (dir, filename), 'r')
         except IOError:
             file_exists = False
         else:
@@ -429,7 +431,7 @@ def get_samba_server_status():
 
 class MenuConfiguration(YamlConfig):
     """ Handles regular menu items in SWAT. Data is loaded from a YAML file """
-    def __init__(self, name):
+    def __init__(self, name, dir=''):
         """ Initialization. Loads the YAML file passed as parameter. Only the
         name of the menu (i.e. top, footer) is required.
         
@@ -445,7 +447,7 @@ class MenuConfiguration(YamlConfig):
         
         """
         filename = 'menu.%s' % (name)
-        self.y_load(filename)
+        self.y_load(filename, dir)
         
     def get_items(self):
         """ Gets all possible actions with this menu. This is basically a list
