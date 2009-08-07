@@ -306,6 +306,7 @@ class ShareBackendClassic():
         
         """
         if name not in self.__share_list:
+            log.warning("Share " + name + " doesn't exist")
             return False
         
         return True
