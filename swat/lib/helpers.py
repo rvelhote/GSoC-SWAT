@@ -25,6 +25,9 @@ from routes import url_for
 from pylons import request, app_globals as g, config
 
 import yaml
+import logging
+
+log = logging.getLogger(__name__)
 
 class BreadcrumbTrail:
     """ Handles SWAT's Breadcrumb Trail.
@@ -478,8 +481,9 @@ def python_libs_exist():
     try:
         import samba, param
     except ImportError, error:
-        pass
+        log.warning("did not find python libraries. will try to add them from the default samba install dir at /usr/local/samba/lib")
     else:
+        log.info("python libraries are in the default python path")
         exist = True
         
     if not exist and os.path.exists("/usr/local/samba/lib/python2.6/site-packages"):        
@@ -493,8 +497,10 @@ def python_libs_exist():
             swat_messages.add(str(error) \
                 + " (in Python Libraries directory and in /usr/local/samba/lib/*)",
                 "critical")
+            log.fatal("python libs are nowhere to be found!")
         else:
             exist = True
+            log.info("python libraries are in samba's default install directory")
     
     return exist
 
