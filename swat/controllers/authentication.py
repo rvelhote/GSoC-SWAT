@@ -57,11 +57,11 @@ class AuthenticationController(BaseController):
 
         if pam.authenticate(username, password):
             swat_messages.add('Authentication successful!')
-            log.info("login attempt sucessful by " + username + " -- ip: " + environ['REMOTE_ADDR'])
+            log.info("login attempt sucessful by " + username)
             
             return username
         
-        log.warning("failed login attempt by " + username + " -- ip: " + environ['REMOTE_ADDR'])
+        log.warning("failed login attempt by " + username)
         swat_messages.add('Authentication failed. Try Again', 'critical')
         
         return None        
