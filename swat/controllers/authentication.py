@@ -55,7 +55,7 @@ class AuthenticationController(BaseController):
         if len_password == 0:
             swat_messages.add('Password cannot be empty', 'critical')
 
-        if pam.authenticate(username, password):
+        if self.__perform_authentication(username, password, environ):
             swat_messages.add('Authentication successful!')
             log.info("login attempt sucessful by " + username)
             
@@ -64,7 +64,38 @@ class AuthenticationController(BaseController):
         log.warning("failed login attempt by " + username)
         swat_messages.add('Authentication failed. Try Again', 'critical')
         
-        return None        
+        return None
+    
+    def __perform_authentication(self, username, password, environ):
+        import param
+        from samba import credentials
+        
+        lp = param.LoadParm()
+        lp.load_default()
+        
+        creds = credentials.Credentials()
+        creds.set_username(username)
+        creds.set_password(password)
+        creds.set_domain("")
+        
+        if "REMOTE_HOST" in environ:
+            creds.set_workstation(environ['REMOTE_HOST']);
+        else:
+            creds.set_workstation("")
+        
+        # TODO: Probably not the best way to do this :)
+        if "rpc" in lp.get("server services"):
+            self.__auth_rpc(lp, creds)
+            log.info("using rpc authentication")
+        else:
+            self.__auth_samr(lp, creds)
+            log.info("using samr authentication")
+    
+    def __auth_rpc(self, lp, credentials):
+        pass
+    
+    def __auth_samr(self, lp, credentials):
+        pass
         
     def do(self):
         """ Stub. Required by repoze.who to be the login_handler_path. I can't
