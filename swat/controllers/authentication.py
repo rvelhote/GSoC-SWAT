@@ -18,7 +18,8 @@ class AuthenticationController(BaseController):
     http://docs.repoze.org/who/
     
     """
-    allow_usernames = ('root', 'ric')
+    __allow_usernames = ('root', 'ric')
+    __reason = ''
 
     def login(self):
         """ Shows the Login Screen to the user """
@@ -41,6 +42,10 @@ class AuthenticationController(BaseController):
         
         In case of sucess it returns the username of the user that attempted
         to login otherwise None
+        
+        TODO: Add i18n here
+        BUG: Can't add i18n because for some reason the pylons imports don't
+        work here. Maybe I'm using repoze.who wrong?
         
         """
         username = identity['login']
@@ -70,6 +75,8 @@ class AuthenticationController(BaseController):
         import param
         from samba import credentials
         
+        auth_success = False
+        
         lp = param.LoadParm()
         lp.load_default()
         
@@ -85,15 +92,29 @@ class AuthenticationController(BaseController):
         
         # TODO: Probably not the best way to do this :)
         if "rpc" in lp.get("server services"):
-            self.__auth_rpc(lp, creds)
+            auth_success = self.__auth_rpc(lp, creds)
             log.info("using rpc authentication")
         else:
-            self.__auth_samr(lp, creds)
+            auth_success =  self.__auth_samr(lp, creds)
             log.info("using samr authentication")
+            
+        return auth_success
     
     def __auth_rpc(self, lp, credentials):
-        pass
-    
+        from samba.dcerpc.echo import rpcecho
+        from pylons.i18n.translation import _
+        
+        auth_success = False
+
+        try:
+            conn = rpcecho("ncalrpc:", lp, credentials)
+        except Exception, msg:
+            self.__reason = msg[1]
+        else:
+            auth_success = True
+            
+        return auth_success
+
     def __auth_samr(self, lp, credentials):
         pass
         
