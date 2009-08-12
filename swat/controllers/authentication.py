@@ -75,6 +75,11 @@ class AuthenticationController(BaseController):
         """ Performs the authentication of a user depending on the available
         methods
         
+        Keyword arguments:
+        username -- username provided by the login form
+        password -- password provided by the login form
+        environ -- request.environ
+        
         """
         import param
         from samba import credentials
