@@ -72,6 +72,10 @@ class AuthenticationController(BaseController):
         return None
     
     def __perform_authentication(self, username, password, environ):
+        """ Performs the authentication of a user depending on the available
+        methods
+        
+        """
         import param
         from samba import credentials
         
@@ -101,6 +105,17 @@ class AuthenticationController(BaseController):
         return auth_success
     
     def __auth_rpc(self, lp, credentials):
+        """ RPCEcho Authentication
+        
+        Keyword arguments:
+        lp -- samba configuration file loaded with param.LoadParm
+        credentials - Credentials object with the username, password, domain
+        and workstation values set
+        
+        TODO: Check if user has Administration credentials. No idea on how to
+        do this
+        
+        """
         from samba.dcerpc.echo import rpcecho
         from pylons.i18n.translation import _
         
@@ -116,8 +131,31 @@ class AuthenticationController(BaseController):
         return auth_success
 
     def __auth_samr(self, lp, credentials):
-        pass
+        """ SAMR Authentication
         
+        Keyword arguments:
+        lp -- samba configuration file loaded with param.LoadParm
+        credentials - Credentials object with the username, password, domain
+        and workstation values set
+
+        TODO: Check if user has Administration credentials. Probably something
+        to do with the uuid
+        
+        """
+        from samba.dcerpc import samr, security
+        
+        auth_success = False
+        
+        try:
+            pipe = samr.samr("ncalrpc:", lp, credentials)
+            connect_handle = pipe.Connect(None, security.SEC_FLAG_MAXIMUM_ALLOWED)
+        except Exception, msg:
+            self.__reason = msg[1]
+        else:
+            auth_success = True
+
+        return auth_success
+
     def do(self):
         """ Stub. Required by repoze.who to be the login_handler_path. I can't
         set this to login otherwise it would just send me to the login method
