@@ -67,7 +67,7 @@ class AuthenticationController(BaseController):
             return username
         
         log.warning("failed login attempt by " + username)
-        swat_messages.add('Authentication failed. Try Again', 'critical')
+        swat_messages.add('Authentication failed' + ' -- ' + self.__reason, 'critical')
         
         return None
     
