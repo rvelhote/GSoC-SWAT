@@ -236,7 +236,28 @@ class ParamConfiguration(YamlConfig):
         return self.y_get(tree)
 
 class ControllerConfiguration(YamlConfig):
+    """ Handles the configuration options for the current controller. Each
+    controller should instantiate this class at their init method
+    
+    Configuration Parameters are read from the YamlConfig file matching the
+    controller.
+    
+    All of the methods in this class are just shorthands for common tasks. We
+    could just call YamlConfig.y_get(tree) directly but instead we use
+    self.get_action_info for example to get information on the current action.
+    
+    Extends from YamlConfig.
+    
+    """
     def __init__(self, controller, action='index'):
+        """ Constructor. Does the initial loading of the Yaml File.
+        
+        Keyword arguments:
+        controller -- the controller's name to load
+        action -- the current action that the controller is handling. defaults
+        to 'index'
+        
+        """
 	self.__controller = controller
 	self.__action = action
         
@@ -244,6 +265,14 @@ class ControllerConfiguration(YamlConfig):
         self.y_load(filename)
 
     def get_action_info(self, tree, action=''):
+        """ Gets information on an action that belongs to a controller.
+        
+        Keyword arguments:
+        tree -- the tree of which to get the final value from
+        action -- the action to get it from. if empty or ommited it will default
+        to the current action.
+        
+        """
         if len(action) == 0:
             action = self.get_action()
 
@@ -251,25 +280,43 @@ class ControllerConfiguration(YamlConfig):
         return self.y_get(tree)
 
     def get_is_advanced(self):
+        """ Is this controller advanced or not. Advanced means that it's not
+        one of the regular tasks (share, printer, machine management). Something
+        such as Log Management
+        
+        """
         tree = ('controller/is_advanced')
         return self.y_get(tree)
 
     def get_dashboard_items(self):
+        """ Gets the Dashboard Actions attributed to this controller """
         tree = ('dashboard/actions')
 	return self.y_get(tree)
         
     def get_dashboard_info(self, tree):
+        """ Gets information on the Dashboard 'Widget' regarding this controller
+        It's mainly just a list of actions that will appear on the dashboard
+        when this controller is listed.
+        
+        """
         tree = ('dashboard/%s') % (tree)
         return self.y_get(tree)
         
     def get_toolbar_items(self):
+        """ Gets the Dashboard Actions attributed to the current action
+        
+        TODO: make the action name a parameter?
+        
+        """
         tree = ('toolbar/%s') % self.get_action()
         return self.y_get(tree)
     
     def get_action(self):
+        """ Gets the current action name """
         return self.__action
     
     def get_controller(self):
+        """ Gets the current controller name """
         return self.__controller
 
 class DashboardConfiguration(YamlConfig):
@@ -511,10 +558,12 @@ def python_libs_exist():
     return exist
 
 def get_group_list():
+    """ Gets this System's Groups to appear in the User/Group Selection Popup """
     import grp
     return grp.getgrall()
 
 def get_user_list():
+    """ Gets this System's Users to appear in the User/Group Selection Popup """
     users = []
     groups = get_group_list()
 
