@@ -60,6 +60,8 @@ class ShareController(BaseController):
         c.samba_lp.load_default()
         
         c.share_list = {}
+        
+        self.__backend = "ShareBackend" + c.samba_lp.get("share backend").title()
 
         if c.samba_lp.get("share backend") == "classic":
             c.share_list = shares.SharesContainer(c.samba_lp)
@@ -106,7 +108,7 @@ class ShareController(BaseController):
             is_new = True
         
         if c.samba_lp.get("share backend") == "classic":
-            backend = ShareBackendClassic(c.samba_lp, request.params)
+            backend = globals()[self.__backend](c.samba_lp, request.params)
             stored = backend.store(is_new)
             
             if stored:
@@ -176,7 +178,7 @@ class ShareController(BaseController):
             name = [name]
   
         if c.samba_lp.get("share backend") == "classic":
-            backend = ShareBackendClassic(c.samba_lp, {})
+            backend = globals()[self.__backend](c.samba_lp, {})
             
             #
             #   TODO: Handle multiple deletion errors
@@ -214,7 +216,7 @@ class ShareController(BaseController):
             name = [name]
         
         if c.samba_lp.get("share backend") == "classic":
-            backend = ShareBackendClassic(c.samba_lp, {})
+            backend = globals()[self.__backend](c.samba_lp, {})
 
             #
             #   TODO: Handle multiple deletion errors
@@ -249,7 +251,7 @@ class ShareController(BaseController):
         
         """
         if c.samba_lp.get("share backend") == "classic":
-            backend = ShareBackendClassic(c.samba_lp, {'name':name})
+            backend = globals()[self.__backend](c.samba_lp, {'name':name})
             toggled = backend.toggle()
             
             if toggled:
