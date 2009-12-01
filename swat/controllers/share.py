@@ -524,7 +524,9 @@ class ShareBackendClassic():
         """
         import re
         
-        new_section = ['\n[' + name + ']\n']
+        new_section = []
+        new_section.append(section[0].replace(self.__share_old_name, \
+                                              self.__share_name))
         
         #   Scan the current section in search for existing values. I could
         #   just dump the content of params but this will keep other things
