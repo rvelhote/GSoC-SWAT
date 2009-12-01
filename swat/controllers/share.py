@@ -421,7 +421,7 @@ class ShareBackendClassic():
                     pos = self.__get_section_position(self.__share_old_name)
                     section = self.__smbconf_content[pos['start']:pos['end']]
                     
-                    before = self.__smbconf_content[0:pos['start'] - 1]
+                    before = self.__smbconf_content[0:pos['start']]
                     after = self.__smbconf_content[pos['end']:]
                 else:
                     #
@@ -455,7 +455,7 @@ class ShareBackendClassic():
         if self.__share_name_exists(self.__share_name):
             pos = self.__get_section_position(self.__share_name)
     
-            before = self.__smbconf_content[0:pos['start'] - 1]
+            before = self.__smbconf_content[0:pos['start']]
             after = self.__smbconf_content[pos['end']:]
             
             if self.__save_smbconf([before, after]):
@@ -490,7 +490,7 @@ class ShareBackendClassic():
                 
                 new_section = self.__recreate_section(new_name, section)
             
-                before = self.__smbconf_content[0:pos['start'] - 1]
+                before = self.__smbconf_content[0:pos['start']]
                 after = self.__smbconf_content[pos['end']:]
     
                 if self.__save_smbconf([before, section, new_section, after]):
