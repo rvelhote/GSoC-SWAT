@@ -161,7 +161,7 @@ class ShareController(BaseController):
         return render_mako_def('/default/component/popups.mako', \
                                'select_user_group')
         
-    def remove(self, name):
+    def remove(self, name=''):
         """ Deletes a Share from the current Backend
         
         Keyword arguments:
@@ -188,7 +188,7 @@ class ShareController(BaseController):
         
         redirect_to(controller='share', action='index')
     
-    def copy(self, name):
+    def copy(self, name=''):
         """ Clones the chosen Share
         
         Keyword arguments:
@@ -215,7 +215,7 @@ class ShareController(BaseController):
             
         redirect_to(controller='share', action='index')
     
-    def toggle(self, name):
+    def toggle(self, name=''):
         """ Toggles a Share's state (enabled/disabled).
         
         At the moment it is disabled because I'm not sure how I can implement
