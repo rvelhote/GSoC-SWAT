@@ -33,6 +33,9 @@ class ShareController(BaseController):
     Shares in SWAT.
     
     """
+    
+    __supported_backends = ('classic')
+    __allowed = ('index', 'add', 'edit', 'add_assistant')
 
     def __init__(self):
         """ Initialization. Load the controller's configuration, builds the
@@ -44,13 +47,15 @@ class ShareController(BaseController):
         is a list of allowed operations that is checked to see if it's ok to
         load the configuration
         
-        """
+        """        
         me = request.environ['pylons.routes_dict']['controller']
         action = request.environ['pylons.routes_dict']['action']
         
-        allowed = ('index', 'add', 'edit', 'add_assistant')
+        log.debug("Supported Backends: " + str(self.__supported_backends))
+        log.debug("Controller: " + me)
+        log.debug("Action: " + action)
         
-        if action in allowed:
+        if action in self.__allowed:
             c.config = ControllerConfiguration(me, action)
             
             c.breadcrumb = BreadcrumbTrail(c.config)
@@ -62,10 +67,13 @@ class ShareController(BaseController):
         c.share_list = {}
         
         self.__backend = "ShareBackend" + c.samba_lp.get("share backend").title()
+        log.debug("Configured backend is: " + c.samba_lp.get("share backend") + " so the Class Name will be " + self.__backend)
 
-        if c.samba_lp.get("share backend") == "classic":
+        if c.samba_lp.get("share backend") in self.__supported_backends:
             c.share_list = shares.SharesContainer(c.samba_lp)
         else:
+            log.error( c.samba_lp.get("share backend") + "is unsupported at the moment")
+            
             message = _("Your chosen backend is not yet supported")
             swat_messages.add(message, "critical")
     
@@ -81,6 +89,7 @@ class ShareController(BaseController):
         return self.edit('', True)
     
     def add_assistant(self):
+        log.error("Not implemented")
         pass
     
     def edit(self, name, is_new=False):
@@ -90,24 +99,31 @@ class ShareController(BaseController):
         name -- the share name to load the information from
         
         """
+        log.debug("Editing share " + name)
+        log.debug("Is the Share New? " + str(is_new))
         
         if name not in c.share_list and not is_new:
+            log.warning("Share " + name + " doesn't exist in the chosen backend")
             swat_messages.add(_("Can't edit a Share that doesn't exist"), "warning")
             redirect_to(controller='share', action='index')
         else:
             c.p = ParamConfiguration('share-parameters')
             c.share_name = name
+
             return render('/default/derived/edit-share.mako')
         
     def save(self):
         """ Save a Share. We enter here either from the 'edit' or 'add' """
         backend = None
         is_new = False
-        
+                
         if request.params.get("task", "edit") == "add":
             is_new = True
         
-        if c.samba_lp.get("share backend") == "classic":
+        log.debug("Task is: " + request.params.get("task", "edit"))    
+        log.debug("Is the share we are saving new? " + str(is_new))
+        
+        if c.samba_lp.get("share backend") in self.__supported_backends:
             backend = globals()[self.__backend](c.samba_lp, request.params)
             stored = backend.store(is_new)
             
@@ -117,6 +133,8 @@ class ShareController(BaseController):
             else:
                 swat_messages.add(backend.get_error_message(), backend.get_error_type())
         else:
+            log.error("Error saving because the backend (" + c.samba_lp.get("share backend") + ") is unsupported")
+            
             message = _("Your chosen backend is not yet supported")
             swat_messages.add(message, "critical")
 
@@ -152,6 +170,8 @@ class ShareController(BaseController):
         
         """
         path = request.params.get('path', '/')
+        log.debug("We want the folders in: " + path)
+        
         return render_mako_def('/default/component/popups.mako', 'select_path', \
                                current=path)
         
@@ -161,6 +181,9 @@ class ShareController(BaseController):
         Users and Groups.
         
         """
+        already_selected = request.params.get('selected', '')
+        log.debug("These are selected: " + already_selected)
+        
         return render_mako_def('/default/component/popups.mako', \
                                'select_user_group')
         
@@ -170,14 +193,16 @@ class ShareController(BaseController):
         Keyword arguments:
         name -- the name of the share to be deleted
         
-        """
+        """        
         if len(name) == 0:
             name = variabledecode.variable_decode(request.params).get("name")
 
         if not isinstance(name, list):
             name = [name]
+            
+        log.info(len(name) + " share names passed to the server to be deleted")
   
-        if c.samba_lp.get("share backend") == "classic":
+        if c.samba_lp.get("share backend") in self.__supported_backends:
             backend = globals()[self.__backend](c.samba_lp, {})
             
             #
@@ -185,6 +210,7 @@ class ShareController(BaseController):
             #
             for n in name:
                 deleted = backend.delete(n)
+                log.info("Deleted " + n + " :: success: " + str(deleted))
             
             message = ""
             type = "cool"
@@ -194,9 +220,12 @@ class ShareController(BaseController):
             else:
                 message = backend.get_error_message()
                 type = backend.get_error_type()
+                
+                log.warning(message)
             
             swat_messages.add(message, type)
         else:
+            log.error("Error removing because the backend (" + c.samba_lp.get("share backend") + ") is unsupported")
             message = _("Your chosen backend is not yet supported")
             swat_messages.add(message, "critical")
         
@@ -214,8 +243,10 @@ class ShareController(BaseController):
 
         if not isinstance(name, list):
             name = [name]
+            
+        log.info(len(name) + " share names passed to the server to be copied")
         
-        if c.samba_lp.get("share backend") == "classic":
+        if c.samba_lp.get("share backend") in self.__supported_backends:
             backend = globals()[self.__backend](c.samba_lp, {})
 
             #
@@ -223,6 +254,7 @@ class ShareController(BaseController):
             #
             for n in name:
                 copied = backend.copy(n)
+                log.info("Copied " + n + " :: success: " + str(copied))
         
             message = ""
             type = "cool"
@@ -232,9 +264,12 @@ class ShareController(BaseController):
             else:
                 message = backend.get_error_message()
                 type = backend.get_error_type()
+                
+                log.warning(message)
 
             swat_messages.add(message, type)
         else:
+            log.error("Error copying because the backend (" + c.samba_lp.get("share backend") + ") is unsupported")
             message = _("Your chosen backend is not yet supported")
             swat_messages.add(message, "critical")
             
@@ -250,7 +285,7 @@ class ShareController(BaseController):
         name -- the name of the share to be toggled
         
         """
-        if c.samba_lp.get("share backend") == "classic":
+        if c.samba_lp.get("share backend") in self.__supported_backends:
             backend = globals()[self.__backend](c.samba_lp, {'name':name})
             toggled = backend.toggle()
             
