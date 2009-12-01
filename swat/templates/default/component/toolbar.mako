@@ -34,14 +34,26 @@
     
     link = h.url_for(controller = c.config.get_controller(), action = c.config.get_action_info('link/action', action))
     submit = ''
+    mass_submit = ''
+    confirmation = ''
 
     if c.config.get_action_info('link/submit', action):
 	submit = ' form-submit-button '
+	
+    if c.config.get_action_info('link/mass_submit', action):
+	mass_submit = ' form-mass-submit-buttton '
+	
+    if c.config.get_action_info('link/require_confirm', action):
+	confirmation = ' form-require-confirm '
     
     %>
     
     <li>
-	<a class="item-icon-link ${submit}" title="${c.config.get_action_info('link/title', action)}" href="${link}">
+	% if len(confirmation) > 0:
+	    ${h.hidden("", c.config.get_action_info('link/confirm_message', action), id="confirm-action-" + action)}
+	% endif
+	
+	<a id="action-${action}" class="item-icon-link ${submit} ${mass_submit} ${confirmation}" title="${c.config.get_action_info('link/title', action)}" href="${link}">
 	    <img alt="${c.config.get_action_info('image/alt', action)}" src="/default/images/icons/${c.config.get_action_info('image/name', action)}"/>
 	    <span>${c.config.get_action_info('link/name', action)}</span>
 	</a>

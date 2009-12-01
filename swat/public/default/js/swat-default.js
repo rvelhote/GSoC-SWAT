@@ -19,9 +19,23 @@ var FormSubmit = new Class({
                 ev = new Event(ev).preventDefault();
                 
                 this.changeTask(el.getProperty("href"));
-                this.submitForm();
+                
+                if(el.hasClass("form-require-confirm")) {
+                    if(confirm($("confirm-" + el.getProperty("id")).getProperty("value"))) {
+                        this.submitForm();
+                    }
+                } else {
+                    this.submitForm();
+                }
             }.bind(this));
         }.bind(this));
+    },
+    
+    selectAllRows: function() {
+        var boxes = $$("input[id^=check-row]");
+        boxes.each(function(box) {
+            
+        });
     },
     
     changeTask: function(link) {
