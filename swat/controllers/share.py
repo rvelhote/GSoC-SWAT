@@ -524,9 +524,12 @@ class ShareBackendClassic():
         """
         import re
         
-        new_section = []
-        new_section.append(section[0].replace(self.__share_old_name, \
-                                              self.__share_name))
+        if(len(section) > 0):
+            new_section = []
+            new_section.append(section[0].replace(self.__share_old_name, \
+                                                  name))
+        else:
+            new_section = ['\n[' + name + ']\n']
         
         #   Scan the current section in search for existing values. I could
         #   just dump the content of params but this will keep other things
@@ -552,6 +555,9 @@ class ShareBackendClassic():
         #   Now we dump the params file.
         #   With the already handled key=>values deleted we can safely add all
         #   of the available parameters from the POST
+        #
+        #   TODO: Should we still write values if they are equal to the
+        #   default? This would keep smb.conf cleaner.
         #
         for param, value in self.__params.items():
             if len(value) > 0:
