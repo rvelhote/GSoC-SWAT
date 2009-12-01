@@ -29,6 +29,14 @@ ${share_table(c.share_list)}
 </%def>
 
 <%def name="share_table(shares)">
+
+<script type="text/javascript">
+    window.addEvent("domready", function() {
+        formSubmission = new FormSubmit({formId: 'share-list'});
+    });
+</script>
+
+${h.form('', method="post", id="share-list", class_="")}
     <table summary="${_('List of Shares for the current Samba Server')}" class="list" id="share-list">
 	<thead>
 	    <tr>
@@ -71,7 +79,7 @@ ${share_table(c.share_list)}
 		% endif
 		
 		<tr id="row-${i}" title="${_('Edit Share')}" class="${tr_class}">
-		    <td><input onchange="selectShareRow(this);" name="select_share${i}" type="checkbox" id="check-row-${i}" /></td>
+		    <td><input value="${share}" onchange="selectShareRow(this);" name="name" type="checkbox" id="check-row-${i}" /></td>
 		    <td onclick="clickableRow('${h.url_for('share_action', action = 'edit', name = share)}');">${i}</td>
                     
 		    <td onclick="clickableRow('${h.url_for('share_action', action = 'edit', name = share)}');" class='${home_class}'>${share}</td>
@@ -99,6 +107,7 @@ ${share_table(c.share_list)}
 	    % endfor
 	</tbody>
     </table>
+${h.end_form()}
 </%def>
     
 <%def name="quick_tasks(share_name, is_disabled=False)">

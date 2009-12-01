@@ -16,6 +16,7 @@
 import logging
 import param, shares
 
+from formencode import variabledecode
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect_to
 from swat.lib.base import BaseController, render
@@ -168,9 +169,20 @@ class ShareController(BaseController):
         name -- the name of the share to be deleted
         
         """
+        if len(name) == 0:
+            name = variabledecode.variable_decode(request.params).get("name")
+
+        if not isinstance(name, list):
+            name = [name]
+  
         if c.samba_lp.get("share backend") == "classic":
-            backend = ShareBackendClassic(c.samba_lp, {'name':name})
-            deleted = backend.delete()
+            backend = ShareBackendClassic(c.samba_lp, {})
+            
+            #
+            #   TODO: Handle multiple deletion errors
+            #
+            for n in name:
+                deleted = backend.delete(n)
             
             message = ""
             type = "cool"
@@ -274,6 +286,9 @@ class ShareBackendClassic():
         self.__error['type'] = "critical"
 
         self.__load_smb_conf_content()
+        
+    def set_share_name(self, name):
+        self.__share_name = name
     
     def __clean_params(self, params):
         """ Copies all parameters starting with 'share_' in the current request
@@ -375,8 +390,16 @@ class ShareBackendClassic():
         import re
         
         position = {}
-        position['start'] = self.__smbconf_content.index('[' + name + ']\n')
+        position['start'] = -1
         position['end'] = -1
+        
+        try:
+            position['start'] = self.__smbconf_content.index('[' + name + ']\n')
+        except ValueError:
+            self.set_error("Share doesn't exist!", "critical")
+            position['start'] = -1
+            
+            return position
         
         line_number = position['start'] + 1
 
@@ -444,16 +467,22 @@ class ShareBackendClassic():
 
         return stored
     
-    def delete(self):
+    def delete(self, name=''):
         """ Deletes a share from the backend
         
         Returns a boolean value indicating if the Share was deleted sucessfuly
         
         """
+        if len(name) > 0:
+            self.set_share_name(name)
+        
         deleted = False
         
         if self.__share_name_exists(self.__share_name):
             pos = self.__get_section_position(self.__share_name)
+            
+            if pos['start'] == -1:
+                return deleted
     
             before = self.__smbconf_content[0:pos['start']]
             after = self.__smbconf_content[pos['end']:]
