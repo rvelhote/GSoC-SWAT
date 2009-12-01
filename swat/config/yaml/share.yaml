@@ -31,6 +31,44 @@ actions:
         image:
             name: folder-pencil.png
             alt: 'Share Edit Icon'
+    
+    #
+    #   Remove Selected Shares (index)
+    #
+    remove:
+        friendly_name: 'Remove Shares'
+        
+        link:
+            name: 'remove shares'
+            title: 'Remove selected Shares'
+            action: remove
+            submit: True
+            mass_submit: True
+            require_confirm: True
+            confirm_message: 'Are you sure you want to Remove the selected Shares'
+
+        image:
+            name: folders-minus.png
+            alt: 'Mass Share Remove Icon'
+
+    #
+    #   Remove Selected Shares (index)
+    #
+    copy:
+        friendly_name: 'Copy Shares'
+        
+        link:
+            name: 'copy shares'
+            title: 'Copy selected Shares'
+            action: copy
+            submit: True
+            mass_submit: True
+            require_confirm: True
+            confirm_message: 'Are you sure you want to Copy the selected Shares'
+
+        image:
+            name: folders-plus.png
+            alt: 'Mass Share Copy Icon'
 
     #
     #   Add Share (add)
@@ -124,7 +162,8 @@ actions:
 toolbar:
     index:
         - add
-        - add_assistant
+        - remove
+        - copy
     
     add:
         - switch_to_assistant
