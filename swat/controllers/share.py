@@ -207,14 +207,25 @@ class ShareController(BaseController):
         name -- the name of the share to be duplicated
         
         """
+        if len(name) == 0:
+            name = variabledecode.variable_decode(request.params).get("name")
+
+        if not isinstance(name, list):
+            name = [name]
+        
         if c.samba_lp.get("share backend") == "classic":
-            backend = ShareBackendClassic(c.samba_lp, {'name': name})
-            deleted = backend.copy()
+            backend = ShareBackendClassic(c.samba_lp, {})
+
+            #
+            #   TODO: Handle multiple deletion errors
+            #
+            for n in name:
+                copied = backend.copy(n)
         
             message = ""
             type = "cool"
             
-            if deleted:
+            if copied:
                 message = _("Share Duplicated Sucessfuly")
             else:
                 message = backend.get_error_message()
@@ -499,7 +510,7 @@ class ShareBackendClassic():
         
         return deleted
     
-    def copy(self):
+    def copy(self, name=''):
         """ Copies a Share.
         
         Returns a boolean value indicating if the Share was copied sucessfuly
@@ -509,8 +520,13 @@ class ShareBackendClassic():
         it will fail because 'copy of test' already exists.
         
         """
+        if len(name) > 0:
+            self.set_share_name(name)
+
         new_name = _("copy of") + " " + self.__share_name
         copied = False
+        #
+        #raise RuntimeError()
                 
         if not self.__share_name_exists(new_name):
             if self.__share_name_exists(self.__share_name):
@@ -553,7 +569,7 @@ class ShareBackendClassic():
         """
         import re
         
-        if(len(section) > 0):
+        if len(section) > 0 and self.__share_old_name:
             new_section = []
             new_section.append(section[0].replace(self.__share_old_name, \
                                                   name))
@@ -596,7 +612,12 @@ class ShareBackendClassic():
         return new_section
     
     def __save_smbconf(self, what):
-        """ Saves the changes made to smb.conf """
+        """ Saves the changes made to smb.conf
+        
+        Keyword arguments:
+        what -- the stuff we are going to write to the backend
+        
+        """
         import shutil
         import os
         
