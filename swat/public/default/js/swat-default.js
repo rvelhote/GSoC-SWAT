@@ -1,4 +1,7 @@
 /**
+ *  TODO: add documentation to these methods and classes
+ */
+/**
  *  
  *
  */
@@ -247,6 +250,10 @@ var ItemList = new Class({
 
             area.setProperty("value", area.getProperty("value").substring(1));
         }
+    },
+    
+    getItems: function() {
+        return $(this.options.copyTo.getProperty("id") + "-textbox").getProperty("value");
     }
 });
 
@@ -491,7 +498,11 @@ var UserGroupSelector = new Class({
         
         element.addEvent("click", function(e) {
             new Event(e).preventDefault();
-            this.makeRequest(href);
+            
+            var uri = new URI(href);
+            uri.setData({"as":this.list.getItems()}, true);
+            
+            this.makeRequest(uri.toString());
         }.bind(this));
         
         this.list = new ItemList({copyTo: this.parseUrl(href)});

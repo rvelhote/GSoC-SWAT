@@ -761,6 +761,10 @@ ul.popup-list li {
     width:140px;
 }
 
+ul.popup-list li.selected span{
+    text-decoration:line-through;
+}
+
 div.popup-main-window-content h1 {
     border-bottom-color:#484848;
     border-bottom-style:solid;

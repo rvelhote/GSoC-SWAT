@@ -58,22 +58,29 @@
     </ul>
 </%def>
 
-<%def name="select_user_group()">
+<%def name="select_user_group(already_selected)">
     <%
     
-    user_list()
-    group_list()
+    user_list(already_selected)
+    group_list(already_selected)
     
     %>
 </%def>
     
-<%def name="user_list()">
+<%def name="user_list(already_selected)">
     <% users = h.get_user_list() %>
     
     <h1>${_('User List')}</h1>
     <ul class="popup-list usr-list">
         % for g in users:
-            <li>
+            <%
+            
+            selected = ""
+            if g in already_selected:
+                selected = "selected"
+            
+            %>
+            <li class="${selected}">
                 <span>${g}</span>
                 <a class="add user" title="${_('Add this User/Group to the List')}" href="#">
                     <img class="add" src="/default/images/icons/plus-small.png" />
@@ -83,13 +90,20 @@
     </ul>
 </%def>
 
-<%def name="group_list()">
+<%def name="group_list(already_selected)">
     <% groups = h.get_group_list() %>
     
     <h1>${_('Group List')}</h1>
     <ul class="popup-list grp-list">
         % for g in groups:
-            <li>
+            <%
+            
+            selected = ""
+            if "@" + g.gr_name in already_selected:
+                selected = "selected"
+            
+            %>
+            <li class="${selected}">
                 <span>${g.gr_name}</span>
                 <a class="add group" title="${_('Add this User/Group to the List')}" href="#"><img class="add" src="/default/images/icons/plus-small.png" /></a>
             </li>

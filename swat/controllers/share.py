@@ -181,11 +181,15 @@ class ShareController(BaseController):
         Users and Groups.
         
         """
-        already_selected = request.params.get('selected', '')
+        already_selected = request.params.get('as', '')
         log.debug("These are selected: " + already_selected)
         
+        if len(already_selected) > 0:
+            already_selected = already_selected.split(',')
+        
         return render_mako_def('/default/component/popups.mako', \
-                               'select_user_group')
+                               'select_user_group', \
+                               already_selected=already_selected)
         
     def remove(self, name=''):
         """ Deletes a Share from the current Backend
