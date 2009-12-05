@@ -22,6 +22,8 @@ from pylons.controllers.util import abort, redirect_to
 from swat.lib.base import BaseController, render
 from routes import url_for
 
+from pylons.i18n.translation import _
+
 from swat.lib.helpers import ControllerConfiguration, DashboardConfiguration, \
 BreadcrumbTrail, SwatMessages, swat_messages
 
@@ -48,6 +50,7 @@ class DashboardController(BaseController):
         identity = request.environ.get('repoze.who.identity')
         
         if identity is None:
+            swat_messages.add(_("You must be authenticated to perform that action"), "critical")
             abort(401)
         
         """ The default Dashboard. The entry point for SWAT """
