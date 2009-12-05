@@ -336,6 +336,17 @@ class ShareBackendClassic():
         self.__load_smb_conf_content()
         
     def set_share_name(self, name):
+        """ Sets the current share name to the name passed as parameter. This
+        is useful for situations where we want to handle multiple shares at the
+        same time without instantiating the backend class.
+        
+        As an example it's used in the delete, 
+        
+        Keyword arguments
+        name -- the share name
+        
+        """
+        
         self.__share_name = name
     
     def __clean_params(self, params):
@@ -419,7 +430,7 @@ class ShareBackendClassic():
             position = self.__smbconf_content.index('[' + name + ']\n')
             exists = True
         except ValueError:
-            self.set_error("Share doesn't exist!", "critical")
+            self.__set_error("Share doesn't exist!", "critical")
             position = -1
         
         return exists
@@ -444,7 +455,7 @@ class ShareBackendClassic():
         try:
             position['start'] = self.__smbconf_content.index('[' + name + ']\n')
         except ValueError:
-            self.set_error("Share doesn't exist!", "critical")
+            self.__set_error("Share doesn't exist!", "critical")
             position['start'] = -1
             
             return position
@@ -465,7 +476,7 @@ class ShareBackendClassic():
 
         return position
     
-    def store(self, is_new=False):
+    def store(self, is_new=False, name=''):
         """ Store a Share, either from an edit or add.
         
         Breaks down the current smb.conf to find the chosen section (if editing)
@@ -480,11 +491,14 @@ class ShareBackendClassic():
         Returns a boolean value indicating if the share was stored correctly
         
         """
+        if len(name) > 0:
+            self.set_share_name(name)
+            
         stored = False
         section = []
         
         if len(self.__share_name) == 0:
-            self.set_error(_("Can't create Share with an empty name"), "critical")
+            self.__set_error(_("Can't create Share with an empty name"), "critical")
         else:
             if not is_new:
                 
@@ -498,7 +512,7 @@ class ShareBackendClassic():
                     #
                     #   Have to break it here to avoid "tricks" downstairs :P
                     #
-                    self.set_error(_("You are trying to save a Share\
+                    self.__set_error(_("You are trying to save a Share\
                                     that doesn't exist"), "critical")
                     return False
             else:
@@ -511,7 +525,7 @@ class ShareBackendClassic():
                 if self.__section_exists(self.__share_name):
                     stored = True
                 else:
-                    self.set_error(_("Could not add/edit that Share. No idea why..."), "warning")
+                    self.__set_error(_("Could not add/edit that Share. No idea why..."), "warning")
 
         return stored
     
@@ -537,13 +551,13 @@ class ShareBackendClassic():
             
             if self.__save_smbconf([before, after]):
                 if self.__section_exists(self.__share_name):
-                    self.set_error(_("Could not delete that Share.\
+                    self.__set_error(_("Could not delete that Share.\
                                      The Share is still in the Backend.\
                                      No idea why..."), "critical")
                 else:
                     deleted = True
         else:
-            self.set_error(_("Can't delete a Share that doesn't exist!"), "warning")
+            self.__set_error(_("Can't delete a Share that doesn't exist!"), "warning")
         
         return deleted
     
@@ -562,9 +576,7 @@ class ShareBackendClassic():
 
         new_name = _("copy of") + " " + self.__share_name
         copied = False
-        #
-        #raise RuntimeError()
-                
+
         if not self.__share_name_exists(new_name):
             if self.__share_name_exists(self.__share_name):
                 pos = self.__get_section_position(self.__share_name)
@@ -579,17 +591,17 @@ class ShareBackendClassic():
                     if self.__section_exists(new_name):
                         copied = True
                     else:
-                        self.set_error(_("Could not copy that Share. No idea why..."), "warning")
+                        self.__set_error(_("Could not copy that Share. No idea why..."), "warning")
             else:
-                self.set_error(_("Did not duplicate Share because the original doesn't exist!"), "critical")
+                self.__set_error(_("Did not duplicate Share because the original doesn't exist!"), "critical")
         
         else:
-            self.set_error(_("Did not duplicate Share because the copy already exists!"), "critical")
+            self.__set_error(_("Did not duplicate Share because the copy already exists!"), "critical")
         
         return copied
     
-    def toggle(self):
-        self.set_error("Toggle Not Implemented", "warning")
+    def toggle(self, name=''):
+        self.__set_error("Toggle Not Implemented", "warning")
         return False
     
     def __recreate_section(self, name, section):
@@ -673,12 +685,12 @@ class ShareBackendClassic():
                             stream.write(line)
                         except UnicodeEncodeError, msg:
                             log.fatal("Can't write line; " + line + "; " + str(msg))
-                            self.set_error(_("Could not write data into the backend.") + " -- " + str(msg), "critical")
+                            self.__set_error(_("Could not write data into the backend.") + " -- " + str(msg), "critical")
                             abort = True
                             break
                         except Exception, msg:
                             log.fatal("Can't write line; " + line + "; " + str(msg))
-                            self.set_error(_("Could not write data into the backend.") + " -- " + str(msg), "critical")
+                            self.__set_error(_("Could not write data into the backend.") + " -- " + str(msg), "critical")
                             abort = True
                             break
                     
@@ -693,10 +705,10 @@ class ShareBackendClassic():
                         shutil.move(self.__smbconf + ".new", self.__smbconf)
                     except IOError, msg:
                         log.fatal("Can't replace old smb.conf; " + str(msg))
-                        self.set_error(_("Could not replace old backend configuration with new one") + " -- " + str(msg), "critical")
+                        self.__set_error(_("Could not replace old backend configuration with new one") + " -- " + str(msg), "critical")
                     except Exception, msg:
                         log.fatal("Can't replace old smb.conf; " + str(msg))
-                        self.set_error(_("Could not replace old backend configuration with new one") + " -- " + str(msg), "critical")
+                        self.__set_error(_("Could not replace old backend configuration with new one") + " -- " + str(msg), "critical")
                     else:
                         written = True
                     
@@ -706,17 +718,17 @@ class ShareBackendClassic():
                         log.warning("could not remove temporary save file")
             else:
                 log.info("Nothing to write. Won't touch smb.conf")
-                self.set_error(_("Nothing to write. Won't touch smb.conf") + " -- " + str(msg), "warning")
+                self.__set_error(_("Nothing to write. Won't touch smb.conf") + " -- " + str(msg), "warning")
         except IOError, msg:
             log.fatal("can't write changes to temporary file; " + str(msg))
-            self.set_error(_("Can't write changes to temporay file. Writing aborted!") + " -- " + str(msg), "critical")
+            self.__set_error(_("Can't write changes to temporay file. Writing aborted!") + " -- " + str(msg), "critical")
 
         return written
 
     def has_error(self):
         return len(self.__error['message']) == 0
     
-    def set_error(self, message, type='critical'):
+    def __set_error(self, message, type='critical'):
         """ Sets the error message to indicate what has failed with the operation
         that was being done using this Backend
         
