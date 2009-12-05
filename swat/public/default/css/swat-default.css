@@ -358,8 +358,16 @@ ul.task-toolbar li {
     float:left;
     font-size:85%;
     margin-left:1px;    
-    width:78px;
+    width:68px;
     text-align:center;
+    padding:5px;
+    height:46px;
+}
+
+ul.task-toolbar li:hover{
+    background-color:#F8F8F8;
+    -moz-border-radius:2px;
+    -webkit-border-radius:2px;
 }
 
 /** Share List */
