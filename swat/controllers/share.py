@@ -641,6 +641,8 @@ class ShareBackendClassic():
                     if len(self.__params[param]) > 0:
                         line = "\t" + param + " = " + self.__params[param] + "\n"
                         del self.__params[param]
+                    else:
+                        line = ""
                 else:
                     line = "\t" + param + " = " + value + "\n"
             
