@@ -13,6 +13,9 @@ div.popup-main-window {
 	z-index: 102;
 	border: 2px solid #72808B;
 	text-align:left;
+	
+	-moz-box-shadow:0 0 10px #888888;
+	-webkit-box-shadow:0 0 10px #888888;
 }
 
 div.popup-main-window-close {
