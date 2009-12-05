@@ -66,6 +66,9 @@ ${h.form('', method="post", id="share-list", class_="")}
 	    % for share in shares:
 		<%
                 
+                if share.endswith("$"):
+                    continue
+                
                 tr_class = ''
                 home_class = ''
                 
