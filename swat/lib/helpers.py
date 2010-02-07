@@ -404,6 +404,9 @@ class SwatMessages:
     They are not necessarily show only after a refresh. If the a message is
     provided before it is written in the template it will also appear.
     
+    TODO/BUG: Must be stored in sessions otherwise if multiple users are logged
+    in there will be a problem of them seeing messages that don't belong to them
+    
     """
     def __init__(self):
         """ Initialization """
