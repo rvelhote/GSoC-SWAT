@@ -54,15 +54,14 @@ ${h.form('', method="post", id="share-list", class_="")}
 	    <tr>
 		<td colspan="6">		    
 		    <div class="pagination">
-			<p class="number-pages">${_('%d Shares Total' % len(shares.keys()))}</p>
+			<p class="number-pages">${_('%d Shares Total' % len(shares))}</p>
                         <% pagination.paginate(shares, c.per_page, c.current_page) %>
 		    </div>
 		</td>
 	    </tr>
-	</tfoot>                    
-	
+	</tfoot>
+
 	<tbody>
-	
 	    <% i = 1 %>
 	    
 	    % for share in shares:

@@ -25,7 +25,7 @@
     TODO/FIX improve page links.
 </%doc>
 <%def name="paginate(what, per_page = 1, current_page = 1)">
-    <% total_items = len(what.keys()) %>
+    <% total_items = len(what) %>
     <% total_pages = int(round(float(total_items) / float(per_page), 0)) %>
 
     % if total_items > 0 and total_pages > 1:
