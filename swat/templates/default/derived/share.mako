@@ -17,6 +17,7 @@
 </%doc>
 <%inherit file="/default/base/base.mako" />
 <%namespace name="toolbar" file="/default/component/toolbar.mako" />
+<%namespace name="pagination" file="/default/component/pagination.mako" />
 
 ${parent.action_title(c.config.get_action_info('friendly_name'))}
 ${toolbar.write(c.config.get_toolbar_items())}
@@ -54,6 +55,7 @@ ${h.form('', method="post", id="share-list", class_="")}
 		<td colspan="6">		    
 		    <div class="pagination">
 			<p class="number-pages">${_('%d Shares Total' % len(shares.keys()))}</p>
+                        <% pagination.paginate(shares, c.per_page, c.current_page) %>
 		    </div>
 		</td>
 	    </tr>

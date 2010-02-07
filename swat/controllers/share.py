@@ -79,6 +79,9 @@ class ShareController(BaseController):
     
     def index(self):        
         """ Point of entry. Loads the Share List Template """
+        c.current_page = int(request.params.get("page", 1))
+        c.per_page =  int(request.params.get("per_page", 10))
+        
         return render('/default/derived/share.mako')
         
     def add(self):
