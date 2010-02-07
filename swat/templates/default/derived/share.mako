@@ -21,7 +21,7 @@
 
 ${parent.action_title(c.config.get_action_info('friendly_name'))}
 ${toolbar.write(c.config.get_toolbar_items())}
-
+${options()}
 ${share_table(c.share_list)}
 
 <%doc></%doc>
@@ -54,7 +54,13 @@ ${h.form('', method="post", id="share-list", class_="")}
 	    <tr>
 		<td colspan="6">		    
 		    <div class="pagination">
-			<p class="number-pages">${_('%d Shares Total' % len(shares))}</p>
+                        <% showing = c.per_page %>
+                        
+                        % if showing > len(shares):
+                            <% showing = len(shares) %>
+                        % endif
+                        
+			<p class="number-pages">${_('Showing %d of %d Shares' % (showing, len(shares)))}</p>
                         <% pagination.paginate(shares, c.per_page, c.current_page) %>
 		    </div>
 		</td>
@@ -133,5 +139,32 @@ ${h.end_form()}
 	<li><a href="${h.url_for('share_action', action = 'remove', name = share_name)}" title="${_('Remove Share')}"><img src="/default/images/icons/folder-minus.png" alt="${_('Remove Share Icon')}"/></a></li>
 	<li><a href="${h.url_for('share_action', action = 'copy', name = share_name)}" title="${_('Copy this Share')}"><img src="/default/images/icons/folders-plus.png" alt="${_('Copy Share Icon')}"/></a></li>
 	<!--<li><a href="${h.url_for('share_action', action = 'toggle', name = share_name)}" title="${_('Enable this Share')}"><img src="/default/images/icons/switch-plus.png" alt="${_('Enable Share Icon')}"/></a></li>-->
-    </ul>
+    </ul>'
+</%def>
+
+<%def name="options()">
+    ${h.form(h.url_for(controller = 'share', action = 'index'), method="post")}
+        <div style="font-size:85%;margin-bottom:15px;">
+            <span>
+                <label for="filter_share_by_name">${_('Filter')}:</label>
+                ${h.text("filter_shares", "", id="filter_share_by_name")}
+            </span>
+            
+            <span style="float:right;">
+                <label for="items_per_page">${_('Per Page')}:</label>
+                <select name="per_page" id="items_per_page">
+                    % for i in range(5, 30, 5):
+                        <option
+                        
+                        % if i == c.per_page:
+                            ${'selected="selected"'}
+                        
+                        % endif
+                        
+                        value="${i}">${i}</option>
+                    % endfor
+                </select>
+            </span>
+        </div>
+    ${h.end_form()}
 </%def>
