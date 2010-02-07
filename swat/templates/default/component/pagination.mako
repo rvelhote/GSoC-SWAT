@@ -32,15 +32,22 @@
         <ul class="pagination">
             % if total_pages > 1 and current_page > 1:
                 <li class="previous">
-                    <a title="${_('Previous Page')}" href="?page=${current_page - 1}">
+                    <a title="${_('Previous Page')}" href="?page=${current_page - 1}&amp;per_page=${per_page}">
                         <img src="/default/images/icons/arrow-180-small.png" alt="${_('Arrow Previous Page Icon')}" />
                     </a>
                 </li>
             % endif
             
             % for i in range(1, total_pages + 1):
+                <% current_item_class = "" %>
+                
+                <%doc>blahhhh... :P</%doc>
+                % if (i - 1) % per_page == 0:
+                    <% current_item_class = " current-item " %>
+                % endif
+            
                 <li>
-                    <a title="${_('List Page')} ${i}" href="?page=${i}">${i}</a>
+                    <a class="${current_item_class}" title="${_('List Page')} ${i}" href="?page=${i}&amp;per_page=${per_page}">${i}</a>
                 </li>
                 
                 % if i % per_page == 0:
@@ -50,7 +57,7 @@
 
             % if total_pages > 1 and current_page < total_pages:
                 <li class="next">
-                    <a title="${_('Next Page')}" href="?page=${current_page + 1}">
+                    <a title="${_('Next Page')}" href="?page=${current_page + 1}&amp;per_page=${per_page}">
                         <img src="/default/images/icons/arrow-000-small.png" alt="${_('Arrow Next Page Icon')}" />
                     </a>
                 </li>

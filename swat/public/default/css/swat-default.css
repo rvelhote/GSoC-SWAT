@@ -680,6 +680,10 @@ div.pagination ul li.previous, div.pagination ul li.next {
     margin-top:-2px;
 }
 
+div.pagination ul li a.current-item {
+    font-weight:bold;
+}
+
 /** Misc */
 p.dev-notes {
     font-size:10px;

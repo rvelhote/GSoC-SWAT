@@ -64,11 +64,24 @@ ${h.form('', method="post", id="share-list", class_="")}
 	<tbody>
 	    <% i = 1 %>
 	    
-	    % for share in shares:
+            <%doc>
+            Workaround for SharesContainer not supporting slicing.
+            Something to think about later
+            </%doc>
+            <%
+            
+            sl = shares.keys()
+            
+            begin = (c.current_page - 1) * c.per_page
+            end = begin + c.per_page
+
+            %>
+
+	    % for share in sl[begin:end]:
 		<%
                 
-                if share.endswith("$"):
-                    continue
+                #if share.endswith("$"):
+                #    continue
                 
                 tr_class = ''
                 home_class = ''
