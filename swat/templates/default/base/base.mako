@@ -90,7 +90,6 @@ Header Part. Contains items that will be in all pages except login
 	${self.samba_logo()}  
 	${self.server_name()}
         ${menu.top()}
-	${self.goto_box()}
 	
 	<div class="clear-both"></div>
     </div>
@@ -125,23 +124,6 @@ Header Part. Contains items that will be in all pages except login
 	    Samba ${version}
 	% endif
     </h1>
-</%def>
-
-<%doc>
-"Goto" box. Previously know as the filter box. I felt it wasn't very
-useful to have a filterbox since most pages will not have many things to filter.
-It was mainly an idea I got from CPanel. It will know be a filterbox that will
-jump to a controller/action that the user types in
-</%doc>
-<%def name="goto_box()">
-
-    ${h.form(h.url_for(controller='dashboard', action='goto'), method='get')}
-	<div class="filter-items">
-	    <label title="${_('Go directly to...')}" for="goto-items-textbox">${_('Goto')}: </label>
-	    ${h.text('where', '', id = 'goto-items-textbox')}
-	</div>
-    ${h.end_form()}
-    
 </%def>
 
 <%def name="action_title(text)">

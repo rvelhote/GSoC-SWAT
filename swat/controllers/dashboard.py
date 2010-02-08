@@ -63,19 +63,3 @@ class DashboardController(BaseController):
         
         """
         return render('/default/derived/dashboard.mako')
-            
-    def goto(self):
-        """ Quick goto to certain places. The controller/action mapping is done
-        through a yaml file.
-        
-        TODO: AJAX Sugestion box in the goto form
-        TODO: Implement mapping and handling
-        TODO: Create the YAML file
-        
-        """
-        where = request.params.get('where', '')
-        
-        if len(where) == 0:
-            redirect_to(controller = 'dashboard', action = 'index')
-        else:
-            redirect_to(controller = 'share', action = 'index')
