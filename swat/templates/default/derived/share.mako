@@ -172,7 +172,7 @@ ${h.end_form()}
             </span>
             
             % if len(c.filter_name) > 0 or int(c.per_page) != 10:
-                <p><a href="${h.url_for(controller = 'share', action = 'index')}">${_("reset view")}</a></p>
+                <p class="reset-view"><a href="${h.url_for(controller = 'share', action = 'index')}">${_("reset view")}</a></p>
             % endif
         </div>
     ${h.end_form()}

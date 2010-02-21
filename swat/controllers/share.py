@@ -84,7 +84,8 @@ class ShareController(BaseController):
         c.filter_name = request.params.get("filter_shares", "")
         
         if len(c.filter_name) > 0:
-            c.share_list = filter_list(c.share_list, c.filter_name)
+            c.share_list = filter_list(c.share_list, c.filter_name)            
+            c.breadcrumb.add(_("Filtered By") + " " + c.filter_name, request.environ['pylons.routes_dict']['controller'], request.environ['pylons.routes_dict']['action'])
         
         return render('/default/derived/share.mako')
         
