@@ -307,7 +307,7 @@ class ShareController(BaseController):
         
         redirect_to(controller='share', action='index')
 
-class ShareBackendClassic():
+class ShareBackendClassic(object):
     """ Handles operations regarding the Classic Backend method to store share
     information. The classic method stores shares in the smb.conf file
     
