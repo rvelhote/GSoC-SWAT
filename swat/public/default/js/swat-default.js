@@ -609,3 +609,13 @@ var PathSelector = new Class({
         }
     }
 });    
+
+/**
+ *
+ */
+function submitForm(name) {
+    var f = $(name);
+    if(f) {
+        f.submit();
+    }
+}

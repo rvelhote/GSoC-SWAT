@@ -41,7 +41,7 @@
             % for i in range(1, total_pages + 1):
                 <% current_item_class = "" %>
                 
-                <%doc>blahhhh... :P</%doc>
+                <%doc>FIXME if per_page is one all items will be highlighted</%doc>
                 % if (i - 1) % per_page == 0:
                     <% current_item_class = " current-item " %>
                 % endif

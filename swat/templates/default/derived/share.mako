@@ -50,22 +50,24 @@ ${h.form('', method="post", id="share-list", class_="")}
 	    </tr>
 	</thead>
 	
-	<tfoot>
-	    <tr>
-		<td colspan="6">		    
-		    <div class="pagination">
-                        <% showing = c.per_page %>
-                        
-                        % if showing > len(shares):
-                            <% showing = len(shares) %>
-                        % endif
-                        
-			<p class="number-pages">${_('Showing %d of %d Shares' % (showing, len(shares)))}</p>
-                        <% pagination.paginate(shares, c.per_page, c.current_page) %>
-		    </div>
-		</td>
-	    </tr>
-	</tfoot>
+        % if len(shares) > 0:
+            <tfoot>
+                <tr>
+                    <td colspan="6">		    
+                        <div class="pagination">
+                            <% showing = c.per_page %>
+                            
+                            % if showing > len(shares):
+                                <% showing = len(shares) %>
+                            % endif
+                            
+                            <p class="number-pages">${_('Showing %d of %d Shares' % (showing, len(shares)))}</p>
+                            <% pagination.paginate(shares, c.per_page, c.current_page) %>
+                        </div>
+                    </td>
+                </tr>
+            </tfoot>
+        % endif
 
 	<tbody>
 	    <% i = 1 %>
@@ -75,59 +77,62 @@ ${h.form('', method="post", id="share-list", class_="")}
             Something to think about later
             </%doc>
             <%
-            
-            sl = shares.keys()
-            
+
             begin = (c.current_page - 1) * c.per_page
             end = begin + c.per_page
 
             %>
-
-	    % for share in sl[begin:end]:
-		<%
-                
-                #if share.endswith("$"):
-                #    continue
-                
-                tr_class = ''
-                home_class = ''
-                
-                if share == 'homes':
-                    home_class = ' home-directory '
+            
+            % if len(shares) > 0:
+                % for share in shares[begin:end]:
+                    <%
                     
-                %>
-		
-		% if i % 2 == 0:
-		    <% tr_class = " alternate-row " %>
-		% endif
-		
-		<tr id="row-${i}" title="${_('Edit Share')}" class="${tr_class}">
-		    <td><input value="${share}" onchange="selectShareRow(this);" name="name" type="checkbox" id="check-row-${i}" /></td>
-		    <td onclick="clickableRow('${h.url_for('share_action', action = 'edit', name = share)}');">${i}</td>
+                    #if share.endswith("$"):
+                    #    continue
                     
-		    <td onclick="clickableRow('${h.url_for('share_action', action = 'edit', name = share)}');" class='${home_class}'>${share}</td>
-		    <td onclick="clickableRow('${h.url_for('share_action', action = 'edit', name = share)}');">
-			% if len(c.samba_lp.get('path', share)) > 0:
-			    ${c.samba_lp.get('path', share)}
-			% else:
-			    ${_('No Path Defined or Required')}
-			% endif
-		    </td>
-		    <td onclick="clickableRow('${h.url_for('share_action', action = 'edit', name = share)}');">
-			% if c.samba_lp.get('comment', share):
-			    ${c.samba_lp.get('comment', share)}
-			% else:
-			    ${_('No Comment Defined')}
-			% endif
-		    </td>
-		    <td>
-                        ${quick_tasks(share, False)}   
-		    </td>                            
-		</tr>
-		
-		<% i = i + 1 %>
-	    
-	    % endfor
+                    tr_class = ''
+                    home_class = ''
+                    
+                    if share == 'homes':
+                        home_class = ' home-directory '
+                        
+                    %>
+                    
+                    % if i % 2 == 0:
+                        <% tr_class = " alternate-row " %>
+                    % endif
+                    
+                    <tr id="row-${i}" title="${_('Edit Share')}" class="${tr_class}">
+                        <td><input value="${share}" onchange="selectShareRow(this);" name="name" type="checkbox" id="check-row-${i}" /></td>
+                        <td onclick="clickableRow('${h.url_for('share_action', action = 'edit', name = share)}');">${i}</td>
+                        
+                        <td onclick="clickableRow('${h.url_for('share_action', action = 'edit', name = share)}');" class='${home_class}'>${share}</td>
+                        <td onclick="clickableRow('${h.url_for('share_action', action = 'edit', name = share)}');">
+                            % if len(c.samba_lp.get('path', share)) > 0:
+                                ${c.samba_lp.get('path', share)}
+                            % else:
+                                ${_('No Path Defined or Required')}
+                            % endif
+                        </td>
+                        <td onclick="clickableRow('${h.url_for('share_action', action = 'edit', name = share)}');">
+                            % if c.samba_lp.get('comment', share):
+                                ${c.samba_lp.get('comment', share)}
+                            % else:
+                                ${_('No Comment Defined')}
+                            % endif
+                        </td>
+                        <td>
+                            ${quick_tasks(share, False)}   
+                        </td>                            
+                    </tr>
+                    
+                    <% i = i + 1 %>
+                % endfor
+            % else:
+                <tr>
+                    <td colspan="5"><p style="font-weight:bold;text-align:center;">${_("No Shares Available")}</p></td>
+                </tr>
+            % endif
 	</tbody>
     </table>
 ${h.end_form()}
@@ -143,16 +148,16 @@ ${h.end_form()}
 </%def>
 
 <%def name="options()">
-    ${h.form(h.url_for(controller = 'share', action = 'index'), method="post")}
+    ${h.form(h.url_for(controller = 'share', action = 'index'), method="get", id="options")}
         <div style="font-size:85%;margin-bottom:15px;">
             <span>
                 <label for="filter_share_by_name">${_('Filter')}:</label>
-                ${h.text("filter_shares", "", id="filter_share_by_name")}
+                ${h.text("filter_shares", c.filter_name, id="filter_share_by_name")}
             </span>
             
             <span style="float:right;">
                 <label for="items_per_page">${_('Per Page')}:</label>
-                <select name="per_page" id="items_per_page">
+                <select name="per_page" id="items_per_page" onchange="submitForm('options');">
                     % for i in range(5, 30, 5):
                         <option
                         
@@ -165,6 +170,10 @@ ${h.end_form()}
                     % endfor
                 </select>
             </span>
+            
+            % if len(c.filter_name) > 0 or int(c.per_page) != 10:
+                <p><a href="${h.url_for(controller = 'share', action = 'index')}">${_("reset view")}</a></p>
+            % endif
         </div>
     ${h.end_form()}
 </%def>

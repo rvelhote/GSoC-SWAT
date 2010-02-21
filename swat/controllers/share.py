@@ -24,7 +24,7 @@ from swat.lib.base import BaseController, render
 from pylons.templating import render_mako_def
 from pylons.i18n.translation import _
 from swat.lib.helpers import ControllerConfiguration, DashboardConfiguration, \
-BreadcrumbTrail, swat_messages, ParamConfiguration
+BreadcrumbTrail, swat_messages, ParamConfiguration, filter_list
 
 log = logging.getLogger(__name__)
 
@@ -70,7 +70,7 @@ class ShareController(BaseController):
         log.debug("Configured backend is: " + c.samba_lp.get("share backend") + " so the Class Name will be " + self.__backend)
 
         if c.samba_lp.get("share backend") in self.__supported_backends:
-            c.share_list = shares.SharesContainer(c.samba_lp)
+            c.share_list = shares.SharesContainer(c.samba_lp).keys()
         else:
             log.error( c.samba_lp.get("share backend") + "is unsupported at the moment")
             
@@ -81,6 +81,10 @@ class ShareController(BaseController):
         """ Point of entry. Loads the Share List Template """
         c.current_page = int(request.params.get("page", 1))
         c.per_page =  int(request.params.get("per_page", 10))
+        c.filter_name = request.params.get("filter_shares", "")
+        
+        if len(c.filter_name) > 0:
+            c.share_list = filter_list(c.share_list, c.filter_name)
         
         return render('/default/derived/share.mako')
         
