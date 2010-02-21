@@ -581,3 +581,15 @@ def get_user_list():
 
 def get_path():
     pass
+
+def filter_list(items, regex='.*'):
+    import re
+    temp = []
+    
+    for item in items:
+        if re.search(regex, item) is not None:
+            temp.append(item)
+            
+    return temp
+    
+    
