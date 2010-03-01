@@ -738,7 +738,7 @@ ul.user-list li span, ul.user-list li img {
 }
 
 p.reset-view{
-    margin-top:5px;
+    margin-top:10px;
     background-image:url('/default/images/icons/counter-reset.png');
     background-repeat:no-repeat;
     background-position:top left;

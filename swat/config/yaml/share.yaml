@@ -166,13 +166,11 @@ toolbar:
         - copy
     
     add:
-        - switch_to_assistant
         - save
         - apply
         - cancel
         
     edit:
-        - switch_to_assistant
         - save
         - apply
         - cancel
@@ -196,7 +194,6 @@ dashboard:
     actions:
         - add
         - index
-        - add_assistant
 
 #
 #   Controller Information
