@@ -22,7 +22,7 @@ from webhelpers.html.tags import *
 from webhelpers.html import literal
 
 from routes import url_for
-from pylons import request, app_globals as g, config
+from pylons import request, app_globals as g, config, session
 
 import yaml
 import logging
@@ -408,11 +408,8 @@ class SwatMessages:
     in there will be a problem of them seeing messages that don't belong to them
     
     """
-    def __init__(self):
-        """ Initialization """
-	self._items = []
-    
-    def add(self, text, type='cool'):
+    @staticmethod
+    def add(text, type='cool'):
         """ Add a message to the message queue.
         
         Concerning the message type, it can be anything but to have any
@@ -429,39 +426,47 @@ class SwatMessages:
         type -- the type of message. default value is 'cool'
         
         """
-	if len(type) == 0:
-	    type = 'cool'
-	    
-	self._items.append({'text' : text, 'type' : type})
-	
-    def clean(self):
+        if len(type) == 0:
+            type = 'cool'
+            
+        if not session.has_key('swat_messages'):
+            session['swat_messages'] = []
+
+        session['swat_messages'].append({'text' : text, 'type' : type})
+        session.save()
+
+    @staticmethod
+    def clean():
         """ Cleanup message queue. This should be called after messages are
         shown in the template
         
         """
-	del self._items[:]
+        if session.has_key('swat_messages'):
+            del session['swat_messages']
+            session.save()
 
-    def get(self):
+    @staticmethod
+    def get():
         """ Gets all messages currently stored as a dictionary """
-	return self._items
-    
-    def __len__(self):
+        return session['swat_messages']
+
+    @staticmethod
+    def __len__():
         """ Returns the number of messsages in store """
-	return len(self._items)
+        return len(session['swat_messages'])
     
-    def any(self):
+    @staticmethod
+    def any():
         """ Checks if there are any messages in the queue.
         Returns a boolean value
         
         """
-	has_any = False
-	
-	if len(self._items) > 0:
+        has_any = False
+
+	if session.has_key('swat_messages') and len(session['swat_messages']) > 0:
 	    has_any = True
 	    
 	return has_any
-
-swat_messages = SwatMessages()
 
 def get_samba_server_status():
     """ Gets the current Samba4 status to be used in the CSS class name for the

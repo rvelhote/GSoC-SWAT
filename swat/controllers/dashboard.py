@@ -25,7 +25,7 @@ from routes import url_for
 from pylons.i18n.translation import _
 
 from swat.lib.helpers import ControllerConfiguration, DashboardConfiguration, \
-BreadcrumbTrail, SwatMessages, swat_messages
+BreadcrumbTrail, SwatMessages
 
 log = logging.getLogger(__name__)
 
@@ -47,11 +47,20 @@ class DashboardController(BaseController):
         c.samba_lp.load_default()
 
     def index(self):
-        identity = request.environ.get('repoze.who.identity')
+        from authkit.permissions import NotAuthenticatedError
         
-        if identity is None:
-            swat_messages.add(_("You must be authenticated to perform that action"), "critical")
+        if not request.environ.has_key('REMOTE_USER'):
+            SwatMessages.add(_("You must be authenticated to perform that action"), "critical")
             abort(401)
+	   # raise NotAuthenticatedError('Not Authenticated')
+
+        
+        
+        #identity = request.environ.get('repoze.who.identity')
+        
+        #if identity is None:
+          #  SwatMessages.add(_("You must be authenticated to perform that action"), "critical")
+          #  abort(401)
         
         """ The default Dashboard. The entry point for SWAT """
         return render('/default/derived/dashboard.mako')

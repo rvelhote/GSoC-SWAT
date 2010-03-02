@@ -9,9 +9,9 @@
     
     <body>        
 	<div class="swat-content login round-2px">
-            % if h.swat_messages.any():
-                ${messages.write(h.swat_messages.get())}
-                <% h.swat_messages.clean() %>
+            % if h.SwatMessages.any():
+                ${messages.write(h.SwatMessages.get())}
+                <% h.SwatMessages.clean() %>
             % endif
             
 	    ${base.samba_logo(False)}

@@ -24,7 +24,7 @@ from swat.lib.base import BaseController, render
 from pylons.templating import render_mako_def
 from pylons.i18n.translation import _
 from swat.lib.helpers import ControllerConfiguration, DashboardConfiguration, \
-BreadcrumbTrail, swat_messages, ParamConfiguration, filter_list
+BreadcrumbTrail, SwatMessages, ParamConfiguration, filter_list
 
 log = logging.getLogger(__name__)
 
@@ -47,7 +47,7 @@ class ShareController(BaseController):
         is a list of allowed operations that is checked to see if it's ok to
         load the configuration
         
-        """        
+        """
         me = request.environ['pylons.routes_dict']['controller']
         action = request.environ['pylons.routes_dict']['action']
         
@@ -75,7 +75,7 @@ class ShareController(BaseController):
             log.error( c.samba_lp.get("share backend") + "is unsupported at the moment")
             
             message = _("Your chosen backend is not yet supported")
-            swat_messages.add(message, "critical")
+            SwatMessages.add(message, "critical")
     
     def index(self):        
         """ Point of entry. Loads the Share List Template """
@@ -112,7 +112,7 @@ class ShareController(BaseController):
         
         if name not in c.share_list and not is_new:
             log.warning("Share " + name + " doesn't exist in the chosen backend")
-            swat_messages.add(_("Can't edit a Share that doesn't exist"), "warning")
+            SwatMessages.add(_("Can't edit a Share that doesn't exist"), "warning")
             redirect_to(controller='share', action='index')
         else:
             c.p = ParamConfiguration('share-parameters')
@@ -137,14 +137,14 @@ class ShareController(BaseController):
             
             if stored:
                 message = _("Share Information was Saved")
-                swat_messages.add(message)
+                SwatMessages.add(message)
             else:
-                swat_messages.add(backend.get_error_message(), backend.get_error_type())
+                SwatMessages.add(backend.get_error_message(), backend.get_error_type())
         else:
             log.error("Error saving because the backend (" + c.samba_lp.get("share backend") + ") is unsupported")
             
             message = _("Your chosen backend is not yet supported")
-            swat_messages.add(message, "critical")
+            SwatMessages.add(message, "critical")
 
         if request.environ['pylons.routes_dict']['action'] == "save":
             redirect_to(controller='share', action='index')
@@ -169,7 +169,7 @@ class ShareController(BaseController):
         elif request.params.get("task", "edit") == "edit":
             message = _("Cancelled Share editing. No changes were saved!")
         
-        swat_messages.add(message, "warning")
+        SwatMessages.add(message, "warning")
         redirect_to(controller='share', action='index')
         
     def path(self):
@@ -235,11 +235,11 @@ class ShareController(BaseController):
                 
                 log.warning(message)
             
-            swat_messages.add(message, type)
+            SwatMessages.add(message, type)
         else:
             log.error("Error removing because the backend (" + c.samba_lp.get("share backend") + ") is unsupported")
             message = _("Your chosen backend is not yet supported")
-            swat_messages.add(message, "critical")
+            SwatMessages.add(message, "critical")
         
         redirect_to(controller='share', action='index')
     
@@ -279,11 +279,11 @@ class ShareController(BaseController):
                 
                 log.warning(message)
 
-            swat_messages.add(message, type)
+            SwatMessages.add(message, type)
         else:
             log.error("Error copying because the backend (" + c.samba_lp.get("share backend") + ") is unsupported")
             message = _("Your chosen backend is not yet supported")
-            swat_messages.add(message, "critical")
+            SwatMessages.add(message, "critical")
             
         redirect_to(controller='share', action='index')
     
@@ -303,12 +303,12 @@ class ShareController(BaseController):
             
             if toggled:
                 message = _("Share Toggled successfuly")
-                swat_messages.add(message)
+                SwatMessages.add(message)
             else:
-                swat_messages.add(backend.get_error_message(), backend.get_error_type())
+                SwatMessages.add(backend.get_error_message(), backend.get_error_type())
         else:
             message = _("Your chosen backend is not yet supported")
-            swat_messages.add(message, "critical")
+            SwatMessages.add(message, "critical")
         
         redirect_to(controller='share', action='index')
 

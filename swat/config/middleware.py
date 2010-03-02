@@ -14,8 +14,10 @@ from swat.config.environment import load_environment
 #
 #   repoze.who
 #
-from repoze.who.config import make_middleware_with_config
+#from repoze.who.config import make_middleware_with_config
 
+import authkit.authenticate
+from paste.recursive import RecursiveMiddleware
 
 def make_app(global_conf, full_stack=True, static_files=True, **app_conf):
     """Create a Pylons WSGI application and return it
@@ -54,13 +56,16 @@ def make_app(global_conf, full_stack=True, static_files=True, **app_conf):
     # CUSTOM MIDDLEWARE HERE (filtered by error handling middlewares)
     
     if asbool(full_stack):
+        app = RecursiveMiddleware(app, global_conf)
+        
         # Handle Python exceptions
         app = ErrorHandler(app, global_conf, **config['pylons.errorware'])
         
         #
         # repoze.who
         #
-        app = make_middleware_with_config(app, global_conf, app_conf['who.config_file'])        
+        #app = make_middleware_with_config(app, global_conf, app_conf['who.config_file'])
+        app = authkit.authenticate.middleware(app, app_conf)
 
         # Display error documents for 401, 403, 404 status codes (and
         # 500 when debug is disabled)

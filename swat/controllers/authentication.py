@@ -19,7 +19,7 @@ from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect_to
 
 from swat.lib.base import BaseController, render
-from swat.lib.helpers import swat_messages
+from swat.lib.helpers import SwatMessages
 
 from pylons.i18n.translation import _
 
@@ -47,7 +47,7 @@ class AuthenticationController(BaseController):
         """
         redirect_to(controller = 'authentication', action = 'login')
         
-    def authenticate(self, environ, identity):
+    def __authenticate(self):
         """ Performs the custom authentication. This method is required by
         repoze and we are sent here by it.
         
@@ -63,28 +63,34 @@ class AuthenticationController(BaseController):
         work here. Maybe I'm using repoze.who wrong?
         
         """
-        username = identity['login']
-        password = identity['password']
+        username = request.params.get("login", "").strip()
+        password = request.params.get("password", "").strip()
+        
+        # FIXME!!!!
+        environ = []
         
         len_username = len(username)
-        len_password = len(password)        
+        len_password = len(password)
+        
+        print username + " -- " + password
         
         if len_username == 0:
-            swat_messages.add('Username cannot be empty', 'critical')
+            SwatMessages.add('Username cannot be empty', 'critical')
             
         if len_password == 0:
-            swat_messages.add('Password cannot be empty', 'critical')
+            SwatMessages.add('Password cannot be empty', 'critical')
 
         if self.__perform_authentication(username, password, environ):
-            swat_messages.add('Authentication successful!')
-            log.info("login attempt sucessful by " + username)
+            SwatMessages.add('Authentication successful!')
+            log.info("login attempt successful by " + username)
+            request.environ['paste.auth_tkt.set_user'](username)
             
-            return username
+            return True
         
         log.warning("failed login attempt by " + username)
-        swat_messages.add('Authentication failed' + ' -- ' + self.__reason, 'critical')
+        SwatMessages.add('Authentication failed' + ' -- ' + self.__reason, 'critical')
         
-        return None
+        return False
     
     def __perform_authentication(self, username, password, environ):
         """ Performs the authentication of a user depending on the available
@@ -181,4 +187,7 @@ class AuthenticationController(BaseController):
         set this to login otherwise it would just send me to the login method
         
         """
-        pass
+        if self.__authenticate():
+            redirect_to(controller='dashboard', action='index')
+        else:
+            redirect_to(controller='authentication', action='login')
