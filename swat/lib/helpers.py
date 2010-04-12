@@ -542,8 +542,7 @@ def python_libs_exist():
     try:
         import samba, param
     except ImportError, error:
-        log.warning("did not find python libraries. will try to add them from \
-                    the default samba install dir at /usr/local/samba/lib")
+        log.warning("did not find python libraries. will try to add them from the default samba install dir at /usr/local/samba/lib")
     else:
         log.info("python libraries are in the default python path")
         exist = True
@@ -556,9 +555,6 @@ def python_libs_exist():
         try:
             import samba, param
         except ImportError, error:
-            swat_messages.add(str(error) \
-                + " (in Python Libraries directory and in /usr/local/samba/lib/*)",
-                "critical")
             log.fatal("python libs are nowhere to be found!")
         else:
             exist = True

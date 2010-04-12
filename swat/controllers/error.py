@@ -8,6 +8,9 @@ from webhelpers.html.builder import literal
 
 from swat.lib.base import BaseController, render
 
+from swat.lib.helpers import SwatMessages
+from pylons.i18n.translation import _
+
 class ErrorController(BaseController):
 
     """Generates error documents as and when they are required.
@@ -46,4 +49,5 @@ class ErrorController(BaseController):
         return forward(PkgResourcesParser('pylons', 'pylons'))
         
     def no_libs(self):
+        SwatMessages.add(_("Python libraries not found"), "critical")
         return render("/default/derived/error/no-libs.mako")
