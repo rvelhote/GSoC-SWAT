@@ -514,8 +514,16 @@ form.share-configuration span.field-wrapper {
     float:left;
 }
 
+form.share-configuration ol.field-ops {
+    margin-left:10px;
+    float:left;
+    display:block;
+}
+
 form.share-configuration ol.field-ops li {
-    display: inline;
+    float:left;
+    display:block;
+    margin: 0px 5px;
     margin-left: 5px;
 }
 
