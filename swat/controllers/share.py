@@ -34,7 +34,7 @@ class ShareController(BaseController):
     
     """
     
-    __supported_backends = ('classic')
+    __supported_backends = ('classic', 'ldb')
     __allowed = ('index', 'add', 'edit', 'add_assistant')
 
     def __init__(self):
