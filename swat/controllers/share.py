@@ -222,39 +222,43 @@ class ShareController(BaseController):
         if len(name) == 0:
             name = variabledecode.variable_decode(request.params).get("name")
 
-        if not isinstance(name, list):
-            name = [name]
+        if name is not None and len(name) > 0:
+            if not isinstance(name, list):
+                name = [name]
             
-        log.info(str(len(name)) + " share names passed to the server to be deleted")
-  
-        if c.samba_lp.get("share backend") in self.__supported_backends:
-            backend = globals()[self.__backend](c.samba_lp, {})
-            
-            #
-            #   TODO: Handle multiple deletion errors
-            #
-            for n in name:
-                deleted = backend.delete(n)
-                log.info("Deleted " + n + " :: success: " + str(deleted))
-            
-            message = ""
-            type = "cool"
-            
-            if deleted:
-                message = _("Share Deleted Sucessfuly")
-            else:
-                message = backend.get_error_message()
-                type = backend.get_error_type()
+            log.info(str(len(name)) + " share names passed to the server to be deleted")
+      
+            if c.samba_lp.get("share backend") in self.__supported_backends:
+                backend = globals()[self.__backend](c.samba_lp, {})
+    
+                #
+                #   TODO: Handle multiple deletion errors
+                #
+                for n in name:
+                    deleted = backend.delete(n)
+                    log.info("Deleted " + n + " :: success: " + str(deleted))
                 
-                log.warning(message)
+                message = ""
+                type = "cool"
+                
+                if deleted:
+                    message = _("Share Deleted Sucessfuly")
+                else:
+                    message = backend.get_error_message()
+                    type = backend.get_error_type()
+                    
+                    log.warning(message)
+                
+                SwatMessages.add(message, type)
+            else:
+                log.error("Error removing because the backend (" + c.samba_lp.get("share backend") + ") is unsupported")
+                message = _("Your chosen backend is not yet supported")
+                SwatMessages.add(message, "critical")
             
-            SwatMessages.add(message, type)
+            redirect_to(controller='share', action='index')
         else:
-            log.error("Error removing because the backend (" + c.samba_lp.get("share backend") + ") is unsupported")
-            message = _("Your chosen backend is not yet supported")
-            SwatMessages.add(message, "critical")
-        
-        redirect_to(controller='share', action='index')
+            SwatMessages.add(_("You did not choose a Share to remove"), "critical")
+            redirect_to(controller='share', action='index')
     
     def copy(self, name=''):
         """ Clones the chosen Share
@@ -407,6 +411,18 @@ class ShareBackendLdb(ShareBackend):
         import ldb
         
         return []
+        
+    def store(self, is_new=False, name=''):
+        self._set_error(_("Unsupported Operation"), "critical")
+    
+    def delete(self, name=''):
+        self._set_error(_("Unsupported Operation"), "critical")
+    
+    def copy(self, name=''):
+        self._set_error(_("Unsupported Operation"), "critical")
+    
+    def toggle(self, name=''):
+        self._set_error(_("Unsupported Operation"), "critical")
 
 """ ShareBackendClassic """
 class ShareBackendClassic(ShareBackend):
