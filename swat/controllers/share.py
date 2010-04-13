@@ -335,8 +335,6 @@ class ShareBackend(object):
         self.__error = {}
         self.__error['message'] = ""
         self.__error['type'] = "critical"
-        
-        print "=======0super========"
 
     def _clean_params(self, params):
         """ Copies all parameters starting with 'share_' in the current request
