@@ -66,26 +66,24 @@ class ShareController(BaseController):
         
         log.debug("Configured backend is: " + c.samba_lp.get("share backend") + " so the Class Name will be " + c.samba_lp.get("share backend").title())
 
-        if not c.samba_lp.get("share backend") in self.__supported_backends:
-            log.error( c.samba_lp.get("share backend") + "is unsupported at the moment")
-            message = _("Your chosen backend is not yet supported")
-            SwatMessages.add(message, "critical")
-        else:
+        if c.samba_lp.get("share backend") in self.__supported_backends:
             self.__backend = "ShareBackend" + c.samba_lp.get("share backend").title()
     
     def index(self):        
-        """ Point of entry. Loads the Share List Template """        
+        """ Point of entry. Loads the Share List Template """
+        c.current_page = int(request.params.get("page", 1))
+        c.per_page =  int(request.params.get("per_page", 10))
+        c.filter_name = request.params.get("filter_shares", "")
+        c.share_list = []
+        
         if c.samba_lp.get("share backend") in self.__supported_backends:
-            c.current_page = int(request.params.get("page", 1))
-            c.per_page =  int(request.params.get("per_page", 10))
-            c.filter_name = request.params.get("filter_shares", "")
-            
             backend = globals()["ShareBackend" + c.samba_lp.get("share backend").title()](c.samba_lp, {})
-            c.share_list = backend.get_share_list()
-            
+    
             if len(c.filter_name) > 0:
-                c.share_list = filter_list(c.share_list, c.filter_name)            
+                c.share_list = filter_list(backend.get_share_list(), c.filter_name)            
                 c.breadcrumb.add(_("Filtered By") + " " + c.filter_name, request.environ['pylons.routes_dict']['controller'], request.environ['pylons.routes_dict']['action'])
+            else:
+                c.share_list = backend.get_share_list()
         else:
             log.error("Error saving because the backend (" + c.samba_lp.get("share backend") + ") is unsupported")
             
@@ -397,12 +395,25 @@ class ShareBackend(object):
 
 """ ShareBackendLdb """
 class ShareBackendLdb(ShareBackend):
-    pass
+    """ """
+    def __init__(self, lp, params):
+        super(ShareBackendLdb, self).__init__()
+        
+        self.__lp = lp
+    
+    """ """
+    def get_share_list(self):
+        
+        import ldb
+        
+        return []
 
 """ ShareBackendClassic """
 class ShareBackendClassic(ShareBackend):
     """ Handles operations regarding the Classic Backend method to store share
     information. The classic method stores shares in the smb.conf file
+    
+    TODO move params and lp to the Base class
     
     """
     def __init__(self, lp, params):
