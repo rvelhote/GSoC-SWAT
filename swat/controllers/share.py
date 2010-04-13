@@ -270,39 +270,43 @@ class ShareController(BaseController):
         if len(name) == 0:
             name = variabledecode.variable_decode(request.params).get("name")
 
-        if not isinstance(name, list):
-            name = [name]
+        if name is not None and len(name) > 0:
+            if not isinstance(name, list):
+                name = [name]
             
-        log.info(str(len(name)) + " share names passed to the server to be copied")
-        
-        if c.samba_lp.get("share backend") in self.__supported_backends:
-            backend = globals()[self.__backend](c.samba_lp, {})
-
-            #
-            #   TODO: Handle multiple deletion errors
-            #
-            for n in name:
-                copied = backend.copy(n)
-                log.info("Copied " + n + " :: success: " + str(copied))
-        
-            message = ""
-            type = "cool"
+            log.info(str(len(name)) + " share names passed to the server to be copied")
             
-            if copied:
-                message = _("Share Duplicated Sucessfuly")
-            else:
-                message = backend.get_error_message()
-                type = backend.get_error_type()
+            if c.samba_lp.get("share backend") in self.__supported_backends:
+                backend = globals()[self.__backend](c.samba_lp, {})
+    
+                #
+                #   TODO: Handle multiple deletion errors
+                #
+                for n in name:
+                    copied = backend.copy(n)
+                    log.info("Copied " + n + " :: success: " + str(copied))
+            
+                message = ""
+                type = "cool"
                 
-                log.warning(message)
-
-            SwatMessages.add(message, type)
+                if copied:
+                    message = _("Share Duplicated Sucessfuly")
+                else:
+                    message = backend.get_error_message()
+                    type = backend.get_error_type()
+                    
+                    log.warning(message)
+    
+                SwatMessages.add(message, type)
+            else:
+                log.error("Error copying because the backend (" + c.samba_lp.get("share backend") + ") is unsupported")
+                message = _("Your chosen backend is not yet supported")
+                SwatMessages.add(message, "critical")
+                
+            redirect_to(controller='share', action='index')
         else:
-            log.error("Error copying because the backend (" + c.samba_lp.get("share backend") + ") is unsupported")
-            message = _("Your chosen backend is not yet supported")
-            SwatMessages.add(message, "critical")
-            
-        redirect_to(controller='share', action='index')
+            SwatMessages.add(_("You did not choose a Share to copy"), "critical")
+            redirect_to(controller='share', action='index')
     
     def toggle(self, name=''):
         """ Toggles a Share's state (enabled/disabled).
