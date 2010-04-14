@@ -491,8 +491,23 @@ class ShareBackendLdb(ShareBackend):
         self._set_error(_("Unsupported Operation"), "critical")
     
     def delete(self, name=''):
-        self._set_error(_("Unsupported Operation"), "critical")
-    
+        import ldb
+        
+        dn = "CN=" + name + ",CN=Shares"
+        deleted = False
+        
+        shares_db = ldb.Ldb()
+        shares_db.connect("/usr/local/samba/private/share.ldb")
+        
+        try:
+            shares_db.delete(ldb.Dn(shares_db, dn))
+            deleted = True
+        except (ldb.LdbError):
+            self._set_error(_("Error Deleting Share"), "critical")
+            deleted = False
+            
+        return deleted
+
     def copy(self, name=''):
         self._set_error(_("Unsupported Operation"), "critical")
     
