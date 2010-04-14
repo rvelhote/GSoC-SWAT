@@ -93,7 +93,7 @@ ${h.form('', method="post", id="share-list", class_="")}
                     tr_class = ''
                     home_class = ''
                     
-                    if share == 'homes':
+                    if share.get_share_name() == 'homes':
                         home_class = ' home-directory '
                         
                     %>
@@ -103,26 +103,26 @@ ${h.form('', method="post", id="share-list", class_="")}
                     % endif
                     
                     <tr id="row-${i}" title="${_('Edit Share')}" class="${tr_class}">
-                        <td><input value="${share}" onchange="selectShareRow(this);" name="name" type="checkbox" id="check-row-${i}" /></td>
-                        <td onclick="clickableRow('${h.url_for('share_action', action = 'edit', name = share)}');">${i}</td>
+                        <td><input value="${share.get_share_name()}" onchange="selectShareRow(this);" name="name" type="checkbox" id="check-row-${i}" /></td>
+                        <td onclick="clickableRow('${h.url_for('share_action', action = 'edit', name = share.get_share_name())}');">${i}</td>
                         
-                        <td onclick="clickableRow('${h.url_for('share_action', action = 'edit', name = share)}');" class='${home_class}'>${share}</td>
-                        <td onclick="clickableRow('${h.url_for('share_action', action = 'edit', name = share)}');">
-                            % if len(c.samba_lp.get('path', share)) > 0:
-                                ${c.samba_lp.get('path', share)}
+                        <td onclick="clickableRow('${h.url_for('share_action', action = 'edit', name = share.get_share_name())}');" class='${home_class}'>${share.get_share_name()}</td>
+                        <td onclick="clickableRow('${h.url_for('share_action', action = 'edit', name = share.get_share_name())}');">
+                            % if len(share.get("path")) > 0:
+                                ${share.get("path")}
                             % else:
                                 ${_('No Path Defined or Required')}
                             % endif
                         </td>
-                        <td onclick="clickableRow('${h.url_for('share_action', action = 'edit', name = share)}');">
-                            % if c.samba_lp.get('comment', share):
-                                ${c.samba_lp.get('comment', share)}
+                        <td onclick="clickableRow('${h.url_for('share_action', action = 'edit', name = share.get_share_name())}');">
+                            % if share.get("comment"):
+                                ${share.get("comment")}
                             % else:
                                 ${_('No Comment Defined')}
                             % endif
                         </td>
                         <td>
-                            ${quick_tasks(share, False)}   
+                            ${quick_tasks(share.get_share_name(), False)}   
                         </td>                            
                     </tr>
                     

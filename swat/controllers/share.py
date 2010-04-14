@@ -116,7 +116,7 @@ class ShareController(BaseController):
         backend = globals()["ShareBackend" + c.samba_lp.get("share backend").title()](c.samba_lp, {})
 
         if c.samba_lp.get("share backend") in self.__supported_backends:
-            if name not in backend.get_share_list() and not is_new:
+            if backend.share_name_exists(name) == False and not is_new:
                 log.warning("Share " + name + " doesn't exist in the chosen backend")
                 SwatMessages.add(_("Can't edit a Share that doesn't exist"), "warning")
                 redirect_to(controller='share', action='index')
@@ -332,10 +332,9 @@ class ShareController(BaseController):
             SwatMessages.add(message, "critical")
         
         redirect_to(controller='share', action='index')
-        
-""" ShareBackend """
+
 class ShareBackend(object):
-    """ """
+    """ ShareBackend """
     def __init__(self):
         #   Errors
         self.__error = {}
@@ -400,21 +399,93 @@ class ShareBackend(object):
     def get_error_type(self):
         """ Gets the current error type """
         return self.__error['type'] or 'critical'
-
-""" ShareBackendLdb """
-class ShareBackendLdb(ShareBackend):
+        
+class SambaShare(object):
     """ """
+    def __init__(self, lp=None):
+        """ """
+        self.__share_name = ""
+        self.__params = {}
+        self.__lp = lp
+        
+    def add(self, key, value):
+        """ """
+        self.__params[key] = value
+        
+    def get(self, key):
+        """ FIXME lp :( """
+        if self.__lp  is not None:
+            return self.__lp.get(key, self.__share_name)
+        elif self.__params.has_key(key) == True:
+            return self.__params[key]
+            
+        return ""
+    
+    def set_share_name(self, name):
+        """ """
+        self.__share_name = name
+        
+    def get_share_name(self):
+        """ """
+        return self.__share_name
+    
+    def __iter__(self):
+        print "iterating"
+
+class ShareBackendLdb(ShareBackend):
+    """ ShareBackendLdb """
     def __init__(self, lp, params):
         super(ShareBackendLdb, self).__init__()
         
         self.__lp = lp
+        self.__share_list = []
+        self.__populate_share_list()
     
     """ """
     def get_share_list(self):
-        
+        return self.__share_list
+    
+    def __populate_share_list(self):
+        """ """
         import ldb
         
-        return []
+        shares_db = ldb.Ldb()
+        shares_db.connect("/usr/local/samba/private/share.ldb")
+
+        for share in shares_db.search(base="CN=SHARES", scope=ldb.SCOPE_SUBTREE):
+            new_share = SambaShare()
+
+            for k, v in share.items():
+                if k == "dn":
+                    continue
+                
+                v = shares_db.schema_format_value(k, v[0])
+                new_share.add(k, v)
+                
+                if k == "name":
+                    new_share.set_share_name(v)
+                    print v
+                
+            self.__share_list.append(new_share)
+
+        return self.__share_list
+    
+    def share_name_exists(self, name):
+        """ Checks if a Share exists in the ShareContainer object
+        
+        FIXME Code is repeated in LDB class
+        
+        Keyword arguments:
+        name -- the name of the share to check
+        
+        """
+        for share in self.__share_list:
+            print " - " + share.get_share_name()
+            if share.get_share_name() == name:        
+                return True
+        
+        log.warning("Share " + name + " doesn't exist")
+        return False
         
     def store(self, is_new=False, name=''):
         self._set_error(_("Unsupported Operation"), "critical")
@@ -428,7 +499,6 @@ class ShareBackendLdb(ShareBackend):
     def toggle(self, name=''):
         self._set_error(_("Unsupported Operation"), "critical")
 
-""" ShareBackendClassic """
 class ShareBackendClassic(ShareBackend):
     """ Handles operations regarding the Classic Backend method to store share
     information. The classic method stores shares in the smb.conf file
@@ -458,25 +528,38 @@ class ShareBackendClassic(ShareBackend):
         self.__params = self._clean_params(params)
         
         self.__smbconf_content = []
-        self.__share_list = shares.SharesContainer(self.__lp)
+        self.__share_list = []
+        self.__populate_share_list()
 
         self.__load_smb_conf_content()
         
     def get_share_list(self):
-        return self.__share_list.keys()
+        return self.__share_list
         
-    def __share_name_exists(self, name):
+    def __populate_share_list(self):
+        """ """
+        for name in shares.SharesContainer(self.__lp).keys():
+            new_share = SambaShare(self.__lp)
+            new_share.add("name", name)
+            new_share.set_share_name(name)
+            
+            self.__share_list.append(new_share)
+        
+    def share_name_exists(self, name):
         """ Checks if a Share exists in the ShareContainer object
+        
+        FIXME Code is repeated in LDB class
         
         Keyword arguments:
         name -- the name of the share to check
         
         """
-        if name not in self.__share_list:
-            log.warning("Share " + name + " doesn't exist")
-            return False
+        for share in self.__share_list:
+            if share.get_share_name() == name:        
+                return True
         
-        return True
+        log.warning("Share " + name + " doesn't exist")
+        return False
         
     def __load_smb_conf_content(self):
         """ Loads the smb.conf into a List using readlines()
@@ -595,7 +678,7 @@ class ShareBackendClassic(ShareBackend):
         else:
             if not is_new:
                 
-                if self.__share_name_exists(self.__share_old_name):
+                if self.share_name_exists(self.__share_old_name):
                     pos = self.__get_section_position(self.__share_old_name)
                     section = self.__smbconf_content[pos['start']:pos['end']]
                     
@@ -633,7 +716,7 @@ class ShareBackendClassic(ShareBackend):
         
         deleted = False
         
-        if self.__share_name_exists(self._share_name):
+        if self.share_name_exists(self._share_name):
             pos = self.__get_section_position(self._share_name)
             
             if pos['start'] == -1:
@@ -670,8 +753,8 @@ class ShareBackendClassic(ShareBackend):
         new_name = _("copy of") + " " + self._share_name
         copied = False
 
-        if not self.__share_name_exists(new_name):
-            if self.__share_name_exists(self._share_name):
+        if not self.share_name_exists(new_name):
+            if self.share_name_exists(self._share_name):
                 pos = self.__get_section_position(self._share_name)
                 section = self.__smbconf_content[pos['start']:pos['end']]
                 
