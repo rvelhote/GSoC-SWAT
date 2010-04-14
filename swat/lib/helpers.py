@@ -588,7 +588,7 @@ def filter_list(items, regex='.*'):
     temp = []
     
     for item in items:
-        if re.search(regex, item) is not None:
+        if re.search(regex, item.get_share_name()) is not None:
             temp.append(item)
             
     return temp
