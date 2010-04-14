@@ -114,7 +114,7 @@ Header Part. Contains items that will be in all pages except login
     status = h.get_samba_server_status() or "down"
     
     if status == "down":
-	h.swat_messages.add(_('Samba is down!'), "critical") %>
+	h.SwatMessages.add(_('Samba is down!'), "critical") %>
     
     <h1 class="server-name title-icon ${status}">
 	% if len(name) > 0:
