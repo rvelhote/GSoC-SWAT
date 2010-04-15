@@ -440,6 +440,11 @@ class ShareBackendLdb(ShareBackend):
         self.__lp = lp
         self.__share_list = []
         self.__populate_share_list()
+        
+        self._share_name = params.get("name")
+        self.__share_old_name = params.get("old_name")
+        
+        self.__params = self._clean_params(params)
     
     """ """
     def get_share_list(self):
@@ -488,7 +493,59 @@ class ShareBackendLdb(ShareBackend):
         return False
         
     def store(self, is_new=False, name=''):
-        self._set_error(_("Unsupported Operation"), "critical")
+        stored = False
+        
+        if len(self._share_name) <= 0:
+            self._set_error(_("Error Adding Share - Name missing"), "critical")
+            return stored
+            
+        import ldb
+        
+        shares_db = ldb.Ldb()
+        shares_db.connect("/usr/local/samba/private/share.ldb")
+        
+        dn = "CN=" + self._share_name + ",CN=Shares"
+        
+        #
+        # FIXME megahack :D
+        #
+        if is_new:
+            msg = ldb.Message(ldb.Dn(shares_db, dn))
+            shares_db.add(msg)
+        
+            try:
+                m = ldb.Message()
+                m.dn = ldb.Dn(shares_db, dn)
+                
+                # FIXME str convertion
+                m["name"] = ldb.MessageElement(str(self._share_name), ldb.CHANGETYPE_ADD, "name")
+    
+                for param, value in self.__params.items():
+                    if len(value) > 0:
+                        m[param] = ldb.MessageElement(str(value), ldb.CHANGETYPE_ADD, param)
+                
+                shares_db.modify(m)
+                stored = True
+            except ldb.LdbError, error:
+                self._set_error(_("Error Adding Share"), "critical")
+        else:
+            try:
+                m = ldb.Message()
+                m.dn = ldb.Dn(shares_db, dn)
+                
+                # FIXME str convertion
+                m["name"] = ldb.MessageElement(str(self._share_name), ldb.CHANGETYPE_MODIFY, "name")
+    
+                for param, value in self.__params.items():
+                    if len(value) > 0:
+                        m[param] = ldb.MessageElement(str(value), ldb.CHANGETYPE_MODIFY, param)
+                
+                shares_db.modify(m)
+                stored = True
+            except ldb.LdbError, error:
+                self._set_error(_("Error Adding Share"), "critical")
+            
+        return stored
     
     def delete(self, name=''):
         import ldb
