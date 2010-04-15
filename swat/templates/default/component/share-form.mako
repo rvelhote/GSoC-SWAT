@@ -30,8 +30,9 @@
     <p class="field-title">${c.p.get_value(id, "title")}</p>
     <%
     
+    # FIXME this was working... hmm...
     value = value or 0
-    value = oct(value)
+    value = oct(int(value))
 
     %>
 
@@ -141,7 +142,7 @@
     type = c.p.get_value(id, "type")
     
     param_name = id.replace('-', ' ')
-    param_value = param_value or c.samba_lp.get(param_name, c.share_name) or ""
+    param_value = param_value or c.share.get(param_name) or ""
     
     help(id, c.p.get_value(id, "disabled"))
     
@@ -200,7 +201,7 @@
         <ul class="tab-list-items"> 
 	    <li id="content-tab1" class="active tab">
 		<ol class="col-1">
-		    <li>${put("name", c.share_name)}</li>
+		    <li>${put("name", c.share.get_share_name())}</li>
 		    <li>${put("path")}</li>
 		</ol>
 		
@@ -240,7 +241,7 @@
 		<h2 class="title-icon" style="background-image:url('/default/images/icons/balloon.png');">${_('Comments')}</h2>
 	    </div>
 	    <div class="content">
-		<textarea cols="80" rows="5" name="share_comment" id="share-comment">${c.samba_lp.get("comment", share)}</textarea>
+		<textarea cols="80" rows="5" name="share_comment" id="share-comment">${c.share.get("comment")}</textarea>
 	    </div>
 	</div>
         

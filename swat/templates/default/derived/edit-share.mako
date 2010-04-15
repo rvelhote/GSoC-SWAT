@@ -46,14 +46,14 @@
     });
 </script>
 
-% if len(c.share_name) > 0:
-    ${parent.action_title(c.config.get_action_info('friendly_name') + " (" + c.share_name + ")")}
+% if len(c.share.get_share_name()) > 0:
+    ${parent.action_title(c.config.get_action_info('friendly_name') + " (" + c.share.get_share_name() + ")")}
 % else:
     ${parent.action_title(c.config.get_action_info('friendly_name'))}
 % endif
 ${toolbar.write(c.config.get_toolbar_items())}
 
-${share_form.write(c.share_name)}
+${share_form.write(c.share)}
 
 <%doc></%doc>
 <%def name="page_title()">

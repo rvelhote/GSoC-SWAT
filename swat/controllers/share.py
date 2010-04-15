@@ -122,7 +122,7 @@ class ShareController(BaseController):
                 redirect_to(controller='share', action='index')
             else:
                 c.p = ParamConfiguration('share-parameters')
-                c.share_name = name
+                c.share = backend.get_share_by_name(name)
     
                 return render('/default/derived/edit-share.mako')
         else:
@@ -450,6 +450,14 @@ class ShareBackendLdb(ShareBackend):
     def get_share_list(self):
         return self.__share_list
     
+    def get_share_by_name(self, name):
+        for share in self.__share_list:
+            print " - " + share.get_share_name()
+            if share.get_share_name() == name:        
+                return share
+            
+        return None
+    
     def __populate_share_list(self):
         """ """
         import ldb
@@ -616,6 +624,14 @@ class ShareBackendClassic(ShareBackend):
             new_share.set_share_name(name)
             
             self.__share_list.append(new_share)
+            
+    def get_share_by_name(self, name):
+        for share in self.__share_list:
+            print " - " + share.get_share_name()
+            if share.get_share_name() == name:        
+                return share
+            
+        return None
         
     def share_name_exists(self, name):
         """ Checks if a Share exists in the ShareContainer object
