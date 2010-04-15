@@ -247,7 +247,7 @@
         
         <div>
             ${h.hidden("task", request.environ['pylons.routes_dict']['action'])}
-            ${h.hidden("old_name", share)}
+            ${h.hidden("old_name", c.share.get_share_name())}
         </div>
         
     ${h.end_form()}

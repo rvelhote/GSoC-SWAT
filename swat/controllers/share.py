@@ -493,7 +493,6 @@ class ShareBackendLdb(ShareBackend):
         
         """
         for share in self.__share_list:
-            print " - " + share.get_share_name()
             if share.get_share_name() == name:        
                 return True
         
@@ -627,7 +626,6 @@ class ShareBackendClassic(ShareBackend):
             
     def get_share_by_name(self, name):
         for share in self.__share_list:
-            print " - " + share.get_share_name()
             if share.get_share_name() == name:        
                 return share
             
