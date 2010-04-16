@@ -338,11 +338,17 @@ class ShareController(BaseController):
 
 class ShareBackend(object):
     """ ShareBackend """
-    def __init__(self):
-        #   Errors
+    def __init__(self, lp, params):
+        """ """
+        self._lp = lp
+        self._params = self._clean_params(params)
+        
+        self._share_name = params.get("name")
+        self._share_old_name = params.get("old_name")
+        
+        self._share_list = []
+        
         self.__error = {}
-        self.__error['message'] = ""
-        self.__error['type'] = "critical"
 
     def _clean_params(self, params):
         """ Copies all parameters starting with 'share_' in the current request
@@ -366,21 +372,53 @@ class ShareBackend(object):
                 clean_params[new_param] = value
 
         return clean_params
+    
+    def get_share_list(self):
+        """ Gets the Share list for the current Backend. """
+        return self._share_list
+    
+    def get_share_by_name(self, name):
+        """ Gets a specific Share by its name from the _share_list member
         
-    def _set_share_name(self, name):
-        """ Sets the current share name to the name passed as parameter. This
-        is useful for situations where we want to handle multiple shares at the
-        same time without instantiating the backend class.
+        Keyword arguments:
+        name -- The share name to search in the list
         
-        As an example it's used in the delete, 
-        
-        Keyword arguments
-        name -- the share name
+        Returns:
+        A SambaShare object or None if the Share is not in the List
         
         """
-        self._share_name = name
+        for share in self._share_list:
+            if share.get_share_name() == name:        
+                return share
+
+        return None
+        
+    def share_name_exists(self, name):
+        """ Checks if a certain Share (referenced by its name) exists in the
+        _share_list member.
+        
+        Keyword arguments:
+        name -- The share name to search in the list
+        
+        Returns:
+        Boolean value indicating if the Share exists or not
+        
+        """
+        for share in self._share_list:
+            if share.get_share_name() == name:        
+                return True
+        
+        log.warning("Share " + name + " doesn't exist")
+        return False
     
     def has_error(self):
+        """ Checks if any errors have been set during in this Backend
+        instance
+        
+        Returns:
+        Boolean indicating if there are any errors set or not
+        
+        """
         return len(self.__error['message']) == 0
     
     def _set_error(self, message, type='critical'):
@@ -396,44 +434,22 @@ class ShareBackend(object):
         self.__error['type'] = type
 
     def get_error_message(self):
-        """ Gets the current error message """
-        return self.__error['message']
+        """ Gets the error message set in this instance.
+        
+        Returns:
+        The message that was set in this instance
+        
+        """
+        return self.__error['message'] or ""
     
     def get_error_type(self):
-        """ Gets the current error type """
+        """ Gets the error type set for the message in this instance
+        
+        Returns:
+        The error type for the message that was set in this instance
+        
+        """
         return self.__error['type'] or 'critical'
-        
-class SambaShare(object):
-    """ """
-    def __init__(self, lp=None):
-        """ """
-        self.__share_name = ""
-        self.__params = {}
-        self.__lp = lp
-        
-    def add(self, key, value):
-        """ """
-        self.__params[key] = value
-        
-    def get(self, key):
-        """ FIXME lp :( """
-        if self.__lp  is not None:
-            return self.__lp.get(key, self.__share_name)
-        elif self.__params.has_key(key) == True:
-            return self.__params[key]
-            
-        return ""
-    
-    def set_share_name(self, name):
-        """ """
-        self.__share_name = name
-        
-    def get_share_name(self):
-        """ """
-        return self.__share_name
-    
-    def __iter__(self):
-        print "iterating"
 
 class ShareBackendLdb(ShareBackend):
     """ ShareBackendLdb """
@@ -592,64 +608,230 @@ class ShareBackendClassic(ShareBackend):
         """ Constructor. Loads the smb.conf contents into a List to be used
         by each of the operations allowed by this backend
         
+        TODO Don't load smb.conf content here. Most of the time is unncessary.
+        
         Keyword arguments
         smbconf -- last smb.conf file loaded by the param module
         params -- request parameters passed by the share information form
         
         """
-        super(ShareBackendClassic, self).__init__()
+        super(ShareBackendClassic, self).__init__(lp, params)
         
-        self.__lp = lp
-        self.__smbconf = self.__lp.configfile
-        
-        #   Important values
-        self._share_name = params.get("name")
-        self.__share_old_name = params.get("old_name")
-        
-        #   Cleanup names from the 'share_' form into the valid Samba name
-        self.__params = self._clean_params(params)
+        self.__smbconf = self._lp.configfile
         
         self.__smbconf_content = []
-        self.__share_list = []
-        self.__populate_share_list()
-
         self.__load_smb_conf_content()
         
-    def get_share_list(self):
-        return self.__share_list
-        
+        self.__populate_share_list()
+
     def __populate_share_list(self):
-        """ """
-        for name in shares.SharesContainer(self.__lp).keys():
-            new_share = SambaShare(self.__lp)
-            new_share.add("name", name)
-            new_share.set_share_name(name)
-            
-            self.__share_list.append(new_share)
-            
-    def get_share_by_name(self, name):
-        for share in self.__share_list:
-            if share.get_share_name() == name:        
-                return share
-            
-        return None
-        
-    def share_name_exists(self, name):
-        """ Checks if a Share exists in the ShareContainer object
-        
-        FIXME Code is repeated in LDB class
-        
-        Keyword arguments:
-        name -- the name of the share to check
+        """ Populate a List containing the available Shares list in the
+        selected backend.
         
         """
-        for share in self.__share_list:
-            if share.get_share_name() == name:        
-                return True
+        for share_name in shares.SharesContainer(self._lp).keys():
+            share = SambaShare(self._lp)
+            share.set_share_name(share_name)
+            
+            self._share_list.append(share)
+    
+    def store(self, is_new=False, name=''):
+        """ Store a Share, either from an edit or add.
         
-        log.warning("Share " + name + " doesn't exist")
+        Breaks down the current smb.conf to find the chosen section (if editing)
+        and recreates that section with the new values. Maintains comments that
+        may be around that section.
+        
+        If we are adding a new share it's just added to the end of the file
+        
+        Keyword arguments:
+        is_new -- Indicates if it's a new share (or not)
+        name -- [optional] Specify the name of the share to store.
+        
+        Returns a boolean value indicating if the share was stored correctly
+        
+        """
+        if len(name) > 0:
+            self._share_name = name
+            
+        stored = False
+        section = []
+        
+        if len(self._share_name) == 0:
+            self._set_error(_("Can't create Share with an empty name"), \
+                            "critical")
+        else:
+            if not is_new:
+                if self.share_name_exists(self._share_old_name):
+                    pos = self.__get_section_position(self._share_old_name)
+                    section = self.__smbconf_content[pos['start']:pos['end']]
+                    
+                    before = self.__smbconf_content[0:pos['start']]
+                    after = self.__smbconf_content[pos['end']:]
+                else:
+                    #
+                    #   Have to break it here to avoid "tricks" downstairs :P
+                    #
+                    self._set_error(_("You are trying to save a Share\
+                                    that doesn't exist"), "critical")
+                    return False
+            else:
+                before = self.__smbconf_content
+                after = []
+            
+            new_section = self.__recreate_section(self._share_name, section)
+            
+            if self.__save_smbconf([before, new_section, after]):
+                if self.__section_exists(self._share_name):
+                    stored = True
+                else:
+                    self._set_error(_("Could not add/edit that Share. \
+                                      No idea why..."), "warning")
+
+        return stored
+    
+    def delete(self, name=''):
+        """ Deletes a share from the backend
+        
+        Returns a boolean value indicating if the Share was deleted sucessfuly
+        
+        """
+        if len(name) > 0:
+            self._share_name = name
+        
+        deleted = False
+        
+        if len(self._share_name) == 0:
+            self._set_error(_("Can't delete Share with an empty name"), \
+                            "critical")
+        else:
+            if self.share_name_exists(self._share_name):
+                pos = self.__get_section_position(self._share_name)
+                
+                if pos['start'] == -1:
+                    return deleted
+        
+                before = self.__smbconf_content[0:pos['start']]
+                after = self.__smbconf_content[pos['end']:]
+                
+                if self.__save_smbconf([before, after]):
+                    if self.__section_exists(self._share_name):
+                        self._set_error(_("Could not delete that Share.\
+                                         The Share is still in the Backend.\
+                                         No idea why..."), "critical")
+                    else:
+                        deleted = True
+            else:
+                self._set_error(_("Can't delete a Share that doesn't exist!"),\
+                                "warning")
+        
+        return deleted
+    
+    def copy(self, name=''):
+        """ Copies a Share.
+        
+        Returns a boolean value indicating if the Share was copied sucessfuly
+        
+        BUG: Can't repeat the same share twice due to name conflict. If you try
+        to copy 'test' once it will create 'copy of test'. If you try copy again
+        it will fail because 'copy of test' already exists.
+        
+        """
+        if len(name) > 0:
+            self._share_name = name
+
+        new_name = _("copy of") + " " + self._share_name
+        copied = False
+
+        if len(self._share_name) == 0:
+            self._set_error(_("Can't copy Share with an empty name"), \
+                            "critical")
+        else:
+            if not self.share_name_exists(new_name):
+                if self.share_name_exists(self._share_name):
+                    pos = self.__get_section_position(self._share_name)
+                    section = self.__smbconf_content[pos['start']:pos['end']]
+                    
+                    new_section = self.__recreate_section(new_name, section)
+                
+                    before = self.__smbconf_content[0:pos['start']]
+                    after = self.__smbconf_content[pos['end']:]
+        
+                    if self.__save_smbconf([before, section, new_section, after]):
+                        if self.__section_exists(new_name):
+                            copied = True
+                        else:
+                            self._set_error(_("Could not copy that Share. No idea why..."), "warning")
+                else:
+                    self._set_error(_("Did not duplicate Share because the original doesn't exist!"), "critical")
+            
+            else:
+                self._set_error(_("Did not duplicate Share because the copy already exists!"), "critical")
+        
+        return copied
+    
+    def toggle(self, name=''):
+        self._set_error("Toggle Not Implemented", "warning")
         return False
+    
+    def __recreate_section(self, name, section):
+        """ Recreate the section we are editing/adding with the new values
         
+        Keyword arguments:
+        name -- the name of the section
+        section -- split list of the smb.conf contents containing just the
+        information from the chosen section. to obtain the section "coordinates"
+        call self.__get_section_position(name)
+        
+        Returns the new section to write to the backend
+        
+        """
+        import re
+        
+        if len(section) > 0 and self._share_old_name:
+            new_section = []
+            new_section.append(section[0].replace(self._share_old_name, \
+                                                  name))
+        else:
+            new_section = ['\n[' + name + ']\n']
+        
+        #   Scan the current section in search for existing values. I could
+        #   just dump the content of params but this will keep other things
+        #   that the user might have written to the file; a comment on a param
+        #   for example
+        #
+        for line in section[1:]:
+            line_param = re.search("(.+)=(.+)", line)
+            
+            if line_param is not None:
+                param = line_param.group(1).strip()
+                value = line_param.group(2).strip()
+
+                if param in self._params:
+                    if len(self._params[param]) > 0:
+                        line = "\t" + param + " = " + self._params[param] + "\n"
+                        del self._params[param]
+                    else:
+                        line = ""
+                else:
+                    line = "\t" + param + " = " + value + "\n"
+            
+            new_section.append(line)
+            
+        #   Now we dump the params file.
+        #   With the already handled key=>values deleted we can safely add all
+        #   of the available parameters from the POST
+        #
+        #   TODO: Should we still write values if they are equal to the
+        #   default? This would keep smb.conf cleaner.
+        #
+        for param, value in self._params.items():
+            if len(value) > 0:
+                line = "\t" + param + " = " + value + "\n"
+                new_section.append(line)
+
+        return new_section
+    
     def __load_smb_conf_content(self):
         """ Loads the smb.conf into a List using readlines()
         
@@ -741,192 +923,6 @@ class ShareBackendClassic(ShareBackend):
 
         return position
     
-    def store(self, is_new=False, name=''):
-        """ Store a Share, either from an edit or add.
-        
-        Breaks down the current smb.conf to find the chosen section (if editing)
-        and recreates that section with the new values. Maintains comments that
-        may be around that section.
-        
-        If we are adding a new share it's just added to the end of the file
-        
-        Keyword arguments:
-        is_new -- indicates if it's a new share (or not)
-        
-        Returns a boolean value indicating if the share was stored correctly
-        
-        """
-        if len(name) > 0:
-            self._set_share_name(name)
-            
-        stored = False
-        section = []
-        
-        if len(self._share_name) == 0:
-            self._set_error(_("Can't create Share with an empty name"), "critical")
-        else:
-            if not is_new:
-                
-                if self.share_name_exists(self.__share_old_name):
-                    pos = self.__get_section_position(self.__share_old_name)
-                    section = self.__smbconf_content[pos['start']:pos['end']]
-                    
-                    before = self.__smbconf_content[0:pos['start']]
-                    after = self.__smbconf_content[pos['end']:]
-                else:
-                    #
-                    #   Have to break it here to avoid "tricks" downstairs :P
-                    #
-                    self._set_error(_("You are trying to save a Share\
-                                    that doesn't exist"), "critical")
-                    return False
-            else:
-                before = self.__smbconf_content
-                after = []
-            
-            new_section = self.__recreate_section(self._share_name, section)
-            
-            if self.__save_smbconf([before, new_section, after]):
-                if self.__section_exists(self._share_name):
-                    stored = True
-                else:
-                    self._set_error(_("Could not add/edit that Share. No idea why..."), "warning")
-
-        return stored
-    
-    def delete(self, name=''):
-        """ Deletes a share from the backend
-        
-        Returns a boolean value indicating if the Share was deleted sucessfuly
-        
-        """
-        if len(name) > 0:
-            self._set_share_name(name)
-        
-        deleted = False
-        
-        if self.share_name_exists(self._share_name):
-            pos = self.__get_section_position(self._share_name)
-            
-            if pos['start'] == -1:
-                return deleted
-    
-            before = self.__smbconf_content[0:pos['start']]
-            after = self.__smbconf_content[pos['end']:]
-            
-            if self.__save_smbconf([before, after]):
-                if self.__section_exists(self._share_name):
-                    self._set_error(_("Could not delete that Share.\
-                                     The Share is still in the Backend.\
-                                     No idea why..."), "critical")
-                else:
-                    deleted = True
-        else:
-            self._set_error(_("Can't delete a Share that doesn't exist!"), "warning")
-        
-        return deleted
-    
-    def copy(self, name=''):
-        """ Copies a Share.
-        
-        Returns a boolean value indicating if the Share was copied sucessfuly
-        
-        BUG: Can't repeat the same share twice due to name conflict. If you try
-        to copy 'test' once it will create 'copy of test'. If you try copy again
-        it will fail because 'copy of test' already exists.
-        
-        """
-        if len(name) > 0:
-            self._set_share_name(name)
-
-        new_name = _("copy of") + " " + self._share_name
-        copied = False
-
-        if not self.share_name_exists(new_name):
-            if self.share_name_exists(self._share_name):
-                pos = self.__get_section_position(self._share_name)
-                section = self.__smbconf_content[pos['start']:pos['end']]
-                
-                new_section = self.__recreate_section(new_name, section)
-            
-                before = self.__smbconf_content[0:pos['start']]
-                after = self.__smbconf_content[pos['end']:]
-    
-                if self.__save_smbconf([before, section, new_section, after]):
-                    if self.__section_exists(new_name):
-                        copied = True
-                    else:
-                        self._set_error(_("Could not copy that Share. No idea why..."), "warning")
-            else:
-                self._set_error(_("Did not duplicate Share because the original doesn't exist!"), "critical")
-        
-        else:
-            self._set_error(_("Did not duplicate Share because the copy already exists!"), "critical")
-        
-        return copied
-    
-    def toggle(self, name=''):
-        self._set_error("Toggle Not Implemented", "warning")
-        return False
-    
-    def __recreate_section(self, name, section):
-        """ Recreate the section we are editing/adding with the new values
-        
-        Keyword arguments:
-        name -- the name of the section
-        section -- split list of the smb.conf contents containing just the
-        information from the chosen section. to obtain the section "coordinates"
-        call self.__get_section_position(name)
-        
-        Returns the new section to write to the backend
-        
-        """
-        import re
-        
-        if len(section) > 0 and self.__share_old_name:
-            new_section = []
-            new_section.append(section[0].replace(self.__share_old_name, \
-                                                  name))
-        else:
-            new_section = ['\n[' + name + ']\n']
-        
-        #   Scan the current section in search for existing values. I could
-        #   just dump the content of params but this will keep other things
-        #   that the user might have written to the file; a comment on a param
-        #   for example
-        #
-        for line in section[1:]:
-            line_param = re.search("(.+)=(.+)", line)
-            
-            if line_param is not None:
-                param = line_param.group(1).strip()
-                value = line_param.group(2).strip()
-
-                if param in self.__params:
-                    if len(self.__params[param]) > 0:
-                        line = "\t" + param + " = " + self.__params[param] + "\n"
-                        del self.__params[param]
-                    else:
-                        line = ""
-                else:
-                    line = "\t" + param + " = " + value + "\n"
-            
-            new_section.append(line)
-            
-        #   Now we dump the params file.
-        #   With the already handled key=>values deleted we can safely add all
-        #   of the available parameters from the POST
-        #
-        #   TODO: Should we still write values if they are equal to the
-        #   default? This would keep smb.conf cleaner.
-        #
-        for param, value in self.__params.items():
-            if len(value) > 0:
-                line = "\t" + param + " = " + value + "\n"
-                new_section.append(line)
-
-        return new_section
-    
     def __save_smbconf(self, what):
         """ Saves the changes made to smb.conf
         
@@ -991,3 +987,32 @@ class ShareBackendClassic(ShareBackend):
             self._set_error(_("Can't write changes to temporay file. Writing aborted!") + " -- " + str(msg), "critical")
 
         return written
+
+class SambaShare(object):
+    """ """
+    def __init__(self, lp=None):
+        """ """
+        self.__share_name = ""
+        self.__params = {}
+        self.__lp = lp
+        
+    def add(self, key, value):
+        """ """
+        self.__params[key] = value
+        
+    def get(self, key):
+        """ FIXME lp :( """
+        if self.__lp  is not None:
+            return self.__lp.get(key, self.__share_name)
+        elif self.__params.has_key(key) == True:
+            return self.__params[key]
+            
+        return ""
+    
+    def set_share_name(self, name):
+        """ """
+        self.__share_name = name
+        
+    def get_share_name(self):
+        """ """
+        return self.__share_name
