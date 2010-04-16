@@ -20,6 +20,15 @@
     
 <%doc>Boolean</%doc>
 <%def name="checkbox(id, value)">
+    <%
+    
+    if value == True or value == "yes":
+        value = True
+    else:
+        value = False
+        
+    %>
+
     ${h.hidden(c.p.get_value(id, "name"), 'no')}
     ${h.checkbox(c.p.get_value(id, "name"), 'yes', value, id=c.p.get_value(id, "id"), class_=c.p.get_value(id, "class"))}
     <label class="checkbox" for="${c.p.get_value(id, "id")}" title="${c.p.get_value(id, "title")}">${c.p.get_value(id, "label")}</label>                                    
