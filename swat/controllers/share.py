@@ -123,6 +123,9 @@ class ShareController(BaseController):
             else:
                 c.p = ParamConfiguration('share-parameters')
                 c.share = backend.get_share_by_name(name)
+                
+                if c.share is None:
+                    c.share = SambaShare()
     
                 return render('/default/derived/edit-share.mako')
         else:
