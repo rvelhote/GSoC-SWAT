@@ -1,0 +1,24 @@
+#
+#   Define this Controller's Actions
+#
+actions:
+    #
+    #   Default Action (index)
+    #
+    index:
+        friendly_name: 'Help'
+        
+        link:
+            name: 'lookup help'
+            title: 'Help'
+            action: index
+
+        image:
+            name: folders-stack.png
+            alt: 'Help Icon'
+
+#
+#   Controller Information
+#
+controller:
+    is_advanced: False
