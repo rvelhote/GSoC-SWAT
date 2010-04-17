@@ -343,11 +343,16 @@ class ShareBackend(object):
         self._lp = lp
         self._params = self._clean_params(params)
         
-        self._share_name = params.get("name")
-        self._share_old_name = params.get("old_name")
+        #
+        # FIXME the LDB class does not like this parameter because its type
+        # is unicode instead of string.
+        #
+        self._share_name = str(params.get("name").strip())
+        self._share_old_name = str(params.get("old_name").strip())
         
         self._share_list = []
         
+        self.__param_prefix = "share_"
         self.__error = {}
 
     def _clean_params(self, params):
@@ -363,11 +368,12 @@ class ShareBackend(object):
         
         """
         clean_params = {}
+        prefix_length = len(self.__param_prefix)
         
         for param in params:
-            if param.startswith('share_'):
+            if param.startswith(self.__param_prefix):
                 value = params.get(param)
-                new_param = param[6:].replace('_', ' ')
+                new_param = param[prefix_length:].replace('_', ' ')
 
                 clean_params[new_param] = value
 
@@ -490,10 +496,13 @@ class ShareBackendLdb(ShareBackend):
     def store(self, is_new=False, name=''):
         stored = False
         
-        if len(self._share_name) <= 0:
-            self._set_error(_("Error Adding Share - Name missing"), "critical")
-            return stored
+        if len(name) > 0:
+            self._share_name = name.strip()
         
+        if len(self._share_name) <= 0:
+            self._set_error(_("You cannot add a Share without a name"), "critical")
+            return stored
+
         dn = "CN=" + str(self._share_name) + ",CN=Shares"
              
         m = ldb.Message()
@@ -550,15 +559,23 @@ class ShareBackendLdb(ShareBackend):
         return stored
     
     def delete(self, name=''):
-        dn = "CN=" + name + ",CN=Shares"
         deleted = False
+        
+        if len(name) > 0:
+            self._share_name = name.strip()
+        
+        if len(self._share_name) <= 0:
+            self._set_error(_("You did not specify a Share to delete"), \
+                            "critical")
+            return deleted
+        
+        dn = "CN=" + name + ",CN=Shares"
 
         try:
             self.__shares_db.delete(ldb.Dn(self.__shares_db, dn))
             deleted = True
         except (ldb.LdbError):
             self._set_error(_("Error Deleting Share"), "critical")
-            deleted = False
             
         return deleted
 
