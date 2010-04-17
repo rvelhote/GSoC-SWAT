@@ -464,7 +464,12 @@ class ShareBackend(object):
         return "critical"
 
 class ShareBackendLdb(ShareBackend):
-    """ ShareBackendLdb """
+    """ ShareBackendLdb
+    
+    TODO review all methods and handle ldb.LdbError Exceptions
+    TODO review all methods for better general error handling
+    
+    """
     
     __db_path = '/usr/local/samba/private/share.ldb'
     
@@ -478,7 +483,7 @@ class ShareBackendLdb(ShareBackend):
         self.__populate_share_list()
 
     def __populate_share_list(self):
-        """
+        """ Populate the share list using the LDB Backend.
         
         FIXME The root DN is always included in the returned list and I can't
         shake it off so for now this little hack will delete it from the list
@@ -591,7 +596,40 @@ class ShareBackendLdb(ShareBackend):
         return deleted
 
     def copy(self, name=''):
-        self._set_error(_("Unsupported Operation"), "critical")
+        copied = False
+        
+        if len(name) > 0:
+            self._share_name = name.strip()
+            
+        if len(self._share_name) <= 0:
+            self._set_error(_("You did not specify a Share to copy"),"critical")
+        
+        copy_name = str(_("copy of") + " " + self._share_name)
+        
+        dn = "CN=" + str(self._share_name) + ",CN=Shares"
+        copy_dn = "CN=" + copy_name + ",CN=Shares"
+        
+        share = self.__shares_db.search(base=dn, scope=ldb.SCOPE_SUBTREE)        
+        if isinstance(share, list):
+            share = share[0]
+        
+        copy_share = ldb.Message(ldb.Dn(self.__shares_db, copy_dn))
+        
+        for param, value in share.items():
+            if param == "dn":
+                continue
+            
+            if param == "name":
+                value = copy_name
+            
+            copy_share[param] = ldb.MessageElement(value, ldb.CHANGETYPE_ADD, \
+                                                   param)
+        
+        self.__shares_db.add(copy_share)
+        
+        copied = True
+
+        return copied
     
     def toggle(self, name=''):
         self._set_error(_("Unsupported Operation"), "critical")
@@ -600,7 +638,7 @@ class ShareBackendClassic(ShareBackend):
     """ Handles operations regarding the Classic Backend method to store share
     information. The classic method stores shares in the smb.conf file
     
-    TODO move params and lp to the Base class
+    TODO review all methods for better general error handling
     
     """
     def __init__(self, lp, params):
