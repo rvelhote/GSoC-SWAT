@@ -33,7 +33,7 @@ about:
     link:
         name: 'about'
         title: ''
-        controller: swat
+        controller: help
         action: about
         
 logout:

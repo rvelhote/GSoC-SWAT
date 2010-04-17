@@ -28,6 +28,19 @@ actions:
         image:
             name: folders-stack.png
             alt: 'Help Module Icon'
+            
+            
+    about:
+        friendly_name: 'About SWAT'
+        
+        link:
+            name: 'about SWAT'
+            title: 'About SWAT'
+            action: about
+
+        image:
+            name: folders-stack.png
+            alt: 'About Icon'
 
 #
 #   Controller Information
