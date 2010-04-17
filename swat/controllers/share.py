@@ -478,9 +478,17 @@ class ShareBackendLdb(ShareBackend):
         self.__populate_share_list()
 
     def __populate_share_list(self):
-        """ """
-        for share in self.__shares_db.search(base="CN=SHARES", \
-                                             scope=ldb.SCOPE_SUBTREE):
+        """
+        
+        FIXME The root DN is always included in the returned list and I can't
+        shake it off so for now this little hack will delete it from the list
+        (it's always the last element)
+        
+        """
+        list = self.__shares_db.search(base="CN=SHARES", scope=ldb.SCOPE_SUBTREE)
+        list = list[:len(list) - 1]
+        
+        for share in list:
             new_share = SambaShare()
 
             for k, v in share.items():
