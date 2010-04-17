@@ -22,6 +22,7 @@ a:hover {
 
 label {
     font-weight:bold;
+    padding-top:2px;
 }
 
 input, textarea, select, option {
@@ -45,7 +46,8 @@ select,
 textarea {    
     border:1px solid #CCCCCC;
     -moz-border-radius:2px;
-    -webkit-border-radius:2px;    
+    -webkit-border-radius:2px;
+    padding: 2px 0px;
 }
 
 input[type=password]:focus,
@@ -745,12 +747,16 @@ ul.user-list li span, ul.user-list li img {
     float:left;
 }
 
-p.reset-view{
-    margin-top:10px;
-    background-image:url('/default/images/icons/counter-reset.png');
-    background-repeat:no-repeat;
-    background-position:top left;
-    padding-left:18px;
+a.reset-view {
+    padding:2px 5px 2px 5px;
+    background-color:#F5F5F5;
+    border:1px solid #cccccc;
+    text-decoration:none;
+}
+
+a.reset-view:hover {
+    background-color:#F3F2E0;
+    color:#3080CB;
 }
 
 /** Bulk Operations Area */

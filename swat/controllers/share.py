@@ -596,6 +596,13 @@ class ShareBackendLdb(ShareBackend):
         return deleted
 
     def copy(self, name=''):
+        """
+        
+        FIXME Can't repeat the same share twice due to name conflict. If you try
+        to copy 'test' once it will create 'copy of test'. If you try copy again
+        it will fail because 'copy of test' already exists.
+        
+        """
         copied = False
         
         if len(name) > 0:

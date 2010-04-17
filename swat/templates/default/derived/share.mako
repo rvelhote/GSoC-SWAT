@@ -155,6 +155,10 @@ ${h.end_form()}
                 ${h.text("filter_shares", c.filter_name, id="filter_share_by_name")}
             </span>
             
+            % if len(c.filter_name) > 0 or int(c.per_page) != 10:
+                <a class="reset-view round-2px" href="${h.url_for(controller = 'share', action = 'index')}">${_("reset view")}</a>
+            % endif
+            
             <span style="float:right;">
                 <label for="items_per_page">${_('Per Page')}:</label>
                 <select name="per_page" id="items_per_page" onchange="submitForm('options');">
@@ -171,9 +175,6 @@ ${h.end_form()}
                 </select>
             </span>
             
-            % if len(c.filter_name) > 0 or int(c.per_page) != 10:
-                <p class="reset-view"><a href="${h.url_for(controller = 'share', action = 'index')}">${_("reset view")}</a></p>
-            % endif
         </div>
     ${h.end_form()}
 </%def>
