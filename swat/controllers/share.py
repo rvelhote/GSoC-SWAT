@@ -440,7 +440,9 @@ class ShareBackend(object):
         The message that was set in this instance
         
         """
-        return self.__error['message'] or ""
+        if self.__error.has_key('message'):
+            return self.__error['message']
+        return ""
     
     def get_error_type(self):
         """ Gets the error type set for the message in this instance
@@ -449,7 +451,9 @@ class ShareBackend(object):
         The error type for the message that was set in this instance
         
         """
-        return self.__error['type'] or 'critical'
+        if self.__error.has_key('type'):
+            return self.__error['type']
+        return "critical"
 
 class ShareBackendLdb(ShareBackend):
     """ ShareBackendLdb """
@@ -490,42 +494,65 @@ class ShareBackendLdb(ShareBackend):
             self._set_error(_("Error Adding Share - Name missing"), "critical")
             return stored
         
-        dn = "CN=" + self._share_name + ",CN=Shares"
+        dn = "CN=" + str(self._share_name) + ",CN=Shares"
+             
+        m = ldb.Message()
+        m.dn = ldb.Dn(self.__shares_db, dn)
+
+        #
+        # FIXME repeated LDB Message. Adding a new Share should be
+        # more robust in case of errors. Perhaps we could delete if an
+        # Exception or Error occurs after we add the DN.
+        #
+        # FIXME Missing Exceptions
+        #
+        # BUG If we add a new Share but there is an error, the
+        # DN will be inserted but its name will be empty which will make
+        # the share undeletable through SWAT.
+        #            
+        if is_new: 
+            msg = ldb.Message(ldb.Dn(self.__shares_db, dn))
+            self.__shares_db.add(msg)
+
+            m["name"] = ldb.MessageElement(str(self._share_name), \
+                                           ldb.CHANGETYPE_ADD, "name")
+            
+            self.__shares_db.modify(m)
+            
+        share = self.__shares_db.search(base=dn, scope=ldb.SCOPE_SUBTREE)
         
-        #
-        # FIXME megahack :D
-        #
-        if is_new:        
-            try:
-                msg = ldb.Message(ldb.Dn(self.__shares_db, dn))
-                self.__shares_db.add(msg)
-                
-                m = ldb.Message()
-                m.dn = ldb.Dn(self.__shares_db, dn)
-                
-                # FIXME str convertion
-                m["name"] = ldb.MessageElement(str(self._share_name), ldb.CHANGETYPE_ADD, "name")
+        if len(share) > 0:
+            
+            m = ldb.Message()
+            m.dn = ldb.Dn(self.__shares_db, dn)
+            
+            share = share[0]
     
-                for param, value in self._params.items():
-                    if len(value) > 0:
-                        m[param] = ldb.MessageElement(str(value), ldb.CHANGETYPE_ADD, param)
+            for param, value in share.items():
+                if param == "dn":
+                    continue
                 
-                self.__shares_db.modify(m)
-                stored = True
-            except ldb.LdbError, error:
-                self._set_error(_("Error Adding Share"), "critical")
+                if param in self._params:
+                    m[param] = ldb.MessageElement(str(self._params[param]), \
+                                                  ldb.CHANGETYPE_MODIFY, param)
+                    del self._params[param]
+    
+            for param, value in self._params.items():
+                if len(value) > 0:
+                    m[param] = ldb.MessageElement(str(value), ldb.CHANGETYPE_ADD, param)
+                        
+            self.__shares_db.modify(m)
+            
+            stored = True
         else:
-            self._set_error(_("Unsupported Operation"), "critical")
+            self._set_error(_("Can't add or save a share that doesn't exist"), "critical")
             
         return stored
     
     def delete(self, name=''):
         dn = "CN=" + name + ",CN=Shares"
         deleted = False
-        
-        self.__shares_db = ldb.Ldb()
-        self.__shares_db.connect("/usr/local/samba/private/share.ldb")
-        
+
         try:
             self.__shares_db.delete(ldb.Dn(self.__shares_db, dn))
             deleted = True
@@ -986,6 +1013,26 @@ class SambaShare(object):
             return self.__params[key]
             
         return ""
+    
+    def has_key(self, key):
+        """ Checks if the current share as a certain parameter key. This will
+        be used only in the LDB Backend when saving during the edit action.
+        
+        FIXME All those returns blergh :P
+        
+        Keyword arguments:
+        key -- The parameter key that we want to check if it exists
+        
+        Returns:
+        Boolean indicating if the parameter exists or not
+        
+        """
+        if self.__lp is not None:
+            return False
+        elif self.__params.has_key(key):
+            return True
+        else:
+            return False
     
     def set_share_name(self, name):
         """ Set the share name for the current Share instance. This will allow
