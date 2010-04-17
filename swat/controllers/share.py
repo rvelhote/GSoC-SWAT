@@ -338,6 +338,9 @@ class ShareController(BaseController):
 
 class ShareBackend(object):
     """ ShareBackend """
+    
+    __param_prefix = "share_"
+    
     def __init__(self, lp, params):
         """ """
         self._lp = lp
@@ -347,12 +350,11 @@ class ShareBackend(object):
         # FIXME the LDB class does not like this parameter because its type
         # is unicode instead of string.
         #
-        self._share_name = str(params.get("name").strip())
-        self._share_old_name = str(params.get("old_name").strip())
+        self._share_name = str(params.get("name")).strip()
+        self._share_old_name = str(params.get("old_name")).strip()
         
         self._share_list = []
-        
-        self.__param_prefix = "share_"
+
         self.__error = {}
 
     def _clean_params(self, params):
@@ -372,8 +374,8 @@ class ShareBackend(object):
         
         for param in params:
             if param.startswith(self.__param_prefix):
-                value = params.get(param)
-                new_param = param[prefix_length:].replace('_', ' ')
+                value = str(params.get(param))
+                new_param = str(param[prefix_length:].replace('_', ' '))
 
                 clean_params[new_param] = value
 
@@ -504,58 +506,40 @@ class ShareBackendLdb(ShareBackend):
             return stored
 
         dn = "CN=" + str(self._share_name) + ",CN=Shares"
-             
-        m = ldb.Message()
-        m.dn = ldb.Dn(self.__shares_db, dn)
-
-        #
-        # FIXME repeated LDB Message. Adding a new Share should be
-        # more robust in case of errors. Perhaps we could delete if an
-        # Exception or Error occurs after we add the DN.
-        #
-        # FIXME Missing Exceptions
-        #
-        # BUG If we add a new Share but there is an error, the
-        # DN will be inserted but its name will be empty which will make
-        # the share undeletable through SWAT.
-        #            
-        if is_new: 
-            msg = ldb.Message(ldb.Dn(self.__shares_db, dn))
-            self.__shares_db.add(msg)
-
-            m["name"] = ldb.MessageElement(str(self._share_name), \
-                                           ldb.CHANGETYPE_ADD, "name")
-            
-            self.__shares_db.modify(m)
-            
         share = self.__shares_db.search(base=dn, scope=ldb.SCOPE_SUBTREE)
         
-        if len(share) > 0:
-            
-            m = ldb.Message()
-            m.dn = ldb.Dn(self.__shares_db, dn)
-            
+        if is_new and len(share) == 0 and not self.share_name_exists(self._share_name):
+            share = ldb.Message(ldb.Dn(self.__shares_db, dn))
+            share["name"] = ldb.MessageElement(self._share_name,ldb.CHANGETYPE_ADD, \
+                                           "name")
+        
+        if isinstance(share, list):
             share = share[0]
-    
-            for param, value in share.items():
-                if param == "dn":
-                    continue
-                
-                if param in self._params:
-                    m[param] = ldb.MessageElement(str(self._params[param]), \
-                                                  ldb.CHANGETYPE_MODIFY, param)
-                    del self._params[param]
-    
-            for param, value in self._params.items():
-                if len(value) > 0:
-                    m[param] = ldb.MessageElement(str(value), ldb.CHANGETYPE_ADD, param)
-                        
-            self.__shares_db.modify(m)
+
+        modded_messages = ldb.Message(ldb.Dn(self.__shares_db, dn))
             
-            stored = True
-        else:
-            self._set_error(_("Can't add or save a share that doesn't exist"), "critical")
+        for param, value in share.items():
+            if param == "dn":
+                continue
             
+            if param in self._params:
+                modded_messages[param] = ldb.MessageElement(self._params[param], \
+                                              ldb.FLAG_MOD_REPLACE, param)
+                del self._params[param]
+
+        for param, value in self._params.items():
+            if len(value):
+                modded_messages[param] = ldb.MessageElement(value, \
+                                                            ldb.CHANGETYPE_ADD, \
+                                                            param)
+
+        if is_new:
+            self.__shares_db.add(share)
+
+        self.__shares_db.modify(modded_messages)
+        
+        stored = True
+
         return stored
     
     def delete(self, name=''):
