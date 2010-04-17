@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # 
 import logging
-import param, shares
+import param, shares, ldb
 
 from formencode import variabledecode
 from pylons import request, response, session, tmpl_context as c
@@ -453,70 +453,35 @@ class ShareBackend(object):
 
 class ShareBackendLdb(ShareBackend):
     """ ShareBackendLdb """
+    
+    __db_path = '/usr/local/samba/private/share.ldb'
+    
     def __init__(self, lp, params):
-        super(ShareBackendLdb, self).__init__()
+        """ """
+        super(ShareBackendLdb, self).__init__(lp, params)
         
-        self.__lp = lp
-        self.__share_list = []
+        self.__shares_db = ldb.Ldb()
+        self.__shares_db.connect(self.__db_path)
+        
         self.__populate_share_list()
-        
-        self._share_name = params.get("name")
-        self.__share_old_name = params.get("old_name")
-        
-        self.__params = self._clean_params(params)
-    
-    """ """
-    def get_share_list(self):
-        return self.__share_list
-    
-    def get_share_by_name(self, name):
-        for share in self.__share_list:
-            print " - " + share.get_share_name()
-            if share.get_share_name() == name:        
-                return share
-            
-        return None
-    
+
     def __populate_share_list(self):
         """ """
-        import ldb
-        
-        shares_db = ldb.Ldb()
-        shares_db.connect("/usr/local/samba/private/share.ldb")
-
-        for share in shares_db.search(base="CN=SHARES", scope=ldb.SCOPE_SUBTREE):
+        for share in self.__shares_db.search(base="CN=SHARES", \
+                                             scope=ldb.SCOPE_SUBTREE):
             new_share = SambaShare()
 
             for k, v in share.items():
                 if k == "dn":
                     continue
                 
-                v = shares_db.schema_format_value(k, v[0])
+                v = self.__shares_db.schema_format_value(k, v[0])
                 new_share.add(k, v)
                 
                 if k == "name":
                     new_share.set_share_name(v)
-                    print v
                 
-            self.__share_list.append(new_share)
-
-        return self.__share_list
-    
-    def share_name_exists(self, name):
-        """ Checks if a Share exists in the ShareContainer object
-        
-        FIXME Code is repeated in LDB class
-        
-        Keyword arguments:
-        name -- the name of the share to check
-        
-        """
-        for share in self.__share_list:
-            if share.get_share_name() == name:        
-                return True
-        
-        log.warning("Share " + name + " doesn't exist")
-        return False
+            self._share_list.append(new_share)
         
     def store(self, is_new=False, name=''):
         stored = False
@@ -524,66 +489,45 @@ class ShareBackendLdb(ShareBackend):
         if len(self._share_name) <= 0:
             self._set_error(_("Error Adding Share - Name missing"), "critical")
             return stored
-            
-        import ldb
-        
-        shares_db = ldb.Ldb()
-        shares_db.connect("/usr/local/samba/private/share.ldb")
         
         dn = "CN=" + self._share_name + ",CN=Shares"
         
         #
         # FIXME megahack :D
         #
-        if is_new:
-            msg = ldb.Message(ldb.Dn(shares_db, dn))
-            shares_db.add(msg)
-        
+        if is_new:        
             try:
+                msg = ldb.Message(ldb.Dn(self.__shares_db, dn))
+                self.__shares_db.add(msg)
+                
                 m = ldb.Message()
-                m.dn = ldb.Dn(shares_db, dn)
+                m.dn = ldb.Dn(self.__shares_db, dn)
                 
                 # FIXME str convertion
                 m["name"] = ldb.MessageElement(str(self._share_name), ldb.CHANGETYPE_ADD, "name")
     
-                for param, value in self.__params.items():
+                for param, value in self._params.items():
                     if len(value) > 0:
                         m[param] = ldb.MessageElement(str(value), ldb.CHANGETYPE_ADD, param)
                 
-                shares_db.modify(m)
+                self.__shares_db.modify(m)
                 stored = True
             except ldb.LdbError, error:
                 self._set_error(_("Error Adding Share"), "critical")
         else:
-            try:
-                m = ldb.Message()
-                m.dn = ldb.Dn(shares_db, dn)
-                
-                # FIXME str convertion
-                m["name"] = ldb.MessageElement(str(self._share_name), ldb.CHANGETYPE_MODIFY, "name")
-    
-                for param, value in self.__params.items():
-                    if len(value) > 0:
-                        m[param] = ldb.MessageElement(str(value), ldb.CHANGETYPE_MODIFY, param)
-                
-                shares_db.modify(m)
-                stored = True
-            except ldb.LdbError, error:
-                self._set_error(_("Error Adding Share"), "critical")
+            self._set_error(_("Unsupported Operation"), "critical")
             
         return stored
     
     def delete(self, name=''):
-        import ldb
-        
         dn = "CN=" + name + ",CN=Shares"
         deleted = False
         
-        shares_db = ldb.Ldb()
-        shares_db.connect("/usr/local/samba/private/share.ldb")
+        self.__shares_db = ldb.Ldb()
+        self.__shares_db.connect("/usr/local/samba/private/share.ldb")
         
         try:
-            shares_db.delete(ldb.Dn(shares_db, dn))
+            self.__shares_db.delete(ldb.Dn(self.__shares_db, dn))
             deleted = True
         except (ldb.LdbError):
             self._set_error(_("Error Deleting Share"), "critical")
@@ -996,12 +940,46 @@ class SambaShare(object):
         self.__params = {}
         self.__lp = lp
         
+    def is_classic(self):
+        """ Checks if the current Share is of the Classic Backend.
+        
+        This method was created because the permissions parameter is returned
+        as Decimal in the LDB Backend and Decimal in the Classic Backend but
+        who knows; maybe it will be good to have in other situations.
+
+        """
+        if self.__lp is not None:
+            return True
+        return False
+        
     def add(self, key, value):
-        """ """
+        """ Add a key-value pair for the current Share instance. This will
+        map to a parameter
+        
+        Keyword arguments
+        key -- The parameter name
+        value -- The parameter value
+        
+        """
         self.__params[key] = value
         
     def get(self, key):
-        """ FIXME lp :( """
+        """ Gets the value for a specific parameter key.
+        
+        FIXME Due to the fact that the Classic (using LoadParm) backend does
+        not specify the chosen parameters explicitly (like LDB) we need to
+        specify the LoadParm instance for each Share instance. I suppose it
+        would be better to load the chosen parameters for the Share and avoid
+        this hack but that will be something to do later. For now I guess it's
+        ok.
+        
+        Keyword arguments:
+        key -- The parameter that we want the value from
+        
+        Returns:
+        The parameter's value or an empty string if the parameter does not exist
+        
+        """
         if self.__lp  is not None:
             return self.__lp.get(key, self.__share_name)
         elif self.__params.has_key(key) == True:
@@ -1010,9 +988,20 @@ class SambaShare(object):
         return ""
     
     def set_share_name(self, name):
-        """ """
+        """ Set the share name for the current Share instance. This will allow
+        us to not depend on a key-value pair for this important value.
+        
+        Keyword arguments:
+        name -- The name of the Share
+        
+        """
         self.__share_name = name
         
     def get_share_name(self):
-        """ """
+        """ Gets the share name for the current Share instance.
+        
+        Returns:
+        The share name of the current Share instance
+        
+        """
         return self.__share_name
