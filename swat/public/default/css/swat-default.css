@@ -845,3 +845,10 @@ ul.usr-list li span {
 ul.grp-list li span {
     background-image:url('/default/images/icons/users.png');
 }
+
+/** Help */
+div.help{font-size:85%;}
+div.help ol{margin-left:25px;}
+div.help ol li{list-style-type: decimal-leading-zero;}
+div.help h2{font-weight:bold;font-size:116%;margin-bottom:10px;border-bottom:1px solid #cccccc;}
+div.help div.topic{margin-top:25px;}

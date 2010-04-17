@@ -29,3 +29,9 @@ class HelpController(BaseController):
     def index(self):
         """ """
         return render('/default/derived/help.mako')
+        
+    def module(self):
+        c.help_module_name = request.params.get("name")
+        c.help_module_action = request.params.get("action")
+        
+        return render('/default/derived/help.mako')

@@ -18,3 +18,33 @@
 <%inherit file="/default/base/base.mako" />
 
 ${parent.action_title(c.config.get_action_info('friendly_name'))}
+
+<div class="help">
+    <h2>${_("Topics")}</h2>
+    <ol>
+        <li><a href="#01">Lorem ipsum dolor sit amet</a></li>
+        <li><a href="#02">Lorem ipsum dolor sit amet</a></li>
+        <li><a href="#03">Lorem ipsum dolor sit amet</a></li>
+    </ol>
+    
+    <div class="topic">
+        <a name="02"></a>
+        <h2>Lorem ipsum dolor sit amet</h2>
+        
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ut nisl lectus. Maecenas rutrum dapibus congue. Cras consectetur libero sollicitudin urna ornare dapibus. Sed nec nulla ut elit gravida laoreet sed ac turpis. Sed luctus, risus vel accumsan egestas, leo sem mattis est, sit amet viverra justo risus interdum mi. Duis sollicitudin molestie libero, non aliquam libero pellentesque id. Phasellus sem erat, tempus sit amet cursus at, vehicula in augue. In quis aliquam metus. In ac mi lacus, eget convallis purus. Sed consequat suscipit dolor eu tempus. Integer enim tellus, porttitor sed ultrices et, dictum id turpis. Donec at lorem vitae magna sollicitudin interdum a sed nisi. Quisque ultricies lorem id dui suscipit id consequat felis commodo. In faucibus tincidunt rutrum. Nulla ligula diam, pellentesque eget lobortis eu, malesuada sed eros. Pellentesque eget orci dui. Nulla volutpat scelerisque dolor, sed ultrices ligula sollicitudin ut.</p>
+    </div>
+    
+    <div class="topic">
+        <a name="02"></a>
+        <h2>Lorem ipsum dolor sit amet</h2>
+        
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ut nisl lectus. Maecenas rutrum dapibus congue. Cras consectetur libero sollicitudin urna ornare dapibus. Sed nec nulla ut elit gravida laoreet sed ac turpis. Sed luctus, risus vel accumsan egestas, leo sem mattis est, sit amet viverra justo risus interdum mi. Duis sollicitudin molestie libero, non aliquam libero pellentesque id. Phasellus sem erat, tempus sit amet cursus at, vehicula in augue. In quis aliquam metus. In ac mi lacus, eget convallis purus. Sed consequat suscipit dolor eu tempus. Integer enim tellus, porttitor sed ultrices et, dictum id turpis. Donec at lorem vitae magna sollicitudin interdum a sed nisi. Quisque ultricies lorem id dui suscipit id consequat felis commodo. In faucibus tincidunt rutrum. Nulla ligula diam, pellentesque eget lobortis eu, malesuada sed eros. Pellentesque eget orci dui. Nulla volutpat scelerisque dolor, sed ultrices ligula sollicitudin ut.</p>
+    </div>
+    
+    <div class="topic">
+        <a name="03"></a>
+        <h2>Lorem ipsum dolor sit amet</h2>
+        
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ut nisl lectus. Maecenas rutrum dapibus congue. Cras consectetur libero sollicitudin urna ornare dapibus. Sed nec nulla ut elit gravida laoreet sed ac turpis. Sed luctus, risus vel accumsan egestas, leo sem mattis est, sit amet viverra justo risus interdum mi. Duis sollicitudin molestie libero, non aliquam libero pellentesque id. Phasellus sem erat, tempus sit amet cursus at, vehicula in augue. In quis aliquam metus. In ac mi lacus, eget convallis purus. Sed consequat suscipit dolor eu tempus. Integer enim tellus, porttitor sed ultrices et, dictum id turpis. Donec at lorem vitae magna sollicitudin interdum a sed nisi. Quisque ultricies lorem id dui suscipit id consequat felis commodo. In faucibus tincidunt rutrum. Nulla ligula diam, pellentesque eget lobortis eu, malesuada sed eros. Pellentesque eget orci dui. Nulla volutpat scelerisque dolor, sed ultrices ligula sollicitudin ut.</p>
+    </div>
+</div>

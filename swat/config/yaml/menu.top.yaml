@@ -23,8 +23,11 @@ context:
     link:
         name: 'context help'
         title: ''
-        controller: _current_
-        action: help
+        controller: help
+        action: module
+        params:
+            name: _current_module_
+            action: _current_action_
         
 about:
     link:

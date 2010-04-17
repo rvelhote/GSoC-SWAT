@@ -25,14 +25,24 @@
 	<ul id="swat-top-nav" class="useful-links">
 	    % for item in items:
 		<li>
-		    <% controller = menu.get_item_configuration(item, 'link/controller') %>
-		
-		    % if controller == '_current_':
-			<% controller = request.environ['pylons.routes_dict']['controller'] %>
-		    % endif
+		    <%
 		    
-		    <a href="${h.url_for(controller=controller, action=menu.get_item_configuration(item, 'link/action'))}">
-		        ${menu.get_item_configuration(item, 'link/name')}
+		    controller = menu.get_item_configuration(item, 'link/controller')
+		    params = ""
+		    
+		    if len(menu.get_item_configuration(item, 'link/params/name')) > 0:
+			params = "?name=" + request.environ['pylons.routes_dict']['controller']
+		    
+		    if len(menu.get_item_configuration(item, 'link/params/action')) > 0:
+			params = params + "&action=" + request.environ['pylons.routes_dict']['action']
+
+		    if controller == '_current_':
+			controller = request.environ['pylons.routes_dict']['controller']
+		    
+		    %>
+		    
+		    <a href="${h.url_for(controller=controller, action=menu.get_item_configuration(item, 'link/action'))}${params}">
+		        ${menu.get_item_configuration(item, 'link/name')}			
 		    </a>
 		</li>
 	    % endfor
