@@ -39,9 +39,13 @@
     <p class="field-title">${c.p.get_value(id, "title")}</p>
     <%
     
-    # FIXME this was working... hmm...
-    value = value or 0
-    value = oct(int(value))
+    # 
+    # Classic returns Octal
+    # LDB returns Decimal
+    #
+    if c.share.is_classic():
+        value = value or 0
+        value = oct(value)
 
     %>
 
