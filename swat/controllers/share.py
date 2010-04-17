@@ -496,6 +496,15 @@ class ShareBackendLdb(ShareBackend):
             self._share_list.append(new_share)
         
     def store(self, is_new=False, name=''):
+        """ Add/Save share information in LDB.
+
+        TODO Review the use for the name parameter. 
+        
+        Keyword arguments:
+        is_new --
+        name --
+        
+        """
         stored = False
         
         if len(name) > 0:
@@ -505,10 +514,15 @@ class ShareBackendLdb(ShareBackend):
             self._set_error(_("You cannot add a Share without a name"), "critical")
             return stored
 
-        dn = "CN=" + str(self._share_name) + ",CN=Shares"
+        dn = "CN=" + self._share_name + ",CN=Shares"
+
+        if not is_new and self._share_name != self._share_old_name:
+            old_dn = "CN=" + self._share_old_name + ",CN=Shares"            
+            self.__shares_db.rename(ldb.Dn(self.__shares_db, old_dn), dn)
+            
         share = self.__shares_db.search(base=dn, scope=ldb.SCOPE_SUBTREE)
         
-        if is_new and len(share) == 0 and not self.share_name_exists(self._share_name):
+        if is_new:
             share = ldb.Message(ldb.Dn(self.__shares_db, dn))
             share["name"] = ldb.MessageElement(self._share_name,ldb.CHANGETYPE_ADD, \
                                            "name")
@@ -517,6 +531,11 @@ class ShareBackendLdb(ShareBackend):
             share = share[0]
 
         modded_messages = ldb.Message(ldb.Dn(self.__shares_db, dn))
+        
+        if not is_new and self._share_name != self._share_old_name:
+            modded_messages["name"] = ldb.MessageElement(self._share_name, \
+                                                         ldb.FLAG_MOD_REPLACE, \
+                                                         "name")
             
         for param, value in share.items():
             if param == "dn":
@@ -535,9 +554,9 @@ class ShareBackendLdb(ShareBackend):
 
         if is_new:
             self.__shares_db.add(share)
-
+            
         self.__shares_db.modify(modded_messages)
-        
+                
         stored = True
 
         return stored
