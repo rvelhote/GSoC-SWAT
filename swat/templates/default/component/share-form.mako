@@ -125,12 +125,24 @@
     <label for="${c.p.get_value(id, "id")}" title="${c.p.get_value(id, "title")}">${c.p.get_value(id, "label")}:</label>
     ${h.text('', '', id=c.p.get_value(id, "id"), style="float:left;", class_=c.p.get_value(id, "class"))}
     
-    <% field_ops(id, c.p.get_value(id, "field-ops")) %>
-    <% list_values = "" %>
-
-    % if value and  len(value) > 0:
-        <% list_values = ", ".join(["%s" % v for v in value]) %>
-    % endif
+    <%
+    
+    field_ops(id, c.p.get_value(id, "field-ops"))
+    list_values = ""
+    
+    #
+    # Classic returns a list and LDB returns the actual string so we need to
+    # split it in different ways
+    #
+    if c.share.is_classic():
+        if value and len(value) > 0:
+            list_values = ", ".join(["%s" % v for v in value])
+    else:
+        list_values = value
+        value = value.split(",")
+    
+    
+    %>
     
     ${h.hidden(c.p.get_value(id, "name"), list_values, id=c.p.get_value(id, "id") + '-list-textbox')}
     <% list_id = c.p.get_value(id, "id") + "-list" %>
