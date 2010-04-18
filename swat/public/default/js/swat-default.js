@@ -524,8 +524,11 @@ var UserGroupSelector = new Class({
                     
                     link.addEvent('click', function(e, el, lnk) {
                         new Event(e).preventDefault();
+                        
+                        
 
                         value = el.getElement("span").get("text");
+                        el.addClass("selected");
                         this.list.add(value, lnk.hasClass("group") ? "g" : "u");
                         
                     }.bindWithEvent(this, [element, link]));
