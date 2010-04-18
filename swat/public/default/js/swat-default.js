@@ -407,6 +407,9 @@ var Popup = new Class({
         var mainWindow = new Element('div', {opacity: 0, id: this.options.window, class:'popup-main-window round-2px'});
         mainWindow.injectInside(document.body);
         
+        var dragHandle = new Element('div', {'id': this.options.window + "-drag-handle", 'class': 'popup-main-window-drag-handle'});
+        dragHandle.injectInside(mainWindow);
+        
         var titleBar = new Element('div', {'id': this.options.window + "-title-bar", 'class': 'popup-main-window-title-bar'});
         titleBar.injectInside(mainWindow);
         
@@ -424,7 +427,9 @@ var Popup = new Class({
          */
         titleBarTitle.set("text", this.options.title);
         titleBarClose.addEvent('click', this.hide.bind(this));
+        
         mainWindow.makeDraggable({handle: titleBar.getProperty("id")});
+        mainWindow.makeResizable({handle: dragHandle.getProperty("id")});
 
         this.options.window = mainWindow;
         this.position();
