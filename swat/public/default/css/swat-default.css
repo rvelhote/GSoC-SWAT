@@ -869,6 +869,8 @@ div.popup-main-window {
 	min-height:220px;
 	
 	width:650px;
+	
+	overflow-y:auto;
 }
 
 div.popup-main-window-close {
