@@ -265,7 +265,7 @@ a.item-icon-link {
     width:100%;
     height:100%;
     color:#484848;
-    
+    outline:none;
 }
 
 a.item-icon-link span {
