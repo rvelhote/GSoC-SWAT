@@ -458,6 +458,9 @@ class ShareBackend(object):
         """ Checks if a certain Share (referenced by its name) exists in the
         _share_list member.
         
+        TODO Switch the search method. It's more accurate specially when
+        dealing with multiple shares at the same time.
+        
         Keyword arguments:
         name -- The share name to search in the list
         
@@ -560,6 +563,33 @@ class ShareBackendLdb(ShareBackend):
                     new_share.set_share_name(v)
                 
             self._share_list.append(new_share)
+            
+    
+    def __get_available_copy_name(self, to_copy):
+        """ Gets the first available Share name to use in a copy operation. We
+        search LDB because if we selected multiple shares and use the normal
+        share_name_exists the list in this instance would not be updated and we
+        would get an error stating the the Share already exists.
+
+        Keyword arguments:
+        to_copy -- the original share name to be copies
+        
+        Returns:
+        a new share name
+        
+        """
+        name = _("copy of") + " " + to_copy
+
+        while True:
+            dn = "CN=" + str(name) + ",CN=Shares"
+            share = self.__shares_db.search(base=dn, scope=ldb.SCOPE_SUBTREE)
+
+            if share is None or len(share) == 0:
+                break
+            
+            name = _("copy of") + " " + name
+            
+        return str(name)
         
     def store(self, is_new=False, name=''):
         """ Add/Save share information in LDB.
@@ -662,11 +692,11 @@ class ShareBackendLdb(ShareBackend):
             self._share_name = name.strip()
         
         try:
-            if len(self._share_name) >= 0:
+            if len(self._share_name) == 0:
                 raise ShareError(_("You did not specify a Share to copy"), \
                                  "critical")
             
-            copy_name = str(_("copy of") + " " + self._share_name)
+            copy_name = self.__get_available_copy_name(self._share_name)
             
             dn = "CN=" + str(self._share_name) + ",CN=Shares"
             copy_dn = "CN=" + copy_name + ",CN=Shares"
