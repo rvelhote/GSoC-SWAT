@@ -48,7 +48,7 @@
                 <% current_item_class = "" %>
                 
                 <%doc>FIXME if per_page is one all items will be highlighted</%doc>
-                % if (i - 1) % per_page == 0:
+                % if current_page == i:
                     <% current_item_class = " current-item " %>
                 % endif
             
