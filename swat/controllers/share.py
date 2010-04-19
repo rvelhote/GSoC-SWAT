@@ -305,6 +305,12 @@ class ShareController(BaseController):
         name -- the name of the share to be duplicated
         
         """
+        message = ""
+        
+        #
+        # In case we select multiple shares, the name parameter will be empty
+        # because Pylons stores [] http variables in a different way
+        #
         if len(name) == 0:
             name = variabledecode.variable_decode(request.params).get("name")
 
@@ -316,28 +322,40 @@ class ShareController(BaseController):
             
             if c.samba_lp.get("share backend") in self.__supported_backends:
                 backend = globals()[self.__backend](c.samba_lp, {})
+                ok_list = []
     
                 #
-                #   TODO: Handle multiple deletion errors
+                # May be annoying if many shares are selected because many error
+                # messages may appear but it's possible that they are different.
                 #
                 for n in name:
                     copied = backend.copy(n)
-                    log.info("Copied " + n + " :: success: " + str(copied))
-            
-                message = ""
-                type = "cool"
-                
-                if copied:
-                    message = _("Share Duplicated Sucessfuly")
-                else:
-                    message = backend.get_error_message()
-                    type = backend.get_error_type()
                     
-                    log.warning(message)
-    
-                SwatMessages.add(message, type)
+                    if copied:
+                        ok_list.append(n)
+                        log.info("Copied " + n + " :: success: " + str(copied))
+                    else:
+                        SwatMessages.add(backend.get_error_message(), \
+                                         backend.get_error_type())
+                        
+                        log.warning(message)
+                        
+                if len(ok_list) > 0:
+                    joined = ", ".join(["%s" % v for v in ok_list])
+                    
+                    #
+                    # There is a way to do this in babel but I don't remember
+                    # how to do it right now
+                    #
+                    if len(ok_list) == 1:
+                        message = _("The Share %s was copied sucessfuly" \
+                                    % (joined))
+                    else:    
+                        message = _("The Shares %s were copied sucessfuly" \
+                                    % (joined))
+                    
+                    SwatMessages.add(message)
             else:
-                log.error("Error copying because the backend (" + c.samba_lp.get("share backend") + ") is unsupported")
                 message = _("Your chosen backend is not yet supported")
                 SwatMessages.add(message, "critical")
                 
@@ -642,35 +660,46 @@ class ShareBackendLdb(ShareBackend):
         
         if len(name) > 0:
             self._share_name = name.strip()
+        
+        try:
+            if len(self._share_name) >= 0:
+                raise ShareError(_("You did not specify a Share to copy"), \
+                                 "critical")
             
-        if len(self._share_name) <= 0:
-            self._set_error(_("You did not specify a Share to copy"),"critical")
-        
-        copy_name = str(_("copy of") + " " + self._share_name)
-        
-        dn = "CN=" + str(self._share_name) + ",CN=Shares"
-        copy_dn = "CN=" + copy_name + ",CN=Shares"
-        
-        share = self.__shares_db.search(base=dn, scope=ldb.SCOPE_SUBTREE)        
-        if isinstance(share, list):
-            share = share[0]
-        
-        copy_share = ldb.Message(ldb.Dn(self.__shares_db, copy_dn))
-        
-        for param, value in share.items():
-            if param == "dn":
-                continue
+            copy_name = str(_("copy of") + " " + self._share_name)
             
-            if param == "name":
-                value = copy_name
+            dn = "CN=" + str(self._share_name) + ",CN=Shares"
+            copy_dn = "CN=" + copy_name + ",CN=Shares"
+        
+            share = self.__shares_db.search(base=dn, scope=ldb.SCOPE_SUBTREE)
             
-            copy_share[param] = ldb.MessageElement(value, ldb.CHANGETYPE_ADD, \
-                                                   param)
+            if len(share) > 0:
+                share = share[0]
+            else:
+                raise ldb.LdbError(_("The share you selected doesn't exist."))
+            
+            copy_share = ldb.Message(ldb.Dn(self.__shares_db, copy_dn))
+            
+            for param, value in share.items():
+                if param == "dn":
+                    continue
+                
+                if param == "name":
+                    value = copy_name
+                
+                copy_share[param] = ldb.MessageElement(value, \
+                                                       ldb.CHANGETYPE_ADD, \
+                                                       param)
+            
+            self.__shares_db.add(copy_share)
+            copied = True
         
-        self.__shares_db.add(copy_share)
-        
-        copied = True
-
+        except ShareError, error:
+            self._set_error(error.message, error.type)
+        except ldb.LdbError, error_message:
+            self._set_error(_("Error copying Share: %s" % (error_message)), \
+                            "critical")
+            
         return copied
     
     def toggle(self, name=''):
@@ -1160,3 +1189,9 @@ class SambaShare(object):
         
         """
         return self.__share_name
+
+class ShareError(Exception):
+    """ Just testing! """
+    def __init__(self, message, type):
+        Exception.__init__(self, message)
+        self.type = type
