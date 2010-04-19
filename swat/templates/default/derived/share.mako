@@ -55,13 +55,17 @@ ${h.form('', method="post", id="share-list", class_="")}
                 <tr>
                     <td colspan="6">		    
                         <div class="pagination">
-                            <% showing = c.per_page %>
+                            <%
                             
-                            % if showing > len(shares):
-                                <% showing = len(shares) %>
-                            % endif
+                            showing_floor = (c.current_page - 1) * c.per_page
+                            showing_ceil = c.current_page * c.per_page
                             
-                            <p class="number-pages">${_('Showing %d of %d Shares' % (showing, len(shares)))}</p>
+                            if showing_ceil > len(shares):
+                                showing_ceil = len(shares)
+
+                            %>
+                            
+                            <p class="number-pages">${_('Showing %d-%d of %d Shares' % (showing_floor, showing_ceil, len(shares)))}</p>
                             <% pagination.paginate(shares, c.per_page, c.current_page) %>
                         </div>
                     </td>
