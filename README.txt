@@ -13,4 +13,4 @@ There are also two other scripts called "pull" and "pull-and-run". 'pull' will j
 
 Notes:
 - Don't forget to chmod +x the scripts
-- If you have problems saving information to the backend (only smb.conf supported for now) check the permissions for your smb.conf and directory
+- If you have problems saving information using the Classic Backend check the permissions for your smb.conf and directory, add SWAT to the Samba group (if it has one) or start SWAT as root if you want to try it.
