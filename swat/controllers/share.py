@@ -236,7 +236,13 @@ class ShareController(BaseController):
         Keyword arguments:
         name -- the name of the share to be deleted
         
-        """        
+        """
+        message = ""
+        
+        #
+        # In case we select multiple shares, the name parameter will be empty
+        # because Pylons stores [] http variables in a different way
+        #
         if len(name) == 0:
             name = variabledecode.variable_decode(request.params).get("name")
 
@@ -248,34 +254,48 @@ class ShareController(BaseController):
       
             if c.samba_lp.get("share backend") in self.__supported_backends:
                 backend = globals()[self.__backend](c.samba_lp, {})
-    
+                ok_list = []
+
                 #
-                #   TODO: Handle multiple deletion errors
+                # May be annoying if many shares are selected because many error
+                # messages may appear but it's possible that they are different.
                 #
                 for n in name:
                     deleted = backend.delete(n)
-                    log.info("Deleted " + n + " :: success: " + str(deleted))
-                
-                message = ""
-                type = "cool"
-                
-                if deleted:
-                    message = _("Share Deleted Sucessfuly")
-                else:
-                    message = backend.get_error_message()
-                    type = backend.get_error_type()
                     
-                    log.warning(message)
+                    if deleted:
+                        ok_list.append(n)
+                        log.info("Deleted " + n + " :: success: " + str(deleted))
+                    else:
+                        SwatMessages.add(backend.get_error_message(), \
+                                         backend.get_error_type())
+                        
+                        log.warning(message)
                 
-                SwatMessages.add(message, type)
+                if len(ok_list) > 0:
+                    joined = ", ".join(["%s" % v for v in ok_list])
+                    
+                    #
+                    # There is a way to do this in babel but I don't remember
+                    # how to do it right now
+                    #
+                    if len(ok_list) == 1:
+                        message = _("The Share %s was deleted sucessfuly" \
+                                    % (joined))
+                    else:    
+                        message = _("The Shares %s were deleted sucessfuly" \
+                                    % (joined))
+                    
+                    SwatMessages.add(message)
             else:
-                log.error("Error removing because the backend (" + c.samba_lp.get("share backend") + ") is unsupported")
                 message = _("Your chosen backend is not yet supported")
                 SwatMessages.add(message, "critical")
             
             redirect_to(controller='share', action='index')
         else:
-            SwatMessages.add(_("You did not choose a Share to remove"), "critical")
+            message = _("You did not choose a Share or a group of Shares to remove")
+            SwatMessages.add(message, "critical")
+            
             redirect_to(controller='share', action='index')
     
     def copy(self, name=''):
@@ -605,8 +625,8 @@ class ShareBackendLdb(ShareBackend):
         try:
             self.__shares_db.delete(ldb.Dn(self.__shares_db, dn))
             deleted = True
-        except (ldb.LdbError):
-            self._set_error(_("Error Deleting Share"), "critical")
+        except ldb.LdbError, error_message:
+            self._set_error(_("Error Deleting Share: %s" % (error_message)), "critical")
             
         return deleted
 
