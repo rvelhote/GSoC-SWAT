@@ -68,6 +68,8 @@ class ShareController(BaseController):
 
         if c.samba_lp.get("share backend") in self.__supported_backends:
             self.__backend = "ShareBackend" + c.samba_lp.get("share backend").title()
+        else:
+            log.error("Unsupported Backend (" + c.samba_lp.get("share backend") + ")")
     
     def index(self):        
         """ Point of entry. Loads the Share List Template """
@@ -85,8 +87,6 @@ class ShareController(BaseController):
             else:
                 c.share_list = backend.get_share_list()
         else:
-            log.error("Error saving because the backend (" + c.samba_lp.get("share backend") + ") is unsupported")
-            
             message = _("Your chosen backend is not yet supported")
             SwatMessages.add(message, "critical")
         
@@ -99,15 +99,12 @@ class ShareController(BaseController):
         """
         return self.edit('', True)
     
-    def add_assistant(self):
-        log.error("Not implemented")
-        pass
-    
     def edit(self, name, is_new=False):
         """ Edit a share. Loads the Share Edition Template.
         
         Keyword arguments:
         name -- the share name to load the information from
+        is_new -- indicated if we are adding a share of editing
         
         """
         log.debug("Editing share " + name)
@@ -118,58 +115,73 @@ class ShareController(BaseController):
         if c.samba_lp.get("share backend") in self.__supported_backends:
             if backend.share_name_exists(name) == False and not is_new:
                 log.warning("Share " + name + " doesn't exist in the chosen backend")
-                SwatMessages.add(_("Can't edit a Share that doesn't exist"), "warning")
+                
+                message = _("Can't edit a Share that doesn't exist")
+                SwatMessages.add(message, "warning")
+                
                 redirect_to(controller='share', action='index')
             else:
                 c.p = ParamConfiguration('share-parameters')
-                c.share = backend.get_share_by_name(name)
                 
-                if c.share is None:
+                if is_new:
                     c.share = SambaShare()
-    
+                else:
+                    c.share = backend.get_share_by_name(name)
+
                 return render('/default/derived/edit-share.mako')
         else:
-            log.error("Error saving because the backend (" + c.samba_lp.get("share backend") + ") is unsupported")
-            
             message = _("Your chosen backend is not yet supported")
             SwatMessages.add(message, "critical")
             
             redirect_to(controller='share', action='index')
         
     def save(self):
-        """ Save a Share. We enter here either from the 'edit' or 'add' """
-        backend = None
+        """ Save a Share. We enter here either from the "edit" or "add" """
+        action = request.environ['pylons.routes_dict']['action']
+        task = request.params.get("task", "edit")
+        
+        share_name = request.params.get("name", "")
+        share_old_name = request.params.get("old_name", "")
+        
         is_new = False
+        stored = False
+        
+        has_error = False
                 
-        if request.params.get("task", "edit") == "add":
+        if task == "add":
             is_new = True
         
-        log.debug("Task is: " + request.params.get("task", "edit"))    
+        log.debug("Task is: " + task)    
         log.debug("Is the share we are saving new? " + str(is_new))
         
-        if c.samba_lp.get("share backend") in self.__supported_backends:
-            backend = globals()[self.__backend](c.samba_lp, request.params)
-            stored = backend.store(is_new)
-            
-            if stored:
-                message = _("Share Information was Saved")
-                SwatMessages.add(message)
+        if len(share_name) > 0:
+            if c.samba_lp.get("share backend") in self.__supported_backends:
+                    backend = globals()[self.__backend](c.samba_lp, request.params)
+                    stored = backend.store(is_new)
+                    
+                    if stored:
+                        message = _("Share Information was Saved")
+                        SwatMessages.add(message)
+                    else:
+                        SwatMessages.add(backend.get_error_message(), \
+                                         backend.get_error_type())
             else:
-                SwatMessages.add(backend.get_error_message(), backend.get_error_type())
+                message = _("Your chosen backend is not yet supported")
+                SwatMessages.add(message, "critical")
+                has_error = True
         else:
-            log.error("Error saving because the backend (" + c.samba_lp.get("share backend") + ") is unsupported")
-            
-            message = _("Your chosen backend is not yet supported")
+            message = _("The share name is empty. You cannot save this share");
             SwatMessages.add(message, "critical")
+            has_error = True
 
-        if request.environ['pylons.routes_dict']['action'] == "save":
+        if has_error or not stored:
+            redirect_to(controller='share', action='edit', name=share_old_name)
+        elif action == "save" and stored:
             redirect_to(controller='share', action='index')
-        elif stored:
-            redirect_to(controller='share', action='edit', name=request.params.get("name", ""))
-        elif is_new :
-            redirect_to(controller='share', action='add')
+        elif action == "apply" and stored:
+            redirect_to(controller='share', action='edit', name=share_name)
         else:
-            redirect_to(controller='share', action='edit', name=request.params.get("old_name", ""))
+            redirect_to(controller='share', action='add')
 
     def apply(self):
         """ Apply changes done to a Share. This action is merely an alias for
@@ -180,9 +192,11 @@ class ShareController(BaseController):
     
     def cancel(self, name=''):
         """ Cancel the current editing/addition of the current Share """
-        if request.params.get("task", "edit") == "add":
+        task = request.params.get("task", "edit")
+        
+        if task == "add":
             message = _("Cancelled New Share. No Share was added!")
-        elif request.params.get("task", "edit") == "edit":
+        elif task == "edit":
             message = _("Cancelled Share editing. No changes were saved!")
         
         SwatMessages.add(message, "warning")
@@ -196,7 +210,8 @@ class ShareController(BaseController):
         path = request.params.get('path', '/')
         log.debug("We want the folders in: " + path)
         
-        return render_mako_def('/default/component/popups.mako', 'select_path', \
+        return render_mako_def('/default/component/popups.mako', \
+                               'select_path', \
                                current=path)
         
     def users_groups(self):
