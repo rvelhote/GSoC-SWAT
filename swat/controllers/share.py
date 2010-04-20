@@ -453,27 +453,6 @@ class ShareBackend(object):
                 return share
 
         return None
-        
-    def share_name_exists(self, name):
-        """ Checks if a certain Share (referenced by its name) exists in the
-        _share_list member.
-        
-        TODO Switch the search method. It's more accurate specially when
-        dealing with multiple shares at the same time.
-        
-        Keyword arguments:
-        name -- The share name to search in the list
-        
-        Returns:
-        Boolean value indicating if the Share exists or not
-        
-        """
-        for share in self._share_list:
-            if share.get_share_name() == name:        
-                return True
-        
-        log.warning("Share " + name + " doesn't exist")
-        return False
     
     def has_error(self):
         """ Checks if any errors have been set during in this Backend
@@ -563,7 +542,37 @@ class ShareBackendLdb(ShareBackend):
                     new_share.set_share_name(v)
                 
             self._share_list.append(new_share)
+        
+    def share_name_exists(self, name):
+        """ Checks if a share exists in this Backend.
+        
+        Keyword arguments:
+        name -- The share name to search in the list
+        
+        Returns:
+        Boolean value indicating if the Share exists or not
+        
+        """
+        exists = False
+        
+        dn = "CN=" + str(name) + ",CN=Shares"
+        share = self.__shares_db.search(base=dn, scope=ldb.SCOPE_SUBTREE)
+        
+        if share is not None and len(share) > 0:
+            exists = True
+        else:
+            log.warning("Share " + name + " doesn't exist")
             
+        return exists
+    
+    def __get_share_from_backend(self, name):
+        dn = "CN=" + str(name) + ",CN=Shares"
+        share = self.__shares_db.search(base=dn, scope=ldb.SCOPE_SUBTREE)
+        
+        if share is not None and len(share) > 0:
+            return share[0]
+            
+        return None
     
     def __get_available_copy_name(self, to_copy):
         """ Gets the first available Share name to use in a copy operation. We
@@ -580,15 +589,9 @@ class ShareBackendLdb(ShareBackend):
         """
         name = _("copy of") + " " + to_copy
 
-        while True:
-            dn = "CN=" + str(name) + ",CN=Shares"
-            share = self.__shares_db.search(base=dn, scope=ldb.SCOPE_SUBTREE)
-
-            if share is None or len(share) == 0:
-                break
-            
+        while self.share_name_exists(name):
             name = _("copy of") + " " + name
-            
+
         return str(name)
         
     def store(self, is_new=False, name=''):
@@ -657,28 +660,37 @@ class ShareBackendLdb(ShareBackend):
 
         return stored
     
-    def delete(self, name=''):
+    def delete(self, name):
         deleted = False
-        
-        if len(name) > 0:
-            self._share_name = name.strip()
-        
-        if len(self._share_name) <= 0:
-            self._set_error(_("You did not specify a Share to delete"), \
-                            "critical")
-            return deleted
-        
-        dn = "CN=" + name + ",CN=Shares"
 
+        #
+        # FIXME the LDB class does not like this parameter because its type
+        # is unicode instead of string so it need to be cast into a string.
+        #
+        name = str(name).strip()
+        
         try:
+            if len(name) == 0:
+                raise ShareError(_("You did not specify a Share to remove"))
+                
+            
+            
+            if not self.share_name_exists(name):
+                raise ShareError(_("The share you selected doesn't exist."))
+            
+            dn = "CN=" + name + ",CN=Shares"
             self.__shares_db.delete(ldb.Dn(self.__shares_db, dn))
             deleted = True
-        except ldb.LdbError, error_message:
-            self._set_error(_("Error Deleting Share: %s" % (error_message)), "critical")
             
+        except ShareError, error:
+            self._set_error(error.message, error.type)
+        except ldb.LdbError, error_message:
+            self._set_error(_("Error copying Share: %s" % (error_message)), \
+                            "critical")
+
         return deleted
 
-    def copy(self, name=''):
+    def copy(self, name):
         """
         
         FIXME Can't repeat the same share twice due to name conflict. If you try
@@ -687,27 +699,28 @@ class ShareBackendLdb(ShareBackend):
         
         """
         copied = False
-        
-        if len(name) > 0:
-            self._share_name = name.strip()
-        
+
+        #
+        # FIXME the LDB class does not like this parameter because its type
+        # is unicode instead of string so it need to be cast into a string.
+        #
+        name = str(name).strip()
+
         try:
-            if len(self._share_name) == 0:
+            if len(name) == 0:
                 raise ShareError(_("You did not specify a Share to copy"), \
                                  "critical")
-            
-            copy_name = self.__get_available_copy_name(self._share_name)
-            
-            dn = "CN=" + str(self._share_name) + ",CN=Shares"
-            copy_dn = "CN=" + copy_name + ",CN=Shares"
-        
-            share = self.__shares_db.search(base=dn, scope=ldb.SCOPE_SUBTREE)
-            
-            if len(share) > 0:
-                share = share[0]
+                    
+            if self.share_name_exists(name):
+                share = self.__get_share_from_backend(name)
             else:
-                raise ldb.LdbError(_("The share you selected doesn't exist."))
+                raise ShareError(_("The share you selected doesn't exist."))
+
+            copy_name = self.__get_available_copy_name(name)
             
+            dn = "CN=" + name + ",CN=Shares"
+            copy_dn = "CN=" + copy_name + ",CN=Shares"
+
             copy_share = ldb.Message(ldb.Dn(self.__shares_db, copy_dn))
             
             for param, value in share.items():
@@ -723,7 +736,7 @@ class ShareBackendLdb(ShareBackend):
             
             self.__shares_db.add(copy_share)
             copied = True
-        
+            
         except ShareError, error:
             self._set_error(error.message, error.type)
         except ldb.LdbError, error_message:
@@ -772,6 +785,10 @@ class ShareBackendClassic(ShareBackend):
             share.set_share_name(share_name)
             
             self._share_list.append(share)
+            
+    def share_name_exists(self, name):
+        """ """
+        pass
     
     def store(self, is_new=False, name=''):
         """ Store a Share, either from an edit or add.
@@ -1222,6 +1239,6 @@ class SambaShare(object):
 
 class ShareError(Exception):
     """ Just testing! """
-    def __init__(self, message, type):
+    def __init__(self, message, type='critical'):
         Exception.__init__(self, message)
         self.type = type
