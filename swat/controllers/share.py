@@ -140,8 +140,8 @@ class ShareController(BaseController):
         action = request.environ['pylons.routes_dict']['action']
         task = request.params.get("task", "edit")
         
-        share_name = request.params.get("name", "")
-        share_old_name = request.params.get("old_name", "")
+        share_name = request.params.get("name", "").strip()
+        share_old_name = request.params.get("old_name", "").strip()
         
         is_new = False
         stored = False
@@ -157,7 +157,7 @@ class ShareController(BaseController):
         if len(share_name) > 0:
             if c.samba_lp.get("share backend") in self.__supported_backends:
                     backend = globals()[self.__backend](c.samba_lp, request.params)
-                    stored = backend.store(is_new)
+                    stored = backend.store(share_name, is_new, share_old_name)
                     
                     if stored:
                         message = _("Share Information was Saved")
@@ -175,7 +175,11 @@ class ShareController(BaseController):
             has_error = True
 
         if has_error or not stored:
-            redirect_to(controller='share', action='edit', name=share_old_name)
+            if len(share_old_name) == 0:
+                redirect_to(controller='share', action='index')
+            else:
+                redirect_to(controller='share', action='edit', \
+                            name=share_old_name)
         elif action == "save" and stored:
             redirect_to(controller='share', action='index')
         elif action == "apply" and stored:
@@ -397,17 +401,9 @@ class ShareBackend(object):
     def __init__(self, lp, params):
         """ """
         self._lp = lp
-        self._params = self._clean_params(params)
-        
-        #
-        # FIXME the LDB class does not like this parameter because its type
-        # is unicode instead of string.
-        #
-        self._share_name = str(params.get("name")).strip()
-        self._share_old_name = str(params.get("old_name")).strip()
-        
-        self._share_list = []
+        self._params = self._clean_params(params)        
 
+        self._share_list = []
         self.__error = {}
 
     def _clean_params(self, params):
@@ -566,7 +562,20 @@ class ShareBackendLdb(ShareBackend):
         return exists
     
     def __get_share_from_backend(self, name):
-        dn = "CN=" + str(name) + ",CN=Shares"
+        """ Gets the share directly from the backend instead of getting it
+        from the share_list cache
+        
+        Keyword arguments:
+        name -- the share name to get from the backend
+        
+        Returns:
+        The Share with its DN information and attributes or None if the share
+        does not exists
+        
+        """
+        name = str(name).strip()
+        
+        dn = "CN=" + name + ",CN=Shares"
         share = self.__shares_db.search(base=dn, scope=ldb.SCOPE_SUBTREE)
         
         if share is not None and len(share) > 0:
@@ -594,69 +603,88 @@ class ShareBackendLdb(ShareBackend):
 
         return str(name)
         
-    def store(self, is_new=False, name=''):
-        """ Add/Save share information in LDB.
-
-        TODO Review the use for the name parameter. 
+    def store(self, name, is_new=False, old_name=''):
+        """ Add/Save share information in LDB. If we are changing a Share's
+        name we need to use old_name to specify the old name so the necessary
+        renamings may be performed.
         
         Keyword arguments:
-        is_new --
-        name --
+        name -- the name of the share to save the information
+        is_new -- indicates if the share if new or not
+        old_name -- the old share name (in case we are renaming)
+        
+        Returns:
+        Sucess or insucess of the operation
         
         """
         stored = False
         
-        if len(name) > 0:
-            self._share_name = name.strip()
+        name = str(name).strip()
+        old_name = str(old_name).strip()
         
-        if len(self._share_name) <= 0:
-            self._set_error(_("You cannot add a Share without a name"), "critical")
-            return stored
-
-        dn = "CN=" + self._share_name + ",CN=Shares"
-
-        if not is_new and self._share_name != self._share_old_name:
-            old_dn = "CN=" + self._share_old_name + ",CN=Shares"            
-            self.__shares_db.rename(ldb.Dn(self.__shares_db, old_dn), dn)
-            
-        share = self.__shares_db.search(base=dn, scope=ldb.SCOPE_SUBTREE)
-        
-        if is_new:
-            share = ldb.Message(ldb.Dn(self.__shares_db, dn))
-            share["name"] = ldb.MessageElement(self._share_name,ldb.CHANGETYPE_ADD, \
-                                           "name")
-        
-        if isinstance(share, list):
-            share = share[0]
-
-        modded_messages = ldb.Message(ldb.Dn(self.__shares_db, dn))
-        
-        if not is_new and self._share_name != self._share_old_name:
-            modded_messages["name"] = ldb.MessageElement(self._share_name, \
-                                                         ldb.FLAG_MOD_REPLACE, \
-                                                         "name")
-            
-        for param, value in share.items():
-            if param == "dn":
-                continue
-            
-            if param in self._params:
-                modded_messages[param] = ldb.MessageElement(self._params[param], \
-                                              ldb.FLAG_MOD_REPLACE, param)
-                del self._params[param]
-
-        for param, value in self._params.items():
-            if len(value):
-                modded_messages[param] = ldb.MessageElement(value, \
-                                                            ldb.CHANGETYPE_ADD, \
-                                                            param)
-
-        if is_new:
-            self.__shares_db.add(share)
-            
-        self.__shares_db.modify(modded_messages)
+        try:
+            if len(name) == 0:
+                raise ShareError(_("You did not specify a Share to remove"))
                 
-        stored = True
+            if not is_new and len(old_name) == 0:
+                raise ShareError(_("You are modifying a share name but the old name is missing"))
+                
+            if is_new and self.share_name_exists(name):
+                raise ShareError(_("A Share with that name already exists"))
+                
+            if not is_new and not self.share_name_exists(name):
+                raise ShareError(_("The share you are trying to save no longer exists"))
+
+            dn = "CN=" + name + ",CN=Shares"
+            old_dn = "CN=" + old_name + ",CN=Shares"
+
+            # Rename the DN element before continuing
+            if not is_new and name != old_name:
+                self.__shares_db.rename(ldb.Dn(self.__shares_db, old_dn), dn)
+
+
+            if is_new:
+                share = ldb.Message(ldb.Dn(self.__shares_db, dn))
+                share["name"] = ldb.MessageElement(name, \
+                                                   ldb.CHANGETYPE_ADD, \
+                                                   "name")
+            else:
+                share = self.__get_share_from_backend(name)
+                
+            modded_messages = ldb.Message(ldb.Dn(self.__shares_db, dn))
+            
+            if not is_new and name != old_name:
+                modded_messages["name"] = ldb.MessageElement(name, \
+                                                             ldb.FLAG_MOD_REPLACE, \
+                                                             "name")
+            
+            # Replace existing attribute values
+            for param, value in share.items():
+                if param == "dn":
+                    continue
+                
+                if param in self._params:
+                    modded_messages[param] = ldb.MessageElement(self._params[param], \
+                                                  ldb.FLAG_MOD_REPLACE, param)
+                    del self._params[param]
+    
+            # Add the new attributes passed by the form
+            for param, value in self._params.items():
+                if len(value) > 0:
+                    modded_messages[param] = ldb.MessageElement(value, \
+                                                                ldb.CHANGETYPE_ADD, \
+                                                                param)
+            if is_new:
+                self.__shares_db.add(share)
+
+            self.__shares_db.modify(modded_messages)
+            stored = True
+            
+        except ShareError, error:
+            self._set_error(error.message, error.type)
+        except ldb.LdbError, error_message:
+            self._set_error(_("Error copying Share: %s" % (error_message)), \
+                            "critical")
 
         return stored
     
@@ -672,9 +700,7 @@ class ShareBackendLdb(ShareBackend):
         try:
             if len(name) == 0:
                 raise ShareError(_("You did not specify a Share to remove"))
-                
-            
-            
+
             if not self.share_name_exists(name):
                 raise ShareError(_("The share you selected doesn't exist."))
             
