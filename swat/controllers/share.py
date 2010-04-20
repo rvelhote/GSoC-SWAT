@@ -430,6 +430,41 @@ class ShareBackend(object):
 
         return clean_params
     
+    def _get_available_copy_name(self, to_copy):
+        """ Checks the cached share_list for the nest available name to use for
+        a copy operation.
+
+        Keyword arguments:
+        to_copy -- the original share name to be copies
+        
+        Returns:
+        a new share name
+        
+        """
+        name = _("copy of") + " " + to_copy
+
+        while self.share_name_exists(name):
+            name = _("copy of") + " " + name
+
+        return str(name)
+            
+    def share_name_exists(self, name):
+        """ Checks if a Share exists in the cached share_list list
+        
+        Keyword arguments:
+        name -- the share name to check
+        
+        Returns:
+        True of False indicating if the Share exists or not
+        
+        """
+        for share in self._share_list:
+            if share.get_share_name() == name:        
+                return True
+
+        log.warning("Share " + name + " doesn't exist")
+        return False
+    
     def get_share_list(self):
         """ Gets the Share list for the current Backend. """
         return self._share_list
@@ -583,7 +618,7 @@ class ShareBackendLdb(ShareBackend):
             
         return None
     
-    def __get_available_copy_name(self, to_copy):
+    def _get_available_copy_name(self, to_copy):
         """ Gets the first available Share name to use in a copy operation. We
         search LDB because if we selected multiple shares and use the normal
         share_name_exists the list in this instance would not be updated and we
@@ -624,10 +659,10 @@ class ShareBackendLdb(ShareBackend):
         
         try:
             if len(name) == 0:
-                raise ShareError(_("You did not specify a Share to remove"))
+                raise ShareError(_("You cannot add a Share with an empty name"))
                 
             if not is_new and len(old_name) == 0:
-                raise ShareError(_("You are modifying a share name but the old name is missing"))
+                raise ShareError(_("You are modifying a Share name but the old name is missing"))
                 
             if is_new and self.share_name_exists(name):
                 raise ShareError(_("A Share with that name already exists"))
@@ -742,7 +777,7 @@ class ShareBackendLdb(ShareBackend):
             else:
                 raise ShareError(_("The share you selected doesn't exist."))
 
-            copy_name = self.__get_available_copy_name(name)
+            copy_name = self._get_available_copy_name(name)
             
             dn = "CN=" + name + ",CN=Shares"
             copy_dn = "CN=" + copy_name + ",CN=Shares"
@@ -811,12 +846,8 @@ class ShareBackendClassic(ShareBackend):
             share.set_share_name(share_name)
             
             self._share_list.append(share)
-            
-    def share_name_exists(self, name):
-        """ """
-        pass
     
-    def store(self, is_new=False, name=''):
+    def store(self, name, is_new=False, old_name=''):
         """ Store a Share, either from an edit or add.
         
         Breaks down the current smb.conf to find the chosen section (if editing)
@@ -826,25 +857,31 @@ class ShareBackendClassic(ShareBackend):
         If we are adding a new share it's just added to the end of the file
         
         Keyword arguments:
+        name -- Specify the name of the share to store.
         is_new -- Indicates if it's a new share (or not)
-        name -- [optional] Specify the name of the share to store.
+        old_name -- The old name of the share. Used for already existing shares
+        and when the name if being changed.
         
-        Returns a boolean value indicating if the share was stored correctly
+        Returns:
+        A boolean value indicating if the share was stored correctly
         
         """
-        if len(name) > 0:
-            self._share_name = name
+        name = name.strip()
+        old_name = old_name.strip()
             
         stored = False
         section = []
         
-        if len(self._share_name) == 0:
-            self._set_error(_("Can't create Share with an empty name"), \
-                            "critical")
-        else:
+        try:
+            if len(name) == 0:
+                raise ShareError(_("You cannot add a Share without a name"))
+                
+            if not is_new and len(old_name) == 0:
+                raise ShareError(_("You are modifying a Share name but the old name is missing"))
+            
             if not is_new:
-                if self.share_name_exists(self._share_old_name):
-                    pos = self.__get_section_position(self._share_old_name)
+                if self.share_name_exists(old_name):
+                    pos = self.__get_section_position(old_name)
                     section = self.__smbconf_content[pos['start']:pos['end']]
                     
                     before = self.__smbconf_content[0:pos['start']]
@@ -860,55 +897,62 @@ class ShareBackendClassic(ShareBackend):
                 before = self.__smbconf_content
                 after = []
             
-            new_section = self.__recreate_section(self._share_name, section)
+            new_section = self.__recreate_section(name, old_name, section)
             
             if self.__save_smbconf([before, new_section, after]):
-                if self.__section_exists(self._share_name):
+                if self.__section_exists(name):
                     stored = True
                 else:
                     self._set_error(_("Could not add/edit that Share. \
                                       No idea why..."), "warning")
+            
+        except ShareError, error:
+            self._set_error(error.message, error.type)
 
         return stored
     
-    def delete(self, name=''):
-        """ Deletes a share from the backend
+    def delete(self, name):
+        """ Deletes a share from the backend.
         
-        Returns a boolean value indicating if the Share was deleted sucessfuly
+        Keyword arguments:
+        name -- the name of the share to be deleted
+        
+        Returns:
+        A boolean value indicating if the Share was deleted sucessfuly
         
         """
-        if len(name) > 0:
-            self._share_name = name
-        
         deleted = False
+        name = name.strip()
         
-        if len(self._share_name) == 0:
-            self._set_error(_("Can't delete Share with an empty name"), \
-                            "critical")
-        else:
-            if self.share_name_exists(self._share_name):
-                pos = self.__get_section_position(self._share_name)
+        try:
+            if len(name) == 0:
+                raise ShareError(_("You did not specify a Share to be removed."))
                 
-                if pos['start'] == -1:
-                    return deleted
-        
-                before = self.__smbconf_content[0:pos['start']]
-                after = self.__smbconf_content[pos['end']:]
-                
-                if self.__save_smbconf([before, after]):
-                    if self.__section_exists(self._share_name):
-                        self._set_error(_("Could not delete that Share.\
-                                         The Share is still in the Backend.\
-                                         No idea why..."), "critical")
-                    else:
-                        deleted = True
-            else:
-                self._set_error(_("Can't delete a Share that doesn't exist!"),\
-                                "warning")
+            if not self.share_name_exists(name):
+                raise ShareError(_("Can't delete a Share that doesn't exist!"))
+
+            pos = self.__get_section_position(name)
+            
+            if pos['start'] == -1:
+                raise ShareError(_("You did not specify a Share to be removed."))
+    
+            before = self.__smbconf_content[0:pos['start']]
+            after = self.__smbconf_content[pos['end']:]
+            
+            if self.__save_smbconf([before, after]):
+                if self.__section_exists(name):
+                    self._set_error(_("Could not delete that Share.\
+                                     The Share is still in the Backend.\
+                                     No idea why..."), "critical")
+                else:
+                    deleted = True
+
+        except ShareError, error:
+            self._set_error(error.message, error.type)
         
         return deleted
     
-    def copy(self, name=''):
+    def copy(self, name):
         """ Copies a Share.
         
         Returns a boolean value indicating if the Share was copied sucessfuly
@@ -918,44 +962,45 @@ class ShareBackendClassic(ShareBackend):
         it will fail because 'copy of test' already exists.
         
         """
-        if len(name) > 0:
-            self._share_name = name
-
-        new_name = _("copy of") + " " + self._share_name
         copied = False
-
-        if len(self._share_name) == 0:
-            self._set_error(_("Can't copy Share with an empty name"), \
-                            "critical")
-        else:
-            if not self.share_name_exists(new_name):
-                if self.share_name_exists(self._share_name):
-                    pos = self.__get_section_position(self._share_name)
-                    section = self.__smbconf_content[pos['start']:pos['end']]
-                    
-                    new_section = self.__recreate_section(new_name, section)
+        name = name.strip()
+        
+        try:
+            if len(name) == 0:
+                raise ShareError(_("Can't copy Share with an empty name"))
                 
-                    before = self.__smbconf_content[0:pos['start']]
-                    after = self.__smbconf_content[pos['end']:]
-        
-                    if self.__save_smbconf([before, section, new_section, after]):
-                        if self.__section_exists(new_name):
-                            copied = True
-                        else:
-                            self._set_error(_("Could not copy that Share. No idea why..."), "warning")
-                else:
-                    self._set_error(_("Did not duplicate Share because the original doesn't exist!"), "critical")
+            if not self.share_name_exists(name):
+                raise ShareError(_("Did not duplicate Share because the original doesn't exist!"))
+                
+            new_name = self._get_available_copy_name(name)
+
+            if self.share_name_exists(new_name):
+                raise ShareError(_("Did not duplicate Share because the copy already exists!"))       
             
-            else:
-                self._set_error(_("Did not duplicate Share because the copy already exists!"), "critical")
+            pos = self.__get_section_position(name)
+            section = self.__smbconf_content[pos['start']:pos['end']]
+            
+            new_section = self.__recreate_section(new_name, None, section)
         
+            before = self.__smbconf_content[0:pos['start']]
+            after = self.__smbconf_content[pos['end']:]
+
+            if self.__save_smbconf([before, section, new_section, after]):
+                if self.__section_exists(new_name):
+                    copied = True
+                else:
+                    self._set_error(_("Could not copy that Share. No idea why..."), "warning")
+
+        except ShareError, error:
+            self._set_error(error.message, error.type)
+
         return copied
     
     def toggle(self, name=''):
         self._set_error("Toggle Not Implemented", "warning")
         return False
     
-    def __recreate_section(self, name, section):
+    def __recreate_section(self, name, old_name, section):
         """ Recreate the section we are editing/adding with the new values
         
         Keyword arguments:
@@ -969,10 +1014,9 @@ class ShareBackendClassic(ShareBackend):
         """
         import re
         
-        if len(section) > 0 and self._share_old_name:
+        if len(section) > 0 and old_name:
             new_section = []
-            new_section.append(section[0].replace(self._share_old_name, \
-                                                  name))
+            new_section.append(section[0].replace(old_name, name))
         else:
             new_section = ['\n[' + name + ']\n']
         
@@ -1120,7 +1164,7 @@ class ShareBackendClassic(ShareBackend):
         
         try:
             stream = open(self.__smbconf + ".new", 'w')
-            
+
             if len(what) > 0:
                 
                 for area in what:
@@ -1166,6 +1210,8 @@ class ShareBackendClassic(ShareBackend):
         except IOError, msg:
             log.fatal("can't write changes to temporary file; " + str(msg))
             self._set_error(_("Can't write changes to temporay file. Writing aborted!") + " -- " + str(msg), "critical")
+        finally:
+            stream.close()
 
         return written
 
