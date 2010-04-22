@@ -14,8 +14,8 @@
 # You should have received a copy of the GNU General Public License
 # 
 from swat.tests import *
-from swat.lib.helpers import ControllerConfiguration, DashboardConfiguration, \
-BreadcrumbTrail, SwatMessages
+#from swat.lib.helpers import ControllerConfiguration, DashboardConfiguration, \
+#BreadcrumbTrail, SwatMessages
 
 class TestShareController(TestController):
 
