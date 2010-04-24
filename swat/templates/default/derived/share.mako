@@ -155,7 +155,7 @@ ${h.end_form()}
     ${h.form(h.url_for(controller = 'share', action = 'index'), method="get", id="options")}
         <div style="font-size:85%;margin-bottom:15px;">
             <span>
-                <label for="filter_share_by_name">${_('Filter')}:</label>
+                <label title="${_("You may use Regular Expressions")}" for="filter_share_by_name">${_('Filter')}:</label>
                 ${h.text("filter_shares", c.filter_name, id="filter_share_by_name")}
             </span>
             
