@@ -923,4 +923,5 @@ div.popup-main-window-drag-handle{
 	position:absolute;
 	right:0;
 	bottom:0;
+	cursor:se-resize;
 }
