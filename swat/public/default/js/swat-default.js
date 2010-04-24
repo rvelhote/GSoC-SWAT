@@ -12,8 +12,12 @@ var FormSubmit = new Class({
         formId: ''
     },
     
+    validator: null,
+    
     initialize: function(options) {
         this.setOptions(options);
+        
+        this.validator = new Form.Validator($(this.options.formId));
         
         var elements = $$('a.form-submit-button');
         
@@ -46,7 +50,9 @@ var FormSubmit = new Class({
     },
     
     submitForm: function() {
-        $(this.options.formId).submit();
+        if(this.validator.validate()) {
+            $(this.options.formId).submit();
+        }
     }
 });
 

@@ -15,7 +15,7 @@
 <%doc>Text</%doc>
 <%def name="text(id, value)">
     <label for="${c.p.get_value(id, "id")}" title="${c.p.get_value(id, "title")}">${c.p.get_value(id, "label")}:</label>
-    ${h.text(c.p.get_value(id, "name"), value, id=c.p.get_value(id, "id"), style="float:left;", class_=c.p.get_value(id, "class"))}
+    ${h.text(c.p.get_value(id, "name"), value, id=c.p.get_value(id, "id"), style="float:left;", class_=c.p.get_value(id, "class") + " " + c.p.get_value(id, "validation"))}
 </%def>
     
 <%doc>Boolean</%doc>
@@ -196,14 +196,6 @@
 </%def>
 
 <%def name="write(share='')">
-<%
-
-    
-    
-    
-
-%>
-
     ${h.form('', method="post", id="share-form", class_="share-configuration")}
         <ol class="tab-list">
 	    <li id="tab1" class="active">

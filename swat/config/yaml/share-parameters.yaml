@@ -9,6 +9,7 @@ name:
     label: 'Name'
     class: big-text
     id: share-name
+    validation: minLength:1 required
     
 #
 #   Share Path
