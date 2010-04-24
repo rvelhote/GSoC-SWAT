@@ -677,9 +677,9 @@ class ShareBackendLdb(ShareBackend):
                 
             if is_new and self.share_name_exists(name):
                 raise ShareError(_("A Share with that name already exists"))
-
-            if not is_new and self.share_name_exists(name):
-                raise ShareError(_("A Share with that name already exists"))
+                
+            if not is_new and not self.share_name_exists(old_name):
+                raise ShareError(_("You are editing a Share that doesn't exist anymore"))
 
             dn = "CN=" + name + ",CN=Shares"
             old_dn = "CN=" + old_name + ",CN=Shares"
