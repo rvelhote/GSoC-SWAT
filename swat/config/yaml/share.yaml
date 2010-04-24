@@ -31,6 +31,21 @@ actions:
         image:
             name: folder-pencil.png
             alt: 'Share Edit Icon'
+            
+    #
+    #   Default Action (index)
+    #
+    homes:
+        friendly_name: 'Toggle Home Shares'
+        
+        link:
+            name: 'toggle homes'
+            title: 'Toggle (Enable/Disable) Homes Share'
+            action: homes
+
+        image:
+            name: home.png
+            alt: 'Home Shares Icon'
     
     #
     #   Remove Selected Shares (index)
@@ -161,6 +176,7 @@ actions:
 #
 toolbar:
     index:
+        - homes
         - add
         - remove
         - copy

@@ -188,6 +188,33 @@ class ShareController(BaseController):
             redirect_to(controller='share', action='edit', name=share_name)
         else:
             redirect_to(controller='share', action='add')
+            
+    def homes(self):
+        """ """
+        share_name = "homes"
+        is_new = True
+        
+        if c.samba_lp.get("share backend") in self.__supported_backends:
+                backend = globals()[self.__backend](c.samba_lp, request.params)
+                active = False
+                
+                if not backend.share_name_exists(share_name):
+                    if backend.store(share_name, is_new):
+                        active = True
+                else:
+                    backend.delete(share_name)    
+                
+                if active:
+                    message = _("Homes Share Activated")
+                    SwatMessages.add(message)
+                else:
+                    SwatMessages.add("Homes Share Disabled")
+        else:
+            message = _("Your chosen backend is not yet supported")
+            SwatMessages.add(message, "critical")
+            has_error = True
+            
+        redirect_to(controller='share', action='index')
 
     def apply(self):
         """ Apply changes done to a Share. This action is merely an alias for
