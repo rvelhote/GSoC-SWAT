@@ -175,7 +175,9 @@ class ShareController(BaseController):
             has_error = True
 
         if has_error or not stored:
-            if len(share_old_name) == 0:
+            if is_new and len(share_name) == 0:
+                redirect_to(controller='share', action='add')
+            elif len(share_old_name) == 0:
                 redirect_to(controller='share', action='index')
             else:
                 redirect_to(controller='share', action='edit', \
