@@ -471,7 +471,12 @@ class ShareBackend(object):
     
     def get_share_by_name(self, name):
         """ Gets a specific Share by its name from the _share_list member
-        
+
+        FIXME This method depends on the cached list from the backend when the
+        Class if instantiated. It's only bad if we want to check on the state
+        of the new object after it is altered; the new properties won't be
+        reflected here.
+
         Keyword arguments:
         name -- The share name to search in the list
         
@@ -539,9 +544,12 @@ class ShareBackendLdb(ShareBackend):
     
     __db_path = '/usr/local/samba/private/share.ldb'
     
-    def __init__(self, lp, params):
+    def __init__(self, lp, params, db_path=''):
         """ """
         super(ShareBackendLdb, self).__init__(lp, params)
+        
+        if len(db_path) > 0:
+            self.__db_path = db_path
         
         self.__shares_db = ldb.Ldb()
         self.__shares_db.connect(self.__db_path)
@@ -657,6 +665,9 @@ class ShareBackendLdb(ShareBackend):
         name = str(name).strip()
         old_name = str(old_name).strip()
         
+        if not is_new and len(old_name) == 0:
+            old_name = name
+        
         try:
             if len(name) == 0:
                 raise ShareError(_("You cannot add a Share with an empty name"))
@@ -666,9 +677,9 @@ class ShareBackendLdb(ShareBackend):
                 
             if is_new and self.share_name_exists(name):
                 raise ShareError(_("A Share with that name already exists"))
-                
-            if not is_new and not self.share_name_exists(name):
-                raise ShareError(_("The share you are trying to save no longer exists"))
+
+            if not is_new and self.share_name_exists(name):
+                raise ShareError(_("A Share with that name already exists"))
 
             dn = "CN=" + name + ",CN=Shares"
             old_dn = "CN=" + old_name + ",CN=Shares"
@@ -752,11 +763,10 @@ class ShareBackendLdb(ShareBackend):
         return deleted
 
     def copy(self, name):
-        """
+        """ Copy a share with a certain name on the selected backend
         
-        FIXME Can't repeat the same share twice due to name conflict. If you try
-        to copy 'test' once it will create 'copy of test'. If you try copy again
-        it will fail because 'copy of test' already exists.
+        FIXME There is no way outside this method to test if the copied share
+        exsits.
         
         """
         copied = False
