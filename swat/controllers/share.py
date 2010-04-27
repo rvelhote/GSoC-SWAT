@@ -904,6 +904,9 @@ class ShareBackendClassic(ShareBackend):
         """
         name = name.strip()
         old_name = old_name.strip()
+        
+        if not is_new and len(old_name) == 0:
+            old_name = name
             
         stored = False
         section = []
@@ -914,6 +917,9 @@ class ShareBackendClassic(ShareBackend):
                 
             if not is_new and len(old_name) == 0:
                 raise ShareError(_("You are modifying a Share name but the old name is missing"))
+                
+            if is_new and self.share_name_exists(name):
+                raise ShareError(_("You are trying to add a Share that already exists"))
             
             if not is_new:
                 if self.share_name_exists(old_name):
