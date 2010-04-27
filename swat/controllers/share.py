@@ -190,7 +190,7 @@ class ShareController(BaseController):
             redirect_to(controller='share', action='add')
             
     def homes(self):
-        """ """
+        """ Toggles the homes Share """
         share_name = "homes"
         is_new = True
         
@@ -205,10 +205,9 @@ class ShareController(BaseController):
                     backend.delete(share_name)    
                 
                 if active:
-                    message = _("Homes Share Activated")
-                    SwatMessages.add(message)
+                    SwatMessages.add(_("Homes Share Enabled"))
                 else:
-                    SwatMessages.add("Homes Share Disabled")
+                    SwatMessages.add(_("Homes Share Disabled"))
         else:
             message = _("Your chosen backend is not yet supported")
             SwatMessages.add(message, "critical")
