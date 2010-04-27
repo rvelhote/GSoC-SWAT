@@ -475,23 +475,6 @@ class ShareBackend(object):
             name = _("copy of") + " " + name
 
         return str(name)
-            
-    def share_name_exists(self, name):
-        """ Checks if a Share exists in the cached share_list list
-        
-        Keyword arguments:
-        name -- the share name to check
-        
-        Returns:
-        True of False indicating if the Share exists or not
-        
-        """
-        for share in self._share_list:
-            if share.get_share_name() == name:        
-                return True
-
-        log.warning("Share " + name + " doesn't exist")
-        return False
     
     def get_share_list(self):
         """ Gets the Share list for the current Backend. """
@@ -563,12 +546,7 @@ class ShareBackend(object):
         return "critical"
 
 class ShareBackendLdb(ShareBackend):
-    """ ShareBackendLdb
-    
-    TODO review all methods and handle ldb.LdbError Exceptions
-    TODO review all methods for better general error handling
-    
-    """
+    """ ShareBackendLdb """
     
     __db_path = '/usr/local/samba/private/share.ldb'
     
@@ -851,8 +829,6 @@ class ShareBackendClassic(ShareBackend):
     """ Handles operations regarding the Classic Backend method to store share
     information. The classic method stores shares in the smb.conf file
     
-    TODO review all methods for better general error handling
-    
     """
     def __init__(self, lp, params):
         """ Constructor. Loads the smb.conf contents into a List to be used
@@ -884,6 +860,28 @@ class ShareBackendClassic(ShareBackend):
             share.set_share_name(share_name)
             
             self._share_list.append(share)
+
+    def share_name_exists(self, name):
+        """ Checks if a Share exists in the Classic Backend. We reload the
+        configuration file to make sure no modifications occured since we last
+        loaded the file.
+        
+        Keyword arguments:
+        name -- the share name to check
+        
+        Returns:
+        True of False indicating if the Share exists or not
+        
+        """
+        slp = param.LoadParm()
+        slp.load(self._lp.configfile)
+        
+        for share in shares.SharesContainer(slp).keys():
+            if share == name:        
+                return True
+
+        log.warning("Share " + name + " doesn't exist")
+        return False
     
     def store(self, name, is_new=False, old_name=''):
         """ Store a Share, either from an edit or add.
