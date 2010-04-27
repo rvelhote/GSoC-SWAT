@@ -38,6 +38,13 @@ class MockShareParams(object):
 class TestShareBackendClassic(TestController):
     def setUp(self):
         self.mock = MockShareParams()
+        
+    def tearDown(self):
+        backend = self.mock.create_backend_object();
+        list = backend.get_share_list();
+        
+        for l in list:
+            backend.delete(l.get_share_name());
       
     def test_crud(self):
         self.test_backend = self.mock.create_backend_object();
@@ -46,6 +53,7 @@ class TestShareBackendClassic(TestController):
         
         # Add a New Share With Name
         self.__add(name)
+        self.__add_existing(name)
         
         # Edit Some Parameters
         self.__edit(name)
@@ -85,10 +93,14 @@ class TestShareBackendClassic(TestController):
         self.assertNotEqual(share, None)
         
         # Non Existing Attribute
-        self.assertEqual(share.get("does-not-exist"), "")
+        self.assertEqual(share.get("does-not-exist"), None)
         
         # Existing Attribute
-        self.assertEqual(share.get("name"), name)
+        self.assertEqual(share.get_share_name(), name)
+        
+    def __add_existing(self, name):
+        is_new = True
+        self.assertEqual(self.test_backend.store(name, is_new), False)
         
     def __add(self, name):
         is_new = True
@@ -125,7 +137,9 @@ class TestShareBackendClassic(TestController):
         
         self.assertEqual(share.get_share_name(), name)
         self.assertEqual(share.get("path"), params["share_path"])
-        self.assertEqual(share.get("hosts allow"), params["share_hosts_allow"])
+        
+        share_hosts_allow_list = ['these', 'params', 'are', 'new']
+        self.assertEqual(share.get("hosts allow"), share_hosts_allow_list)
         
     def __rename(self, name, old_name):
         is_new = False

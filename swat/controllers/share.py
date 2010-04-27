@@ -1258,7 +1258,14 @@ class ShareBackendClassic(ShareBackend):
         return written
 
 class SambaShare(object):
-    """ """
+    """ Stores Share information regardless of the backend. Due to the fact
+    that both backend have their own way of accessing Shares, I created this
+    class so that I can seamlessly handle both backends with the same code.
+    
+    FIXME There could be a fake 'name' parameter (when using get(...)) for the
+    Classic Backend. It would have been useful for the tests :P
+    
+    """
     def __init__(self, lp=None):
         """ """
         self.__share_name = ""
