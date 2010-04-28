@@ -157,6 +157,21 @@ actions:
        image:
            name: disk-arrow.png
            alt: 'Apply Changes Icon'
+           
+
+    #
+    #   Save Share Information but return to edit mode (apply)
+    #
+    save-add:
+       link:
+           name: 'save and add another'     
+           title: 'Save these changes and add another Share'
+           action: save_add
+           submit: True
+       
+       image:
+           name: disk-arrow.png
+           alt: 'Save and Add Another Icon'
 
     #
     #   Cancel Add/Editing (cancel)
@@ -182,11 +197,13 @@ toolbar:
         - copy
     
     add:
+        - save-add
         - save
         - apply
         - cancel
         
     edit:
+        - save-add
         - save
         - apply
         - cancel

@@ -214,6 +214,9 @@ class ShareController(BaseController):
             has_error = True
             
         redirect_to(controller='share', action='index')
+        
+    def save_add(self):
+        self.save()
 
     def apply(self):
         """ Apply changes done to a Share. This action is merely an alias for
