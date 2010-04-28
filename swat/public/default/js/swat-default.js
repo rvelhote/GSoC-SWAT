@@ -17,7 +17,7 @@ var FormSubmit = new Class({
     initialize: function(options) {
         this.setOptions(options);
         
-        this.validator = new Form.Validator($(this.options.formId), { onElementFail : this.failedValidation, onElementPass : this.passedValidation });
+        this.validator = new Form.Validator($(this.options.formId), { ignoreHidden : false, onElementFail : this.failedValidation, onElementPass : this.passedValidation });
         
         var elements = $$('a.form-submit-button');
         
