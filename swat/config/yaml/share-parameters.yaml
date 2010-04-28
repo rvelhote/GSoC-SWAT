@@ -9,7 +9,9 @@ name:
     label: 'Name'
     class: big-text
     id: share-name
-    validation: minLength:1 required
+    validation: required
+    validation-message:
+        required: 'You cannot store a Share without a name'
     
 #
 #   Share Path

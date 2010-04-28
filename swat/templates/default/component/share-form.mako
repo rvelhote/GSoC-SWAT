@@ -163,13 +163,26 @@
 <%doc>Choose which type to call</%doc>
 <%def name="put(id, param_value=None)">
     <%
-
     type = c.p.get_value(id, "type")
     
     param_name = id.replace('-', ' ')
     param_value = param_value or c.share.get(param_name) or ""
     
     help(id, c.p.get_value(id, "disabled"))
+
+    validations = c.p.get_value(id, "validation-message")
+
+    %>
+    
+    % if len(validations) > 0:
+        % for validation in validations:
+            <p class="validation-message round-2px" id="${c.p.get_value(id, "id")}-error-${validation}">
+                ${c.p.get_value(id, "validation-message/" + validation)}
+            </p>
+        % endfor
+    % endif
+
+    <%
     
     if c.p.get_value(id, "disabled") == True:
         disabled(id)
@@ -190,9 +203,8 @@
 
     if type != "list":
         field_ops(id, c.p.get_value(id, "field-ops"))
-    
-%>
 
+    %>
 </%def>
 
 <%def name="write(share='')">

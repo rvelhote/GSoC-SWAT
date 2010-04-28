@@ -17,7 +17,7 @@ var FormSubmit = new Class({
     initialize: function(options) {
         this.setOptions(options);
         
-        this.validator = new Form.Validator($(this.options.formId));
+        this.validator = new Form.Validator($(this.options.formId), { onElementFail : this.validateElement });
         
         var elements = $$('a.form-submit-button');
         
@@ -47,6 +47,13 @@ var FormSubmit = new Class({
     
     changeTask: function(link) {
         $(this.options.formId).setProperty("action", link);
+    },
+    
+    validateElement: function(element, failedValidators) {
+        failedValidators.each(function(validator) {
+            var errorMessage = $(element.getProperty("id") + "-error-" + validator);
+            errorMessage.reveal();
+        });
     },
     
     submitForm: function() {

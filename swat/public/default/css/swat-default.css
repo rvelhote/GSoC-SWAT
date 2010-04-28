@@ -854,6 +854,11 @@ div.help ol li{list-style-type: decimal-leading-zero;}
 div.help h2{font-weight:bold;font-size:116%;margin-bottom:10px;border-bottom:1px solid #cccccc;}
 div.help div.topic{margin-top:25px;}
 
+/**
+ * Validations
+ */
+p.validation-message{display:none;width:400px;padding:5px;font-size:85%;font-weight:bold;margin-left:125px;margin-bottom:5px;background-color:#C24E13;color:#ffffff;}
+
 /** Popup Windows */
 div.popup-main-window {
 	position: absolute;
