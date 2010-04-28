@@ -25,6 +25,10 @@ path:
     class: big-text
     id: share-path
     
+    validation: required
+    validation-message:
+        required: 'You must specify a path for this Share'
+    
     field-ops:
         - path-selection
         - modifiers
