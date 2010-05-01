@@ -389,7 +389,7 @@ table.list tbody {
     font-size:85%;
 }
 
-table.list tbody tr:hover {
+table.list.has-shares tbody tr:hover {
     background-color:#E1E3DA !important;
     cursor:pointer;
     color:#484848;

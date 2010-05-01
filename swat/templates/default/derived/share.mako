@@ -38,7 +38,12 @@ ${share_table(c.share_list)}
 </script>
 
 ${h.form('', method="post", id="share-list", class_="")}
-    <table summary="${_('List of Shares for the current Samba Server')}" class="list" id="share-list">
+    <% table_class = "" %>
+    % if len(shares) > 0:
+        <% table_class="has-shares" %>
+    % endif
+
+    <table summary="${_('List of Shares for the current Samba Server')}" class="list ${table_class}" id="share-list">
 	<thead>
 	    <tr>
 		<td class="check-all"><input title="${_('Check All Items')}" onchange="checkAllRows(this, 'check-row')" type="checkbox" id="check-all"/></td>
