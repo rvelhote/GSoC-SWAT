@@ -17,7 +17,7 @@ var FormSubmit = new Class({
     initialize: function(options) {
         this.setOptions(options);
         
-        this.validator = new Form.Validator($(this.options.formId), { ignoreHidden : false, onElementFail : this.failedValidation, onElementPass : this.passedValidation });
+        this.validator = new Form.Validator($(this.options.formId), { evaluateFieldsOnBlur : false, evaluateFieldsOnChange : false, ignoreHidden : false, onFormValidate : this.completedFormValidation, onElementFail : this.failedValidation, onElementPass : this.passedValidation });
         
         var elements = $$('a.form-submit-button');
         
@@ -48,7 +48,7 @@ var FormSubmit = new Class({
     changeTask: function(link) {
         $(this.options.formId).setProperty("action", link);
     },
-    
+
     failedValidation: function(element, failedValidators) {
         failedValidators.each(function(validator) {
             var errorMessage = $(element.getProperty("id") + "-error-" + validator);
@@ -59,6 +59,19 @@ var FormSubmit = new Class({
     passedValidation: function(element) {
         $$("[id^=" + element.getProperty("id") + "-error-]").each(function(errorMessage) {
             errorMessage.dissolve();
+        });
+    },
+    
+    completedFormValidation: function(passed, form, event) {
+        $$("ul.tab-list-items > li").each(function(tab) {
+            var numberOfRequired = tab.getElements(".required").length;
+            var numberOfPassed = tab.getElements(".validation-passed").length;
+
+            if(numberOfRequired != numberOfPassed) {
+                $(tab.getProperty("id").substring(8)).tween("background-color", "#db6e50");
+            } else {
+                $(tab.getProperty("id").substring(8)).tween("background-color", "#eaeae8");
+            }
         });
     },
     

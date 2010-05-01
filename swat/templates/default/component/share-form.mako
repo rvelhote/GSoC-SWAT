@@ -144,7 +144,7 @@
     
     %>
     
-    ${h.hidden(c.p.get_value(id, "name"), list_values, id=c.p.get_value(id, "id") + '-list-textbox')}
+    ${h.hidden(c.p.get_value(id, "name"), list_values, id=c.p.get_value(id, "id") + '-list-textbox', class_=c.p.get_value(id, "validation"))}
     <% list_id = c.p.get_value(id, "id") + "-list" %>
     
     <ul id="${list_id}" class="user-list">
@@ -169,6 +169,9 @@
     param_value = param_value or c.share.get(param_name) or ""
     
     help(id, c.p.get_value(id, "disabled"))
+        
+    if c.p.get_value(id, "disabled") == True:
+        disabled(id)
 
     validations = c.p.get_value(id, "validation-message")
 
@@ -176,17 +179,27 @@
     
     % if len(validations) > 0:
         % for validation in validations:
-            <p class="validation-message round-2px" id="${c.p.get_value(id, "id")}-error-${validation}">
-                ${c.p.get_value(id, "validation-message/" + validation)}
-            </p>
+            <%
+            #
+            # FIXME a little hack just to make a little test with the validators.
+            # I was testing if it validated hidden fields.
+            # One thing that's missing in some of the fields is the inclusion of
+            # the validator class
+            #
+            %>
+            % if type == "list":
+                <p class="validation-message round-2px" id="${c.p.get_value(id, "id")}-list-textbox-error-${validation}">
+                    ${c.p.get_value(id, "validation-message/" + validation)}
+                </p>
+            % else:
+                <p class="validation-message round-2px" id="${c.p.get_value(id, "id")}-error-${validation}">
+                    ${c.p.get_value(id, "validation-message/" + validation)}
+                </p>
+            % endif
         % endfor
     % endif
 
     <%
-    
-    if c.p.get_value(id, "disabled") == True:
-        disabled(id)
-
     #   locals() is not working here otherwise I could just call this once
     #   based on type
     #
