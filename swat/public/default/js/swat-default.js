@@ -66,11 +66,14 @@ var FormSubmit = new Class({
         $$("ul.tab-list-items > li").each(function(tab) {
             var numberOfRequired = tab.getElements(".required").length;
             var numberOfPassed = tab.getElements(".validation-passed").length;
-
+            var destination = $(tab.getProperty("id").substring(8));
+            
             if(numberOfRequired != numberOfPassed) {
-                $(tab.getProperty("id").substring(8)).tween("background-color", "#db6e50");
+                destination.tween("background-color", "#c24e13");
+                destination.getElement("a").tween("color", "#ffffff");
             } else {
-                $(tab.getProperty("id").substring(8)).tween("background-color", "#eaeae8");
+                destination.tween("background-color", "#eaeae8");
+                destination.getElement("a").tween("color", "#484848");
             }
         });
     },
