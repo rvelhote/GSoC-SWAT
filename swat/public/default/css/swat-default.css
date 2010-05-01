@@ -623,6 +623,15 @@ ol.tab-list li.active {
     background-color:#E1E3DA;    
 }
 
+ol.tab-list li.validation-failed:hover,
+ol.tab-list li.validation-failed {
+    background-color:#c24e13;
+}
+
+ol.tab-list li.validation-failed a {
+    color:#ffffff;
+}
+
 ol.tab-list li.active a {
     font-weight:bold;
 }

@@ -67,13 +67,18 @@ var FormSubmit = new Class({
             var numberOfRequired = tab.getElements(".required").length;
             var numberOfPassed = tab.getElements(".validation-passed").length;
             var destination = $(tab.getProperty("id").substring(8));
-            
+
             if(numberOfRequired != numberOfPassed) {
+                destination.set("tween", {onComplete : function(){ destination.addClass("validation-failed"); } });
                 destination.tween("background-color", "#c24e13");
-                destination.getElement("a").tween("color", "#ffffff");
-            } else {
-                destination.tween("background-color", "#eaeae8");
-                destination.getElement("a").tween("color", "#484848");
+            } else if(destination.getStyle("background-color") != "#eaeae8" && destination.getStyle("background-color") != "#e1e3da") {
+                destination.set("tween", {onComplete : function() { destination.removeClass("validation-failed"); destination.setStyle("background-color", ""); } });
+                
+                if(destination.hasClass("active")) {
+                    destination.tween("background-color", "#e1e3da");
+                } else {
+                    destination.tween("background-color", "#eaeae8");
+                }
             }
         });
     },
