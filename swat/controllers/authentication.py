@@ -65,22 +65,19 @@ class AuthenticationController(BaseController):
         """
         username = request.params.get("login", "").strip()
         password = request.params.get("password", "").strip()
-        
-        # FIXME!!!!
-        environ = []
-        
+
         len_username = len(username)
         len_password = len(password)
-        
-        print username + " -- " + password
-        
+
         if len_username == 0:
             SwatMessages.add('Username cannot be empty', 'critical')
+            return False
             
         if len_password == 0:
             SwatMessages.add('Password cannot be empty', 'critical')
+            return False
 
-        if self.__perform_authentication(username, password, environ):
+        if self.__perform_authentication(username, password):
             SwatMessages.add('Authentication successful!')
             log.info("login attempt successful by " + username)
             request.environ['paste.auth_tkt.set_user'](username)
@@ -92,14 +89,12 @@ class AuthenticationController(BaseController):
         
         return False
     
-    def __perform_authentication(self, username, password, environ):
-        """ Performs the authentication of a user depending on the available
-        methods
+    def __perform_authentication(self, username, password):
+        """ Performs User Authentication
         
         Keyword arguments:
         username -- username provided by the login form
         password -- password provided by the login form
-        environ -- request.environ
         
         """
         import param
@@ -114,45 +109,14 @@ class AuthenticationController(BaseController):
         creds.set_username(username)
         creds.set_password(password)
         creds.set_domain("")
-        
-        if "REMOTE_HOST" in environ:
-            creds.set_workstation(environ['REMOTE_HOST']);
+
+        if request.environ.has_key("REMOTE_HOST"):
+            creds.set_workstation(request.environ.get("REMOTE_HOST"));
         else:
             creds.set_workstation("")
         
-        # TODO: Probably not the best way to do this :)
-        if "rpc" in lp.get("server services"):
-            auth_success = self.__auth_rpc(lp, creds)
-            log.info("using rpc authentication")
-        else:
-            auth_success =  self.__auth_samr(lp, creds)
-            log.info("using samr authentication")
-            
-        return auth_success
-    
-    def __auth_rpc(self, lp, credentials):
-        """ RPCEcho Authentication
-        
-        Keyword arguments:
-        lp -- samba configuration file loaded with param.LoadParm
-        credentials - Credentials object with the username, password, domain
-        and workstation values set
-        
-        TODO: Check if user has Administration credentials. No idea on how to
-        do this
-        
-        """
-        from samba.dcerpc.echo import rpcecho
-        from pylons.i18n.translation import _
-        
-        auth_success = False
-
-        try:
-            conn = rpcecho("ncalrpc:", lp, credentials)
-        except Exception, msg:
-            self.__reason = msg[1]
-        else:
-            auth_success = True
+        auth_success =  self.__auth_samr(lp, creds)
+        log.info("using samr authentication")
             
         return auth_success
 
