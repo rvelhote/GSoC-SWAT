@@ -76,15 +76,16 @@
             <%
             
             selected = ""
+            operation = "add"
+            
             if g in already_selected:
                 selected = "selected"
+                operation = "remove"
             
             %>
             <li class="${selected}">
-                <span>${g}</span>
-                <a class="add user" title="${_('Add this User/Group to the List')}" href="#">
-                    <img class="add" src="/default/images/icons/plus-small.png" />
-                </a>
+                <span class="name">${g}</span>
+                <span class="operation ${operation}"></span>
             </li>
         % endfor
     </ul>
@@ -99,13 +100,16 @@
             <%
             
             selected = ""
+            operation = "add"
+            
             if "@" + g.gr_name in already_selected:
                 selected = "selected"
+                operation = "remove"
             
             %>
             <li class="${selected}">
-                <span>${g.gr_name}</span>
-                <a class="add group" title="${_('Add this User/Group to the List')}" href="#"><img class="add" src="/default/images/icons/plus-small.png" /></a>
+                <span class="name">${g.gr_name}</span>
+                <span class="operation ${operation}"></span>
             </li>
         % endfor
     </ul>

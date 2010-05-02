@@ -248,7 +248,7 @@ var ItemList = new Class({
 
     remove: function(id, forReal) {
         var element = $(id);
-        
+        console.log(element);
         if(element) {
             this.effect(id, "remove");
             element.getParent().dispose();
@@ -560,16 +560,35 @@ var UserGroupSelector = new Class({
             lists.each(function(l) {
                 var elements = l.getChildren("li");
                 elements.each(function(element) {
-                    link = element.getElement("a");
+                    link = element.getElement("span.operation");
                     
                     link.addEvent('click', function(e, el, lnk) {
                         new Event(e).preventDefault();
                         
+                        value = el.getElement("span.name").get("text");
                         
+                        if(el.hasClass("selected")) {
+                            el.removeClass("selected");
+                            
+                            lnk.removeClass("remove");
+                            lnk.addClass("add");
+                            
+                            value = lnk.hasClass("group") ? "@" + value : value;
+                            
+                            $(this.list.options.copyTo).getElements("a").each(function(element) {
+                                if(element.get("text").trim() == value) {
+                                    this.list.remove(element.getProperty("id"));
+                                }
+                            }.bind(this));
+                            
+                        } else {
+                            el.addClass("selected");
 
-                        value = el.getElement("span").get("text");
-                        el.addClass("selected");
-                        this.list.add(value, lnk.hasClass("group") ? "g" : "u");
+                            lnk.removeClass("add");
+                            lnk.addClass("remove");
+                            
+                            this.list.add(value, lnk.hasClass("group") ? "g" : "u");
+                        }
                         
                     }.bindWithEvent(this, [element, link]));
                 }.bind(this));

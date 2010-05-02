@@ -841,8 +841,8 @@ ul.usr-list {
     margin-bottom:25px;
 }
 
-ul.grp-list li span,
-ul.usr-list li span {
+ul.grp-list li span.name,
+ul.usr-list li span.name {
     float:left;
     display:block;
     height:16px;
@@ -852,8 +852,23 @@ ul.usr-list li span {
     background-repeat:no-repeat;
 }
 
-ul.grp-list li span {
+ul.grp-list li span.name {
     background-image:url('/default/images/icons/users.png');
+}
+
+ul.popup-list li span.operation {
+    display:inline-block;
+    width:16px;
+    height:16px;
+    cursor:pointer;
+}
+
+ul.popup-list li span.add {
+    background-image:url("/default/images/icons/plus-small.png");
+}
+
+ul.popup-list li span.remove {
+    background-image:url("/default/images/icons/minus-small.png");
 }
 
 /** Help */
