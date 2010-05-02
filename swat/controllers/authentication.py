@@ -139,8 +139,8 @@ class AuthenticationController(BaseController):
         try:
             pipe = samr.samr("ncalrpc:", lp, credentials)
             connect_handle = pipe.Connect(None, security.SEC_FLAG_MAXIMUM_ALLOWED)
-        except Exception, msg:
-            self.__reason = msg[1]
+        except Exception, e:
+            self.__reason = str(e)  
         else:
             auth_success = True
 
