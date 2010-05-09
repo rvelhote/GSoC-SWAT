@@ -58,14 +58,26 @@ class AccountController(BaseController):
     def index(self):
         c.user_list = self.__manager.user_list
         c.group_list = self.__manager.group_list
+        
+        c.list_users = True
+        c.list_groups = True
+        
         return render('/default/derived/account.mako')
     
     def user(self):
         c.user_list = self.__manager.user_list
+        
+        c.list_users = True
+        c.list_groups = False
+        
         return render('/default/derived/account.mako')
     
     def group(self):
         c.group_list = self.__manager.group_list
+        
+        c.list_users = False
+        c.list_groups = True
+        
         return render('/default/derived/account.mako')
         
 class SAMPipeManager:

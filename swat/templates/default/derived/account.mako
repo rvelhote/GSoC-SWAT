@@ -23,8 +23,13 @@ ${parent.action_title(c.config.get_action_info('friendly_name'))}
 ${toolbar.write(c.config.get_toolbar_items())}
 
 <div class="account-list">
-    ${user_table(c.user_list)}
-    ${group_table(c.group_list)}
+    % if c.list_users == True:
+        ${user_table(c.user_list)}
+    % endif
+    
+    % if c.list_groups == True:
+        ${group_table(c.group_list)}
+    % endif
 </div>
 
 <%doc></%doc>
@@ -63,11 +68,11 @@ ${toolbar.write(c.config.get_toolbar_items())}
         % for user in users:
             <tr id="row-user-${i}" title="${_('Edit User')}">
                 <td><input value="${user.username}" onchange="selectShareRow(this);" name="name" type="checkbox" id="check-row-user-${i}" /></td>
-                <td>x</td>
-                <td>x</td>
+                <td>${i}</td>
                 <td>${user.rid}</td>
                 <td>${user.username}</td>
                 <td>${user.description}</td>
+                <td>${quick_tasks(user.rid, "User", False)}</td>
             </tr>
             
             <% i = i + 1 %>
@@ -105,11 +110,11 @@ ${toolbar.write(c.config.get_toolbar_items())}
         % for group in groups:
             <tr id="row-group-${i}" title="${_('Edit Group')}">
                 <td><input value="${group.name}" onchange="selectShareRow(this);" name="name" type="checkbox" id="check-row-group-${i}" /></td>
-                <td>x</td>
-                <td>x</td>
+                <td>${i}</td>
                 <td>${group.rid}</td>
                 <td>${group.name}</td>
                 <td>${group.description}</td>
+                <td>${quick_tasks(group.rid, "Group", False)}</td>
             </tr>
             
             <% i = i + 1 %>
@@ -119,7 +124,7 @@ ${toolbar.write(c.config.get_toolbar_items())}
     
 <%def name="quick_tasks(name, type, is_disabled=False)">
     <ul class="quick-tasks">
-	<li>edit</li>
-	<li>remove</li>
+        <li><a href="#" title="${_('Edit %s' % (type))}"><img src="/default/images/icons/folder-pencil.png" alt="${_('Edit %s Icon' % (type))}"/></a></li>
+	<li><a href="#" title="${_('Remove %s' % (type))}"><img src="/default/images/icons/folder-minus.png" alt="${_('Remove %s Icon' % (type))}"/></a></li>
     </ul>
 </%def>

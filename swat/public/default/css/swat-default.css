@@ -954,3 +954,6 @@ div.popup-main-window-drag-handle{
 	bottom:0;
 	cursor:se-resize;
 }
+
+/** User and Group List - Account Management Module */
+div.account-list h3{font-size:108%;font-weight:bold;margin-bottom:25px;}
