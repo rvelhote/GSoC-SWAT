@@ -78,7 +78,7 @@ Base Page Footer
 <%def name="footer()">
     <div id="swat-footer">
 	<p>${_('Samba Web Administration Tool')}</p>
-	<p>${_('Only Tested in Firefox for now')} | <a title="${_('Icons used in SWAT')}" href="http://www.pinvoke.com">${_('Fugue Icons')}</a> | <a href="http://www.samba.org">${_('Samba')}</a></p>
+	<p>${_('Only Tested in Firefox for now')} | <a target="_blank" title="${_('Icons used in SWAT')}" href="http://p.yusukekamiyamane.com/">${_('Fugue Icons')}</a> | <a target="_blank" href="http://www.samba.org">${_('Samba')}</a></p>
     </div>
 </%def>
 
