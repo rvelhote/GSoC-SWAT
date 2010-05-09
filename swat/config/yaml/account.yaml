@@ -18,7 +18,7 @@ actions:
             alt: 'List Accounts Icon'
             
     #
-    #   Default Action (index)
+    #   Show Only Users
     #
     user:
         friendly_name: 'User Management'
@@ -33,7 +33,7 @@ actions:
             alt: 'List Users Icon'
             
     #
-    #   Default Action (index)
+    #   Show Only Groups
     #
     group:
         friendly_name: 'Group Management'
@@ -45,6 +45,51 @@ actions:
 
         image:
             name: user-business.png
+            alt: 'List Groups Icon'
+            
+    #
+    #   Show Only Groups
+    #
+    adduser:
+        friendly_name: 'Add a User'
+        
+        link:
+            name: 'add a new user'
+            title: 'Add a New User to the Account Database'
+            action: adduser
+
+        image:
+            name: user-plus.png
+            alt: 'Add New User Icon'
+            
+    #
+    #   Show Only Groups
+    #
+    addgroup:
+        friendly_name: 'Add a Group'
+        
+        link:
+            name: 'add a new group'
+            title: 'Add a New Group to the Account Database'
+            action: addgroup
+
+        image:
+            name: users-plus.png
+            alt: 'Add New Group Icon'
+            
+    #
+    #   Show Only Groups
+    #
+    remove:
+        friendly_name: 'Remove a User or Group'
+        
+        link:
+            name: 'remove user/group'
+            title: 'Remove a User or Group from the Account Database'
+            action: remove
+
+        image:
+            name: user-minus.png
             alt: 'List Groups Icon'
             
 #
