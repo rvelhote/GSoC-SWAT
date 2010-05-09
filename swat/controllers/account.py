@@ -15,19 +15,46 @@
 # 
 import logging
 
+import param
+
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect_to
 
 from swat.lib.base import BaseController, render
 
+from pylons.i18n.translation import _
+
+from swat.lib.helpers import ControllerConfiguration, DashboardConfiguration, \
+BreadcrumbTrail, SwatMessages, ParamConfiguration, filter_list
+
 log = logging.getLogger(__name__)
 
 class AccountController(BaseController):
+    """ """
+    def __init__(self):
+        """ """
+        me = request.environ['pylons.routes_dict']['controller']
+        action = request.environ['pylons.routes_dict']['action']
+        
+        log.debug("Controller: " + me)
+        log.debug("Action: " + action)
+        
+        c.config = ControllerConfiguration(me, action)
+        
+        c.breadcrumb = BreadcrumbTrail(c.config)
+        c.breadcrumb.build()
+            
+        c.samba_lp = param.LoadParm()
+        c.samba_lp.load_default()
+        
     def index(self):
-        return 'User and Group Management'
+        """ """
+        return render('/default/derived/account.mako')
     
     def user(self):
-        return "User Management"
+        """ """
+        return render('/default/derived/account.mako')
     
     def group(self):
-        return "Group Management"
+        """ """
+        return render('/default/derived/account.mako')

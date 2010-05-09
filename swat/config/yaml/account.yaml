@@ -48,6 +48,23 @@ actions:
             alt: 'List Groups Icon'
             
 #
+#   Toolbar Actions
+#
+toolbar:
+    index:
+        - adduser
+        - addgroup
+        - remove
+        
+    user:
+        - adduser
+        - remove
+        
+    group:
+        - addgroup
+        - remove
+            
+#
 #   Dashboard Actions and Title
 #
 dashboard:
