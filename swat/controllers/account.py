@@ -56,8 +56,9 @@ class AccountController(BaseController):
         self.__manager.fetch_users_and_groups()
         
         # FIXME just so that options may work
+        c.current_page = int(request.params.get("page", 1))
+        c.per_page =  int(request.params.get("per_page", 10))
         c.filter_name = request.params.get("filter_value", "")
-        c.per_page = 10
         
     def index(self):
         c.user_list = self.__manager.user_list

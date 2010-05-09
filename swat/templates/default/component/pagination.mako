@@ -24,12 +24,10 @@
     
     TODO/FIX improve page links.
 </%doc>
-<%def name="paginate(what, per_page = 1, current_page = 1)">
+<%def name="paginate(total_items, per_page = 1, current_page = 1)">
     <%
     
     import math
-    
-    total_items = len(what)
     total_pages = math.ceil(float(total_items) / float(per_page))
     
     %>
@@ -70,4 +68,18 @@
             % endif                            
         </ul>
     % endif
+</%def>
+
+<%def name="numbers(what, total, per_page = 1, current_page = 1)">
+    <%
+    
+    showing_floor = (c.current_page - 1) * c.per_page
+    showing_ceil = c.current_page * c.per_page
+    
+    if showing_ceil > total:
+        showing_ceil = total
+
+    %>
+    
+    <p class="number-pages">${_('Showing %d-%d of %d %s' % (showing_floor, showing_ceil, total, what))}</p>
 </%def>

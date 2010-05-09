@@ -65,15 +65,24 @@ ${options(c.config.get_action())}
                 <tr>
                     <td colspan="6">		    
                         <div class="pagination">
+                            <% pagination.numbers(_("Users"), len(users), c.per_page, c.current_page) %>
+                            <% pagination.paginate(len(users), c.per_page, c.current_page) %>
                         </div>
                     </td>
                 </tr>
             </tfoot>
         % endif
         
-        <% i = 1 %>
+        <%
         
-        % for user in users:
+        i = 1
+        
+        begin = (c.current_page - 1) * c.per_page
+        end = begin + c.per_page
+        
+        %>
+        
+        % for user in users[begin:end]:
             <% tr_class = '' %>
             
             % if i % 2 == 0:
@@ -95,7 +104,6 @@ ${options(c.config.get_action())}
 </%def>
 
 <%def name="group_table(groups, table_id='group-list', table_class='')">
-
     % if len(groups) > 0:
         <% table_class = table_class + " not-empty" %>
     % endif
@@ -121,15 +129,24 @@ ${options(c.config.get_action())}
                 <tr>
                     <td colspan="6">		    
                         <div class="pagination">
+                            <% pagination.numbers(_("Groups"), len(groups), c.per_page, c.current_page) %>
+                            <% pagination.paginate(len(groups), c.per_page, c.current_page) %>
                         </div>
                     </td>
                 </tr>
             </tfoot>
         % endif
         
-        <% i = 1 %>
+        <%
         
-        % for group in groups:
+        i = 1
+        
+        begin = (c.current_page - 1) * c.per_page
+        end = begin + c.per_page
+        
+        %>
+        
+        % for group in groups[begin:end]:
         
             <% tr_class = '' %>
             
