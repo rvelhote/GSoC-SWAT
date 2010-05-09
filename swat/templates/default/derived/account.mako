@@ -39,6 +39,11 @@ ${toolbar.write(c.config.get_toolbar_items())}
 
 <%doc>TODO make tabs or mix them up?</%doc>
 <%def name="user_table(users, table_id='user-list', table_class='')">
+
+    % if len(users) > 0:
+        <% table_class = table_class + " not-empty" %>
+    % endif
+
     <h3>${_("User List")}</h3>
     <table id="${table_id}" class="list ${table_class}">
 	<thead>
@@ -66,7 +71,13 @@ ${toolbar.write(c.config.get_toolbar_items())}
         <% i = 1 %>
         
         % for user in users:
-            <tr id="row-user-${i}" title="${_('Edit User')}">
+            <% tr_class = '' %>
+            
+            % if i % 2 == 0:
+                <% tr_class = " alternate-row " %>
+            % endif
+        
+            <tr id="row-user-${i}" title="${_('Edit User')}" class="${tr_class}">
                 <td><input value="${user.username}" onchange="selectShareRow(this);" name="name" type="checkbox" id="check-row-user-${i}" /></td>
                 <td>${i}</td>
                 <td>${user.rid}</td>
@@ -81,6 +92,11 @@ ${toolbar.write(c.config.get_toolbar_items())}
 </%def>
 
 <%def name="group_table(groups, table_id='group-list', table_class='')">
+
+    % if len(groups) > 0:
+        <% table_class = table_class + " not-empty" %>
+    % endif
+
     <h3>${_("Group List")}</h3>
     <table id="${table_id}" class="list ${table_class}">
 	<thead>
@@ -108,9 +124,16 @@ ${toolbar.write(c.config.get_toolbar_items())}
         <% i = 1 %>
         
         % for group in groups:
-            <tr id="row-group-${i}" title="${_('Edit Group')}">
+        
+            <% tr_class = '' %>
+            
+            % if i % 2 == 0:
+                <% tr_class = " alternate-row " %>
+            % endif
+        
+            <tr id="row-group-${i}" title="${_('Edit Group')}" class="${tr_class}">
                 <td><input value="${group.name}" onchange="selectShareRow(this);" name="name" type="checkbox" id="check-row-group-${i}" /></td>
-                <td>${i}</td>
+                <td onclick="clickableRow('${h.url_for('share_action', action = 'edit', name = group.rid, type = "Group")}');">${i}</td>
                 <td>${group.rid}</td>
                 <td>${group.name}</td>
                 <td>${group.description}</td>
@@ -122,9 +145,9 @@ ${toolbar.write(c.config.get_toolbar_items())}
     </table>
 </%def>
     
-<%def name="quick_tasks(name, type, is_disabled=False)">
+<%def name="quick_tasks(id, type, is_disabled=False)">
     <ul class="quick-tasks">
-        <li><a href="#" title="${_('Edit %s' % (type))}"><img src="/default/images/icons/folder-pencil.png" alt="${_('Edit %s Icon' % (type))}"/></a></li>
-	<li><a href="#" title="${_('Remove %s' % (type))}"><img src="/default/images/icons/folder-minus.png" alt="${_('Remove %s Icon' % (type))}"/></a></li>
+        <li><a href="${h.url_for(controller = 'account', action = 'edit', name = id, type = type)}" title="${_('Edit %s' % (type))}"><img src="/default/images/icons/folder-pencil.png" alt="${_('Edit %s Icon' % (type))}"/></a></li>
+	<li><a href="${h.url_for(controller = 'account', action = 'remove', name = id, type = type)}" title="${_('Remove %s' % (type))}"><img src="/default/images/icons/folder-minus.png" alt="${_('Remove %s Icon' % (type))}"/></a></li>
     </ul>
 </%def>

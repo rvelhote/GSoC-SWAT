@@ -39,8 +39,9 @@ ${share_table(c.share_list)}
 
 ${h.form('', method="post", id="share-list", class_="")}
     <% table_class = "" %>
+    
     % if len(shares) > 0:
-        <% table_class="has-shares" %>
+        <% table_class = "not-empty" %>
     % endif
 
     <table summary="${_('List of Shares for the current Samba Server')}" class="list ${table_class}" id="share-list">
