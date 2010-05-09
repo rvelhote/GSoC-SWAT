@@ -22,7 +22,102 @@
 ${parent.action_title(c.config.get_action_info('friendly_name'))}
 ${toolbar.write(c.config.get_toolbar_items())}
 
+<div class="account-list">
+    ${account_table(c.user_list, c.group_list)}
+</div>
+
 <%doc></%doc>
 <%def name="page_title()">
     ${parent.page_title()} :: ${c.config.get_action_info('friendly_name')}
+</%def>
+
+<%doc>TODO make tabs or mix them up?</%doc>
+<%def name="account_table(users, groups)">
+    <h3>${_("User List")}</h3>
+    <table>
+	<thead>
+	    <tr>
+		<td class="check-all"><input title="${_('Check All Items')}" onchange="checkAllRows(this, 'check-row-user')" type="checkbox" id="check-all-user"/></td>
+		<td class="user-row-id">${_('#')}</td>
+		<td class="user-gid">${_('UID')}</td>
+		<td class="user-name">${_('Username')}</td>
+		<td class="user-description">${_('Description')}</td>
+		<td class="user-quick-operations"></td>
+	    </tr>
+	</thead>
+	
+        % if len(users) > 0:
+            <tfoot>
+                <tr>
+                    <td colspan="6">		    
+                        <div class="pagination">
+                        </div>
+                    </td>
+                </tr>
+            </tfoot>
+        % endif
+        
+        <% i = 1 %>
+        
+        % for user in users:
+            <tr id="row-user-${i}" title="${_('Edit User')}">
+                <td><input value="${user.username}" onchange="selectShareRow(this);" name="name" type="checkbox" id="check-row-user-${i}" /></td>
+                <td>x</td>
+                <td>x</td>
+                <td>${user.rid}</td>
+                <td>${user.username}</td>
+                <td>${user.description}</td>
+            </tr>
+            
+            <% i = i + 1 %>
+        % endfor
+    </table>
+    
+    <h3>${_("Group List")}</h3>
+    <table>
+        
+	<thead>
+	    <tr>
+		<td class="check-all"><input title="${_('Check All Items')}" onchange="checkAllRows(this, 'check-row-group')" type="checkbox" id="check-all-group"/></td>
+		<td class="group-row-id">${_('#')}</td>
+		<td class="group-gid">${_('GID')}</td>
+		<td class="group-name">${_('Group Name')}</td>
+		<td class="group-description">${_('Description')}</td>
+		<td class="group-quick-operations"></td>
+	    </tr>
+        </thead>
+
+        % if len(groups) > 0:
+            <tfoot>
+                <tr>
+                    <td colspan="6">		    
+                        <div class="pagination">
+                        </div>
+                    </td>
+                </tr>
+            </tfoot>
+        % endif
+        
+        <% i = 1 %>
+        
+        % for group in groups:
+            <tr id="row-group-${i}" title="${_('Edit Group')}">
+                <td><input value="${group.name}" onchange="selectShareRow(this);" name="name" type="checkbox" id="check-row-group-${i}" /></td>
+                <td>x</td>
+                <td>x</td>
+                <td>${group.rid}</td>
+                <td>${group.name}</td>
+                <td>${group.description}</td>
+            </tr>
+            
+            <% i = i + 1 %>
+        % endfor
+    </table>
+</%def>
+    
+<%def name="quick_tasks(name, type, is_disabled=False)">
+    <ul class="quick-tasks">
+	<li>edit</li>
+	<li>remove</li>
+    </ul>
 </%def>
