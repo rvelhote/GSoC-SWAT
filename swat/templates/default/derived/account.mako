@@ -21,7 +21,7 @@
 
 ${parent.action_title(c.config.get_action_info('friendly_name'))}
 ${toolbar.write(c.config.get_toolbar_items())}
-
+${options(c.config.get_action())}
 <div class="account-list">
     % if c.list_users == True:
         ${user_table(c.user_list)}
@@ -44,7 +44,10 @@ ${toolbar.write(c.config.get_toolbar_items())}
         <% table_class = table_class + " not-empty" %>
     % endif
 
-    <h3>${_("User List")}</h3>
+    % if c.list_groups == True:
+        <h3>${_("User List")}</h3>
+    % endif
+    
     <table id="${table_id}" class="list ${table_class}">
 	<thead>
 	    <tr>
@@ -97,7 +100,10 @@ ${toolbar.write(c.config.get_toolbar_items())}
         <% table_class = table_class + " not-empty" %>
     % endif
 
-    <h3>${_("Group List")}</h3>
+    % if c.list_users == True:
+        <h3>${_("Group List")}</h3>
+    % endif
+    
     <table id="${table_id}" class="list ${table_class}">
 	<thead>
 	    <tr>
@@ -150,4 +156,36 @@ ${toolbar.write(c.config.get_toolbar_items())}
         <li><a href="${h.url_for(controller = 'account', action = 'edit', name = id, type = type)}" title="${_('Edit %s' % (type))}"><img src="/default/images/icons/folder-pencil.png" alt="${_('Edit %s Icon' % (type))}"/></a></li>
 	<li><a href="${h.url_for(controller = 'account', action = 'remove', name = id, type = type)}" title="${_('Remove %s' % (type))}"><img src="/default/images/icons/folder-minus.png" alt="${_('Remove %s Icon' % (type))}"/></a></li>
     </ul>
+</%def>
+
+<%def name="options(action_name)">
+    ${h.form(h.url_for(controller = 'account', action = action_name), method="get", id="options")}
+        <div style="font-size:85%;margin-bottom:15px;">
+            <span>
+                <label title="${_("You may use Regular Expressions")}" for="filter_account_by_name">${_('Filter')}:</label>
+                ${h.text("filter_value", c.filter_name, id="filter_account_by_name")}
+            </span>
+            
+            % if len(c.filter_name) > 0 or int(c.per_page) != 10:
+                <a class="reset-view round-2px" href="${h.url_for(controller = 'account', action = action_name)}">${_("reset view")}</a>
+            % endif
+            
+            <span style="float:right;">
+                <label for="items_per_page">${_('Per Page')}:</label>
+                <select name="per_page" id="items_per_page" onchange="submitForm('options');">
+                    % for i in range(5, 30, 5):
+                        <option
+                        
+                        % if i == c.per_page:
+                            ${'selected="selected"'}
+                        
+                        % endif
+                        
+                        value="${i}">${i}</option>
+                    % endfor
+                </select>
+            </span>
+            
+        </div>
+    ${h.end_form()}
 </%def>
