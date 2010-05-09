@@ -1,0 +1,76 @@
+#
+#   Define this Controller's Actions
+#
+actions:
+    #
+    #   Default Action (index)
+    #
+    index:
+        friendly_name: 'Account Management'
+        
+        link:
+            name: 'list samba accounts'
+            title: 'List All Accounts'
+            action: index
+
+        image:
+            name: users.png
+            alt: 'List Accounts Icon'
+            
+    #
+    #   Default Action (index)
+    #
+    user:
+        friendly_name: 'User Management'
+        
+        link:
+            name: 'list samba users'
+            title: 'List Samba Users'
+            action: user
+
+        image:
+            name: user-white.png
+            alt: 'List Users Icon'
+            
+    #
+    #   Default Action (index)
+    #
+    group:
+        friendly_name: 'Group Management'
+        
+        link:
+            name: 'list samba groups'
+            title: 'List Samba Groups'
+            action: group
+
+        image:
+            name: user-business.png
+            alt: 'List Groups Icon'
+            
+#
+#   Dashboard Actions and Title
+#
+dashboard:
+    link:
+        name: 'Account Management'
+        title: 'Go to the Account Management Area'
+        action: index
+
+    image: 
+        name: users.png
+        alt: 'Account Management Icon'
+
+        
+    #
+    #
+    #
+    actions:
+        - index
+        - user
+        - group
+        
+#
+#   Controller Information
+#
+controller:
+    is_advanced: False
