@@ -80,6 +80,12 @@ class AccountController(BaseController):
         
         return render('/default/derived/account.mako')
         
+    def edit(self):
+        return "Not Implemented Yet"
+    
+    def remove(self):
+        return "Not Implemented Yet"
+        
 class SAMPipeManager:
     """ Support Class obtained from Calin Crisan's 2009 Summer of Code project
     Extensions to GTK Frontends

@@ -79,11 +79,11 @@ ${toolbar.write(c.config.get_toolbar_items())}
         
             <tr id="row-user-${i}" title="${_('Edit User')}" class="${tr_class}">
                 <td><input value="${user.username}" onchange="selectShareRow(this);" name="name" type="checkbox" id="check-row-user-${i}" /></td>
-                <td>${i}</td>
-                <td>${user.rid}</td>
-                <td>${user.username}</td>
-                <td>${user.description}</td>
-                <td>${quick_tasks(user.rid, "User", False)}</td>
+                <td onclick="clickableRow('${h.url_for(controller = 'account', action = 'edit', name = user.rid, type = "User")}');">${i}</td>
+                <td onclick="clickableRow('${h.url_for(controller = 'account', action = 'edit', name = user.rid, type = "User")}');">${user.rid}</td>
+                <td onclick="clickableRow('${h.url_for(controller = 'account', action = 'edit', name = user.rid, type = "User")}');">${user.username}</td>
+                <td onclick="clickableRow('${h.url_for(controller = 'account', action = 'edit', name = user.rid, type = "User")}');">${user.description}</td>
+                <td onclick="clickableRow('${h.url_for(controller = 'account', action = 'edit', name = user.rid, type = "User")}');">${quick_tasks(user.rid, "User", False)}</td>
             </tr>
             
             <% i = i + 1 %>
@@ -133,10 +133,10 @@ ${toolbar.write(c.config.get_toolbar_items())}
         
             <tr id="row-group-${i}" title="${_('Edit Group')}" class="${tr_class}">
                 <td><input value="${group.name}" onchange="selectShareRow(this);" name="name" type="checkbox" id="check-row-group-${i}" /></td>
-                <td onclick="clickableRow('${h.url_for('share_action', action = 'edit', name = group.rid, type = "Group")}');">${i}</td>
-                <td>${group.rid}</td>
-                <td>${group.name}</td>
-                <td>${group.description}</td>
+                <td onclick="clickableRow('${h.url_for(controller = 'account', action = 'edit', name = group.rid, type = "Group")}');">${i}</td>
+                <td onclick="clickableRow('${h.url_for(controller = 'account', action = 'edit', name = group.rid, type = "Group")}');">${group.rid}</td>
+                <td onclick="clickableRow('${h.url_for(controller = 'account', action = 'edit', name = group.rid, type = "Group")}');">${group.name}</td>
+                <td onclick="clickableRow('${h.url_for(controller = 'account', action = 'edit', name = group.rid, type = "Group")}');">${group.description}</td>
                 <td>${quick_tasks(group.rid, "Group", False)}</td>
             </tr>
             
