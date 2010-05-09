@@ -23,7 +23,8 @@ ${parent.action_title(c.config.get_action_info('friendly_name'))}
 ${toolbar.write(c.config.get_toolbar_items())}
 
 <div class="account-list">
-    ${account_table(c.user_list, c.group_list)}
+    ${user_table(c.user_list)}
+    ${group_table(c.group_list)}
 </div>
 
 <%doc></%doc>
@@ -32,9 +33,9 @@ ${toolbar.write(c.config.get_toolbar_items())}
 </%def>
 
 <%doc>TODO make tabs or mix them up?</%doc>
-<%def name="account_table(users, groups)">
+<%def name="user_table(users, table_id='user-list', table_class='')">
     <h3>${_("User List")}</h3>
-    <table>
+    <table id="${table_id}" class="list ${table_class}">
 	<thead>
 	    <tr>
 		<td class="check-all"><input title="${_('Check All Items')}" onchange="checkAllRows(this, 'check-row-user')" type="checkbox" id="check-all-user"/></td>
@@ -72,10 +73,11 @@ ${toolbar.write(c.config.get_toolbar_items())}
             <% i = i + 1 %>
         % endfor
     </table>
-    
+</%def>
+
+<%def name="group_table(groups, table_id='group-list', table_class='')">
     <h3>${_("Group List")}</h3>
-    <table>
-        
+    <table id="${table_id}" class="list ${table_class}">
 	<thead>
 	    <tr>
 		<td class="check-all"><input title="${_('Check All Items')}" onchange="checkAllRows(this, 'check-row-group')" type="checkbox" id="check-all-group"/></td>
