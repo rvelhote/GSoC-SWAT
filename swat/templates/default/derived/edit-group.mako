@@ -15,3 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # 
 </%doc>
+
+<%inherit file="/default/base/base.mako" />
+<%namespace name="toolbar" file="/default/component/toolbar.mako" />
+
+${parent.action_title(c.config.get_action_info('friendly_name'))}
+${toolbar.write(c.config.get_toolbar_items())}
+
+<%doc></%doc>
+<%def name="page_title()">
+    ${parent.page_title()} :: ${c.config.get_action_info('friendly_name')}
+</%def>

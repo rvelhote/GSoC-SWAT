@@ -85,8 +85,27 @@ class AccountController(BaseController):
         
         return render('/default/derived/account.mako')
         
-    def edit(self):
-        return "Not Implemented Yet"
+    def edit(self, type, is_new = False):
+        if type == "user":
+            return render('/default/derived/edit-user-account.mako')
+        elif type == "group":
+            return render('/default/derived/edit-group.mako')
+        else:
+            message = _("You did not specify the type of account you want to edit")
+            SwatMessages.add(message, "critical")
+            redirect_to(controller='account', action='index')
+            
+    def edituser(self):
+        return self.edit("user", False)
+    
+    def editgroup(self):
+        return self.edit("group", False)
+        
+    def adduser(self):
+        return self.edit("user", True)
+    
+    def addgroup(self):
+        return self.edit("group", True)
     
     def remove(self):
         return "Not Implemented Yet"

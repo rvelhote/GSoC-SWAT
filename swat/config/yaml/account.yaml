@@ -48,7 +48,7 @@ actions:
             alt: 'List Groups Icon'
             
     #
-    #   Show Only Groups
+    #   Add a User
     #
     adduser:
         friendly_name: 'Add a User'
@@ -63,7 +63,7 @@ actions:
             alt: 'Add New User Icon'
             
     #
-    #   Show Only Groups
+    #   Add a Group
     #
     addgroup:
         friendly_name: 'Add a Group'
@@ -76,9 +76,21 @@ actions:
         image:
             name: users-plus.png
             alt: 'Add New Group Icon'
+
+    #
+    #   Add a User
+    #
+    edituser:
+        friendly_name: 'Edit User'
             
     #
-    #   Show Only Groups
+    #   Add a Group
+    #
+    editgroup:
+        friendly_name: 'Edit Group'
+
+    #
+    #   Remove a User or Group
     #
     remove:
         friendly_name: 'Remove a User or Group'
@@ -91,6 +103,61 @@ actions:
         image:
             name: user-minus.png
             alt: 'List Groups Icon'
+            
+    #
+    #   Save Account Information (save)
+    #
+    save:
+       link:
+           name: 'save'
+           title: 'Save Share Information'
+           action: save
+           submit: True
+       
+       image:
+           name: disk.png
+           alt: 'Save Share Icon'
+
+    #
+    #   Save Account Information but return to edit mode (apply)
+    #
+    apply:
+       link:
+           name: 'apply'     
+           title: 'Apply changes and return to this Page'
+           action: apply
+           submit: True
+       
+       image:
+           name: disk-arrow.png
+           alt: 'Apply Changes Icon'
+
+    #
+    #   Save Account Information and return to the Add screen (save-add)
+    #
+    save-add:
+       link:
+           name: 'save and add another'     
+           title: 'Save these changes and add another Share'
+           action: save_add
+           submit: True
+       
+       image:
+           name: disk-arrow.png
+           alt: 'Save and Add Another Icon'
+
+    #
+    #   Cancel Add/Editing (cancel)
+    #
+    cancel:
+       link:
+           name: 'cancel'
+           title: 'Cancel Share creation'
+           action: cancel
+
+       image:
+           name: minus-circle.png
+           alt: 'Cancel Icon'
             
 #
 #   Toolbar Actions
@@ -108,7 +175,29 @@ toolbar:
     group:
         - addgroup
         - remove
-            
+        
+    edituser:
+        - save
+        - apply
+        - cancel
+        
+    editgroup:
+        - save
+        - apply
+        - cancel
+        
+    adduser:
+        - save-add
+        - save
+        - apply
+        - cancel
+        
+    addgroup:
+        - save-add
+        - save
+        - apply
+        - cancel
+
 #
 #   Dashboard Actions and Title
 #

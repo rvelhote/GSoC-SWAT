@@ -91,11 +91,11 @@ ${options(c.config.get_action())}
         
             <tr id="row-user-${i}" title="${_('Edit User')}" class="${tr_class}">
                 <td><input value="${user.username}" onchange="selectShareRow(this);" name="name" type="checkbox" id="check-row-user-${i}" /></td>
-                <td onclick="clickableRow('${h.url_for(controller = 'account', action = 'edit', name = user.rid, type = "User")}');">${i}</td>
-                <td onclick="clickableRow('${h.url_for(controller = 'account', action = 'edit', name = user.rid, type = "User")}');">${user.rid}</td>
-                <td onclick="clickableRow('${h.url_for(controller = 'account', action = 'edit', name = user.rid, type = "User")}');">${user.username}</td>
-                <td onclick="clickableRow('${h.url_for(controller = 'account', action = 'edit', name = user.rid, type = "User")}');">${user.description}</td>
-                <td onclick="clickableRow('${h.url_for(controller = 'account', action = 'edit', name = user.rid, type = "User")}');">${quick_tasks(user.rid, "User", False)}</td>
+                <td onclick="clickableRow('${h.url_for(controller = 'account', action = 'edituser', name = user.rid)}');">${i}</td>
+                <td onclick="clickableRow('${h.url_for(controller = 'account', action = 'edituser', name = user.rid)}');">${user.rid}</td>
+                <td onclick="clickableRow('${h.url_for(controller = 'account', action = 'edituser', name = user.rid)}');">${user.username}</td>
+                <td onclick="clickableRow('${h.url_for(controller = 'account', action = 'edituser', name = user.rid)}');">${user.description}</td>
+                <td onclick="clickableRow('${h.url_for(controller = 'account', action = 'edituser', name = user.rid)}');">${quick_tasks(user.rid, "User", False)}</td>
             </tr>
             
             <% i = i + 1 %>
@@ -156,10 +156,10 @@ ${options(c.config.get_action())}
         
             <tr id="row-group-${i}" title="${_('Edit Group')}" class="${tr_class}">
                 <td><input value="${group.name}" onchange="selectShareRow(this);" name="name" type="checkbox" id="check-row-group-${i}" /></td>
-                <td onclick="clickableRow('${h.url_for(controller = 'account', action = 'edit', name = group.rid, type = "Group")}');">${i}</td>
-                <td onclick="clickableRow('${h.url_for(controller = 'account', action = 'edit', name = group.rid, type = "Group")}');">${group.rid}</td>
-                <td onclick="clickableRow('${h.url_for(controller = 'account', action = 'edit', name = group.rid, type = "Group")}');">${group.name}</td>
-                <td onclick="clickableRow('${h.url_for(controller = 'account', action = 'edit', name = group.rid, type = "Group")}');">${group.description}</td>
+                <td onclick="clickableRow('${h.url_for(controller = 'account', action = 'editgroup', name = group.rid)}');">${i}</td>
+                <td onclick="clickableRow('${h.url_for(controller = 'account', action = 'editgroup', name = group.rid)}');">${group.rid}</td>
+                <td onclick="clickableRow('${h.url_for(controller = 'account', action = 'editgroup', name = group.rid)}');">${group.name}</td>
+                <td onclick="clickableRow('${h.url_for(controller = 'account', action = 'editgroup', name = group.rid)}');">${group.description}</td>
                 <td>${quick_tasks(group.rid, "Group", False)}</td>
             </tr>
             
@@ -170,8 +170,8 @@ ${options(c.config.get_action())}
     
 <%def name="quick_tasks(id, type, is_disabled=False)">
     <ul class="quick-tasks">
-        <li><a href="${h.url_for(controller = 'account', action = 'edit', name = id, type = type)}" title="${_('Edit %s' % (type))}"><img src="/default/images/icons/folder-pencil.png" alt="${_('Edit %s Icon' % (type))}"/></a></li>
-	<li><a href="${h.url_for(controller = 'account', action = 'remove', name = id, type = type)}" title="${_('Remove %s' % (type))}"><img src="/default/images/icons/folder-minus.png" alt="${_('Remove %s Icon' % (type))}"/></a></li>
+        <li><a href="${h.url_for(controller = 'account', action = 'edit' + type.lower(), name = id, type = type)}" title="${_('Edit %s' % (type))}"><img src="/default/images/icons/folder-pencil.png" alt="${_('Edit %s Icon' % (type))}"/></a></li>
+	<li><a href="${h.url_for(controller = 'account', action = 'remove' + type.lower(), name = id, type = type)}" title="${_('Remove %s' % (type))}"><img src="/default/images/icons/folder-minus.png" alt="${_('Remove %s Icon' % (type))}"/></a></li>
     </ul>
 </%def>
 
