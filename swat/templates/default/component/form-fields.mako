@@ -126,6 +126,14 @@
         <ol class="field-ops">
             % for op in ops:
                 <li>
+                    <%
+                    
+                    #
+                    # FIXME not specific to shares anymore. do this elsewhere
+                    #
+                    
+                    %>
+                    
                     % if op == "user-group-selection" or op == "path-selection":
                         <% popup(id, op) %>
                     % elif op == "manual-add":
@@ -151,6 +159,8 @@
     #
     # Classic returns a list and LDB returns the actual string so we need to
     # split it in different ways
+    #
+    # FIXME not specific to shares anymore. do this elsewhere
     #
     if c.share.is_classic():
         if value and len(value) > 0:
