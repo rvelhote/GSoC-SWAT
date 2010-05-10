@@ -1,0 +1,45 @@
+username:
+    type: text
+    help: 'Set the Group Name'
+    title: 'Set this Group Name'
+    name: account_username
+    label: 'Username'
+    class: big-text
+    id: account-username
+        
+fullname:
+    type: text
+    help: 'Set the Group Name'
+    title: 'Set this Group Name'
+    name: account_fullname
+    label: 'Full Name'
+    class: big-text
+    id: account-fullname
+        
+description:
+    type: text
+    help: 'Set the Group Name'
+    title: 'Set this Group Name'
+    name: account_description
+    label: 'Description'
+    class: big-text
+    id: account-description
+       
+password:
+    type: text
+    help: 'Set the Group Name'
+    title: 'Set this Group Name'
+    name: account_password
+    label: 'Password'
+    class: big-text
+    id: account-password
+
+        
+confirmpassword:
+    type: text
+    help: 'Set the Group Name'
+    title: 'Set this Group Name'
+    name: confirm_password
+    label: 'Confirm Password'
+    class: big-text
+    id: account-confirmpassword

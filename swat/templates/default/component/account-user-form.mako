@@ -16,5 +16,26 @@
 # 
 </%doc>
 
+<%namespace name="field" file="/default/component/form-fields.mako" />
+
 <%def name="write()">
+    ${h.form('', method="post", id="share-form", class_="share-configuration")}
+        <ol class="tab-list">
+            <li id="tab1" class="active">
+                <h3><a title="${_('Basic User Configuration')}" class="title-icon basic-tab" href="#">${_('Basic')}</a></h3>                           
+            </li>              
+        </ol>
+    
+        <ul class="tab-list-items"> 
+            <li id="content-tab1" class="active tab">
+                <ol class="col-1">
+                    <li>${field.put("username", "x")}</li>
+                    <li>${field.put("fullname", "y")}</li>
+                    <li>${field.put("description", "y")}</li>
+                    <li>${field.put("password", "y")}</li>
+                    <li>${field.put("confirmpassword", "y")}</li>
+                </ol>
+            </li>
+        </ul>
+    ${h.end_form()}
 </%def>
