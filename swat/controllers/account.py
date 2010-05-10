@@ -96,15 +96,19 @@ class AccountController(BaseController):
             redirect_to(controller='account', action='index')
             
     def edituser(self):
+        c.p = ParamConfiguration('user-account-parameters')
         return self.edit("user", False)
     
     def editgroup(self):
+        c.p = ParamConfiguration('group-parameters')
         return self.edit("group", False)
         
     def adduser(self):
+        c.p = ParamConfiguration('user-account-parameters')
         return self.edit("user", True)
     
     def addgroup(self):
+        c.p = ParamConfiguration('group-parameters')
         return self.edit("group", True)
     
     def remove(self):

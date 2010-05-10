@@ -194,6 +194,10 @@
     type = c.p.get_value(id, "type")
     
     param_name = id.replace('-', ' ')
+    
+    #
+    # FIXME not specific to shares anymore. do this elsewhere
+    #
     param_value = param_value or c.share.get(param_name) or ""
     
     help(id, c.p.get_value(id, "disabled"))

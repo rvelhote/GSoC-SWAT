@@ -15,3 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # 
 </%doc>
+
+<%def name="write()">
+</%def>

@@ -15,3 +15,24 @@
 # You should have received a copy of the GNU General Public License
 # 
 </%doc>
+
+<%namespace name="field" file="/default/component/form-fields.mako" />
+
+<%def name="write()">
+    ${h.form('', method="post", id="share-form", class_="share-configuration")}
+        <ol class="tab-list">
+            <li id="tab1" class="active">
+                <h3><a title="${_('Basic Group Configuration')}" class="title-icon basic-tab" href="#">${_('Basic')}</a></h3>                           
+            </li>              
+        </ol>
+    
+        <ul class="tab-list-items"> 
+            <li id="content-tab1" class="active tab">
+                <ol class="col-1">
+                    <li>${field.put("name", "x")}</li>
+                    <li>${field.put("description", "y")}</li>
+                </ol>
+            </li>
+        </ul>
+    ${h.end_form()}
+</%def>

@@ -18,9 +18,12 @@
 
 <%inherit file="/default/base/base.mako" />
 <%namespace name="toolbar" file="/default/component/toolbar.mako" />
+<%namespace name="form" file="/default/component/account-group-form.mako" />
 
 ${parent.action_title(c.config.get_action_info('friendly_name'))}
 ${toolbar.write(c.config.get_toolbar_items())}
+
+${form.write()}
 
 <%doc></%doc>
 <%def name="page_title()">

@@ -1,0 +1,26 @@
+#
+#   Group Name
+#
+name:
+    type: text
+    help: 'Set the Group Name'
+    title: 'Set this Group Name'
+    name: name
+    label: 'Name'
+    class: big-text
+    id: account-name
+    validation: required
+    validation-message:
+        required: 'You cannot store a Group without a name'
+        
+#
+#   Group Description
+#
+description:
+    type: text
+    help: 'Write a Description for this Group'
+    title: "Set this Group's Description"
+    name: description
+    label: 'Description'
+    class: big-text
+    id: account-description
