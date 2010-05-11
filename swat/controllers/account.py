@@ -27,7 +27,7 @@ from pylons.i18n.translation import _
 from swat.lib.helpers import ControllerConfiguration, DashboardConfiguration, \
 BreadcrumbTrail, SwatMessages, ParamConfiguration, filter_list
 
-from samba.dcerpc import samr, security
+from samba.dcerpc import samr, security, lsa
 
 log = logging.getLogger(__name__)
 
@@ -92,7 +92,7 @@ class AccountController(BaseController):
             if not is_new:
                 c.user = self.__manager.fetch_user(id)
             else:
-                c.user = User("", "", "", "")
+                c.user = User("", "", "", -1)
                 
             return render('/default/derived/edit-user-account.mako')
             
@@ -102,7 +102,7 @@ class AccountController(BaseController):
             if not is_new:
                 c.group = self.__manager.fetch_group(id)
             else:
-                c.group = Group("", "", "")
+                c.group = Group("", "", -1)
                 
             return render('/default/derived/edit-group.mako')
         else:
@@ -127,11 +127,38 @@ class AccountController(BaseController):
         return self.edit(id, "group", True)
         
     def save(self):
+        action = request.environ['pylons.routes_dict']['action']
+        
+        task = request.params.get("task", "").strip().lower()
+        type = request.params.get("type", "").strip().lower()
+        
+        is_new = False
+        
+        if task.startswith("add"):
+            is_new = True
+        
+        if type == "group":
+            id = int(request.params.get("id", -1))
+            name = request.params.get("group_name", "")
+            description = request.params.get("group_description", "")
+
+            group = Group(name, description, id)
+            
+            if is_new:
+                self.__manager.add_group(group)
+            else:
+                self.__manager.update_group(group)
+            
+            if action == "apply" or action == "save":
+                message = _("saved id" % (id))
+                SwatMessages.add(message)
+                redirect_to(controller='account', action='editgroup', id = id)
+        
         return "Not Implemented"
     
     def apply(self):
-        return "Not Implemented"
-    
+        self.save()
+
     def cancel(self):
         return "Not Implemented"
     

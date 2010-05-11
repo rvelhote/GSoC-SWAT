@@ -36,6 +36,7 @@
         </ul>
         
         <div>
+            ${h.hidden("task", request.environ['pylons.routes_dict']['action'])}
             ${h.hidden("id", c.group.rid)}
             ${h.hidden("type", "group")}
         </div>
