@@ -85,10 +85,25 @@ class AccountController(BaseController):
         
         return render('/default/derived/account.mako')
         
-    def edit(self, type, is_new = False):
+    def edit(self, id, type, is_new = False):
         if type == "user":
+            c.p = ParamConfiguration('user-account-parameters')
+            
+            if not is_new:
+                c.user = self.__manager.fetch_user(id)
+            else:
+                c.user = User("", "", "", "")
+                
             return render('/default/derived/edit-user-account.mako')
+            
         elif type == "group":
+            c.p = ParamConfiguration('group-parameters')
+            
+            if not is_new:
+                c.group = self.__manager.fetch_group(id)
+            else:
+                c.group = Group("", "", "")
+                
             return render('/default/derived/edit-group.mako')
         else:
             message = _("You did not specify the type of account you want to edit")
@@ -96,20 +111,26 @@ class AccountController(BaseController):
             redirect_to(controller='account', action='index')
             
     def edituser(self):
-        c.p = ParamConfiguration('user-account-parameters')
-        return self.edit("user", False)
+        id = int(request.params.get("id", -1))
+        return self.edit(id, "user", False)
     
     def editgroup(self):
-        c.p = ParamConfiguration('group-parameters')
-        return self.edit("group", False)
+        id = int(request.params.get("id", -1))
+        return self.edit(id, "group", False)
         
     def adduser(self):
-        c.p = ParamConfiguration('user-account-parameters')
-        return self.edit("user", True)
+        id = int(request.params.get("id", -1))
+        return self.edit(id, "user", True)
     
     def addgroup(self):
-        c.p = ParamConfiguration('group-parameters')
-        return self.edit("group", True)
+        id = int(request.params.get("id", -1))
+        return self.edit(id, "group", True)
+        
+    def save(self):
+        return "Not Implemented"
+    
+    def apply(self):
+        return "Not Implemented"
     
     def remove(self):
         return "Not Implemented Yet"
