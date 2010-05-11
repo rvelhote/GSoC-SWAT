@@ -18,7 +18,7 @@ from swat.tests import *
 from pylons import config
 from swat.controllers import share
 
-import param, ldb
+from samba import param, ldb
 import random
 
 class MockShareParams(object):

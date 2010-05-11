@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # 
 import logging
-import param, shares, ldb
+from samba import param, shares, ldb
 
 from formencode import variabledecode
 from pylons import request, response, session, tmpl_context as c

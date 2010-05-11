@@ -540,7 +540,7 @@ def python_libs_exist():
     exist = False
 
     try:
-        import samba, param
+        import samba
     except ImportError, error:
         log.warning("did not find python libraries. will try to add them from the default samba install dir at /usr/local/samba/lib")
     else:
@@ -549,11 +549,9 @@ def python_libs_exist():
         
     if not exist and os.path.exists("/usr/local/samba/lib/python2.6/site-packages"):        
         sys.path.append('/usr/local/samba/lib/python2.6/site-packages')
-        sys.path.append('/usr/local/samba/lib/python2.6/site-packages/samba')
-        sys.path.append('/usr/local/samba/lib/python2.6/site-packages/samba/dcerpc')
         
         try:
-            import samba, param
+            import samba
         except ImportError, error:
             log.fatal("python libs are nowhere to be found!")
         else:

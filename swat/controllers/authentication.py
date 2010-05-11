@@ -97,8 +97,7 @@ class AuthenticationController(BaseController):
         password -- password provided by the login form
         
         """
-        import param
-        from samba import credentials
+        from samba import credentials, param
         
         auth_success = False
         
