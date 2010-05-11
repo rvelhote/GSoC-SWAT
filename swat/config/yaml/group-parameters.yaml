@@ -3,9 +3,9 @@
 #
 name:
     type: text
-    help: 'Set the Group Name'
-    title: 'Set this Group Name'
-    name: name
+    help: "Set the Group Name"
+    title: 'Set the Group Name'
+    name: group_name
     label: 'Name'
     class: big-text
     id: account-name
@@ -20,7 +20,7 @@ description:
     type: text
     help: 'Write a Description for this Group'
     title: "Set this Group's Description"
-    name: description
+    name: group_description
     label: 'Description'
     class: big-text
     id: account-description

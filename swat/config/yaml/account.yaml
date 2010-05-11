@@ -110,7 +110,7 @@ actions:
     save:
        link:
            name: 'save'
-           title: 'Save Share Information'
+           title: 'Save User or Group Information'
            action: save
            submit: True
        
@@ -138,7 +138,7 @@ actions:
     save-add:
        link:
            name: 'save and add another'     
-           title: 'Save these changes and add another Share'
+           title: 'Save these changes and add another User or Group'
            action: save_add
            submit: True
        
