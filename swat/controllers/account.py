@@ -132,6 +132,9 @@ class AccountController(BaseController):
     def apply(self):
         return "Not Implemented"
     
+    def cancel(self):
+        return "Not Implemented"
+    
     def remove(self):
         return "Not Implemented Yet"
         

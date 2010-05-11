@@ -19,7 +19,7 @@
 <%namespace name="field" file="/default/component/form-fields.mako" />
 
 <%def name="write()">
-    ${h.form('', method="post", id="share-form", class_="share-configuration")}
+    ${h.form('', method="post", id="group-form", class_="share-configuration")}
         <ol class="tab-list">
             <li id="tab1" class="active">
                 <h3><a title="${_('Basic Group Configuration')}" class="title-icon basic-tab" href="#">${_('Basic')}</a></h3>                           
@@ -34,5 +34,10 @@
                 </ol>
             </li>
         </ul>
+        
+        <div>
+            ${h.hidden("id", c.group.rid)}
+            ${h.hidden("type", "group")}
+        </div>
     ${h.end_form()}
 </%def>

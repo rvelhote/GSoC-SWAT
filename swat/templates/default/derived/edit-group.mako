@@ -25,6 +25,12 @@ ${toolbar.write(c.config.get_toolbar_items())}
 
 ${form.write()}
 
+<script type="text/javascript">
+    window.addEvent("domready", function() {
+        formSubmission = new FormSubmit({formId: 'group-form'});
+    });
+</script>
+
 <%doc></%doc>
 <%def name="page_title()">
     ${parent.page_title()} :: ${c.config.get_action_info('friendly_name')}
