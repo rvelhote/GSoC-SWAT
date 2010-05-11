@@ -1315,6 +1315,9 @@ class SambaShare(object):
         The parameter's value or an empty string if the parameter does not exist
         
         """
+        
+        key = key.replace('-', ' ')
+        
         if self.__lp  is not None:
             return self.__lp.get(key, self.__share_name)
         elif self.__params.has_key(key) == True:
