@@ -29,8 +29,8 @@
         <ul class="tab-list-items"> 
             <li id="content-tab1" class="active tab">
                 <ol class="col-1">
-                    <li>${field.put("name", "x")}</li>
-                    <li>${field.put("description", "y")}</li>
+                    <li>${field.put("name", c.group.name)}</li>
+                    <li>${field.put("description", c.group.description)}</li>
                 </ol>
             </li>
         </ul>
