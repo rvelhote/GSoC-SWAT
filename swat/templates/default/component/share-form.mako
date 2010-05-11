@@ -18,6 +18,20 @@
 
 <%namespace name="field" file="/default/component/form-fields.mako" />
 
+<%def name="to_list(s)">
+    <%
+    #
+    # Classic returns a list and LDB returns the actual string so we need to
+    # split it in different ways
+    #
+    if not c.share.is_classic():
+        return s.split(",")
+        
+    return string
+
+    %>
+</%def>
+
 <%def name="write(share='')">
     ${h.form('', method="post", id="share-form", class_="share-configuration")}
         <ol class="tab-list">
@@ -42,36 +56,36 @@
 	    <li id="content-tab1" class="active tab">
 		<ol class="col-1">
 		    <li>${field.put("name", c.share.get_share_name())}</li>
-		    <li>${field.put("path")}</li>
+		    <li>${field.put("path", c.share.get("path"))}</li>
 		</ol>
 		
 		<ol class="col-2" style="overflow:auto;">
-		    <li>${field.put("guest-ok")}</li>
-		    <li>${field.put("browsable")}</li>
-		    <li>${field.put("read-only")}</li>
-                    <li>${field.put("guest-only")}</li>
+		    <li>${field.put("guest-ok", c.share.get("guest-ok"))}</li>
+		    <li>${field.put("browsable", c.share.get("browsable"))}</li>
+		    <li>${field.put("read-only", c.share.get("read-only"))}</li>
+                    <li>${field.put("guest-only", c.share.get("guest-only"))}</li>
 		</ol>
 	    </li>
 	    
 	    <li id="content-tab2">                            
 		<ol class="col-1">
-		    <li>${field.put("create-mask")}</li>
-                    <li>${field.put("directory-mask")}</li>
+		    <li>${field.put("create-mask", c.share.get("create-mask"))}</li>
+                    <li>${field.put("directory-mask", c.share.get("directory-mask"))}</li>
 		</ol>                            
 	    </li>
 	    
 	    <li id="content-tab3">
 		<ol class="col-1">
-		    <li>${field.put("read-list")}</li>
-		    <li>${field.put("write-list")}</li>
-		    <li>${field.put("admin-list")}</li>
+		    <li>${field.put("read-list", to_list(c.share.get("read-list")))}</li>
+		    <li>${field.put("write-list", to_list(c.share.get("write-list")))}</li>
+		    <li>${field.put("admin-list", to_list(c.share.get("admin-list")))}</li>
 		</ol>                            
 	    </li>
-	    
+
 	    <li id="content-tab4">
                 <ol class="col-1">
-                    <li>${field.put("hosts-allow")}</li>
-                    <li>${field.put("hosts-deny")}</li>
+                    <li>${field.put("hosts-allow", to_list(c.share.get("hosts-allow")))}</li>
+                    <li>${field.put("hosts-deny", to_list(c.share.get("hosts-deny")))}</li>
                 </ol>
 	    </li>
 	</ul>

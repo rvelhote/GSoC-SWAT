@@ -155,20 +155,9 @@
     
     field_ops(id, c.p.get_value(id, "field-ops"))
     list_values = ""
-    
-    #
-    # Classic returns a list and LDB returns the actual string so we need to
-    # split it in different ways
-    #
-    # FIXME not specific to shares anymore. do this elsewhere
-    #
-    if c.share.is_classic():
-        if value and len(value) > 0:
-            list_values = ", ".join(["%s" % v for v in value])
-    else:
-        list_values = value
-        value = value.split(",")
-    
+
+    if value and len(value) > 0:
+        list_values = ", ".join(["%s" % v for v in value])
     
     %>
     
