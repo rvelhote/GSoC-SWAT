@@ -33,7 +33,12 @@ from samba import credentials
 log = logging.getLogger(__name__)
 
 class AccountController(BaseController):
-    """ """
+    """ Account Management Controller.
+    
+    TODO Too many *group/user actions. I think this should be improved. No idea
+    how yet :)
+    
+    """
     def __init__(self):
         """ """
         me = request.environ['pylons.routes_dict']['controller']
@@ -151,7 +156,7 @@ class AccountController(BaseController):
                 self.__manager.update_group(group)
             
             if action == "apply" or action == "save":
-                message = _("saved id %s" % (str(id)))
+                message = _("saved group id %d" % (id))
                 SwatMessages.add(message)
                 redirect_to(controller='account', action='editgroup', id = id)
         
@@ -163,8 +168,33 @@ class AccountController(BaseController):
     def cancel(self):
         redirect_to(controller='account', action='user')
 
-    def remove(self):
-        return "Not Implemented Yet"
+    def removegroup(self):
+        id = int(request.params.get("id", -1))
+        type = "cool"
+        
+        try:
+            self.__manager.delete_group(Group("", "", id))
+            message = _("deleted group id %d" % (str(id)))
+        except RuntimeError:
+            message = _("error deleting group id %d" % (id))
+            type = "critical"
+
+        SwatMessages.add(message, type)
+        redirect_to(controller='account', action='group')
+    
+    def removeuser(self):
+        id = int(request.params.get("id", -1))
+        type = "cool"
+        
+        try:
+            self.__manager.delete_user(User("", "", "", id))
+            message = _("deleted user id %d" % (id))
+        except RuntimeError:
+            message = _("error deleting user id %d" % (id))
+            type = "critical"
+
+        SwatMessages.add(message)
+        redirect_to(controller='account', action='user')
         
 class SAMPipeManager:
     """ Support Class obtained from Calin Crisan's 2009 Summer of Code project
