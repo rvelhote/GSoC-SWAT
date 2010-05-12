@@ -152,7 +152,7 @@ actions:
     cancel:
        link:
            name: 'cancel'
-           title: 'Cancel Share creation'
+           title: 'Cancel User/Group creation'
            action: cancel
 
        image:

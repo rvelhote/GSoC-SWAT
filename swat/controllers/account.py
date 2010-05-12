@@ -28,6 +28,7 @@ from swat.lib.helpers import ControllerConfiguration, DashboardConfiguration, \
 BreadcrumbTrail, SwatMessages, ParamConfiguration, filter_list
 
 from samba.dcerpc import samr, security, lsa
+from samba import credentials
 
 log = logging.getLogger(__name__)
 
@@ -150,7 +151,7 @@ class AccountController(BaseController):
                 self.__manager.update_group(group)
             
             if action == "apply" or action == "save":
-                message = _("saved id" % (id))
+                message = _("saved id %s" % (str(id)))
                 SwatMessages.add(message)
                 redirect_to(controller='account', action='editgroup', id = id)
         
@@ -160,8 +161,8 @@ class AccountController(BaseController):
         self.save()
 
     def cancel(self):
-        return "Not Implemented"
-    
+        redirect_to(controller='account', action='user')
+
     def remove(self):
         return "Not Implemented Yet"
         
@@ -175,8 +176,25 @@ class SAMPipeManager:
     def __init__(self, lp):
         self.user_list = []
         self.group_list = []
+        
+        #
+        # FIXME Don't know how I will store this between refreshes. Maybe the
+        # pipe/connect_handle should be stored in the session?
+        #
+        username = "administrator"
+        password = "x"
+        
+        creds = credentials.Credentials()
+        creds.set_username(username)
+        creds.set_password(password)
+        creds.set_domain("")
 
-        self.pipe = samr.samr("ncalrpc:", lp)
+        if request.environ.has_key("REMOTE_HOST"):
+            creds.set_workstation(request.environ.get("REMOTE_HOST"));
+        else:
+            creds.set_workstation("")
+
+        self.pipe = samr.samr("ncalrpc:", credentials = creds)
         self.connect_handle = self.pipe.Connect2(None, security.SEC_FLAG_MAXIMUM_ALLOWED)
         
     def close(self):
