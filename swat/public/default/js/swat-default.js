@@ -344,7 +344,7 @@ var ManualItemList = new Class({
  */
 function getCurrentUri() {
     var uri = new URI(window.location);
-    return uri.toRelative();
+    return escape(uri.toRelative());
 }
 
 /**
