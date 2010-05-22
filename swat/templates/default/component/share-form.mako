@@ -26,8 +26,8 @@
     #
     if not c.share.is_classic():
         return s.split(",")
-        
-    return string
+    
+    return s
 
     %>
 </%def>
