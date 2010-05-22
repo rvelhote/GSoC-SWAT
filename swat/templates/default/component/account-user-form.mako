@@ -67,6 +67,12 @@
 
             <li id="content-tab4" class="tab">
                 <ol class="col-1">
+                    <%
+                    group_ids = []
+                    for g in c.user.group_list:
+                        group_ids.append(g.rid)
+                    %>
+                    <li>${field.put("groups", group_ids)}</li>
                 </ol>
             </li>
         </ul>

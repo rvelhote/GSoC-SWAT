@@ -180,7 +180,6 @@ homedirpath:
                 controller: share
                 action: path
 
-
 ##
 ## Home Directory Path
 ##
@@ -192,3 +191,39 @@ maphomedirdrive:
     label: 'Map Home to Drive'
     class: big-text
     id: account-homedir-path
+    
+##
+## Home Directory Path
+##
+groups:
+    type: list
+    help: 'List of Groups that this User belongs to'
+    title: 'Select the Groups that this User will be a part of'
+    name: share_group_list
+    label: 'Groups'
+    class: big-text
+    id: account-insert-groups
+    
+    field-ops:
+        - manual-add
+        - user-group-selection
+
+    field-ops-descriptor:
+        user-group-selection:
+            title: 'Open Group Selection Popup'
+            image:
+                name: users.png
+                alt: 'Select Users/Groups Icon'
+            link:
+                controller: share
+                action: users_groups
+                copy-to: account-insert-groups-list
+                
+        manual-add:
+            title: 'Assign this Group. Separate by , to add more than one'
+            image:
+                name: plus-small.png
+                alt: 'Add User/Group Icon'
+            link:
+                copy-from: account-insert-groups
+                copy-to: account-insert-groups-list
