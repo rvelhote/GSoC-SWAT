@@ -76,5 +76,11 @@
                 </ol>
             </li>
         </ul>
+     
+        <div>
+            ${h.hidden("task", request.environ['pylons.routes_dict']['action'])}
+            ${h.hidden("id", c.user.rid)}
+            ${h.hidden("type", "user")}
+        </div>
     ${h.end_form()}
 </%def>
