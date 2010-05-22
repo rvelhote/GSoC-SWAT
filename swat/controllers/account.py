@@ -15,8 +15,6 @@
 # 
 import logging
 
-import param
-
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect_to
 
@@ -29,6 +27,7 @@ BreadcrumbTrail, SwatMessages, ParamConfiguration, filter_list
 
 from samba.dcerpc import samr, security, lsa
 from samba import credentials
+from samba import param
 
 log = logging.getLogger(__name__)
 
