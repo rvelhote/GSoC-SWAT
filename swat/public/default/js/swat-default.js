@@ -248,7 +248,6 @@ var ItemList = new Class({
 
     remove: function(id, forReal) {
         var element = $(id);
-        console.log(element);
         if(element) {
             this.effect(id, "remove");
             element.getParent().dispose();
