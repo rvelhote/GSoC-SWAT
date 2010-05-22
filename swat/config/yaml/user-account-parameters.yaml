@@ -1,45 +1,87 @@
+##
+## Username
+##
 username:
     type: text
-    help: 'Set the Group Name'
-    title: 'Set this Group Name'
+    help: 'Specify the Username that will be used to enter the Network'
+    title: "Set this User's Username"
     name: account_username
     label: 'Username'
     class: big-text
     id: account-username
-        
+
+##
+## Fullname
+##
 fullname:
     type: text
-    help: 'Set the Group Name'
-    title: 'Set this Group Name'
+    help: "Set this User's full name for identification"
+    title: "Set this User's Full Name"
     name: account_fullname
     label: 'Full Name'
     class: big-text
     id: account-fullname
-        
+
+##
+## User Description
+##  
 description:
     type: text
-    help: 'Set the Group Name'
-    title: 'Set this Group Name'
+    help: 'Set a description for this User if there is anything special about him'
+    title: 'Set a Description for this User'
     name: account_description
     label: 'Description'
     class: big-text
     id: account-description
-       
+
+##
+## Password
+##
 password:
     type: text
-    help: 'Set the Group Name'
-    title: 'Set this Group Name'
+    help: "Change this User's Password. If this is a new user you must specify a new password. If you are editing a user you can leave this field empty to leave the password unchanged"
+    title: "Set this User's Password"
     name: account_password
     label: 'Password'
     class: big-text
     id: account-password
 
-        
+##
+## Confirm Password
+##
 confirmpassword:
     type: text
-    help: 'Set the Group Name'
-    title: 'Set this Group Name'
+    help: 'Confirm the new Password you set above'
+    title: 'Confirm the Password'
     name: confirm_password
     label: 'Confirm Password'
     class: big-text
     id: account-confirmpassword
+    
+##
+## Must Change Password at Next Logon
+##
+mustchange:
+    type: checkbox
+    help: 'Forces this ser to change his password the next time he logs into the System'
+    title: 'Check to force a Password Change at the next Logon'
+    name: account_mustchange
+    label: 'Force Password Change Next Logon'
+    class: big-margin
+    id: account-mustchange
+
+##
+## Cannot Change Password
+##
+
+##
+## Password Never Expires
+##
+
+##
+## Account Disabled
+##
+
+##
+## Account Locked
+##

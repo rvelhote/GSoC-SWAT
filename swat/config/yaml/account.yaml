@@ -166,7 +166,6 @@ toolbar:
     index:
         - adduser
         - addgroup
-        - remove
         
     user:
         - adduser
