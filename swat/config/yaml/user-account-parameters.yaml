@@ -56,32 +56,139 @@ confirmpassword:
     name: confirm_password
     label: 'Confirm Password'
     class: big-text
-    id: account-confirmpassword
+    id: account-confirm-password
     
 ##
 ## Must Change Password at Next Logon
 ##
 mustchange:
     type: checkbox
-    help: 'Forces this ser to change his password the next time he logs into the System'
+    help: 'Forces this User to change his password the next time he logs into the System'
     title: 'Check to force a Password Change at the next Logon'
     name: account_mustchange
-    label: 'Force Password Change Next Logon'
+    label: 'Force Password Change at Next Logon'
     class: big-margin
-    id: account-mustchange
+    id: account-must-change
 
 ##
 ## Cannot Change Password
 ##
+cannotchange:
+    type: checkbox
+    help: 'Specifies that this User cannot change his Password'
+    title: 'Check to deny this User a Password Change'
+    name: account_cannotchange
+    label: 'Cannot Change Password'
+    class: big-margin
+    id: account-cannot-change
 
 ##
 ## Password Never Expires
 ##
+neverexpires:
+    type: checkbox
+    help: 'When checked this means that this User will not be affected by Password Chaging policies'
+    title: "Check to make sure that this User's Password will not expire"
+    name: account_neverexpires
+    label: 'Password Never Expires'
+    class: big-margin
+    id: account-never-expires
 
 ##
 ## Account Disabled
 ##
+disabled:
+    type: checkbox
+    help: 'When checked this means that this Account will be disabled and the User will not the able to logon'
+    title: "Check to disable this Account"
+    name: account_disabled
+    label: 'Account Disabled'
+    class: big-margin
+    id: account-disabled
 
 ##
 ## Account Locked
 ##
+locked:
+    type: checkbox
+    help: 'Account Locked'
+    title: "Check to lock this Account"
+    name: account_locked
+    label: 'Account Locked'
+    class: big-margin
+    id: account-locked
+    
+##
+## Profile Path
+## 
+profilepath:
+    type: text
+    help: 'Profile Path'
+    title: 'Profile Path'
+    name: account_profilepath
+    label: 'User Profile Path'
+    class: big-text
+    id: account-profile-path
+
+    field-ops:
+        - path-selection
+
+    field-ops-descriptor:
+        path-selection:
+            title: 'Select the Profile Path for this User'
+            image:
+                name: layer-select-point.png
+                alt: 'Select Path Icon'
+            link:
+                controller: share
+                action: path
+
+##
+## Logon Script Name
+##
+logonscriptname:
+    type: text
+    help: 'Specify the Username that will be used to enter the Network'
+    title: "Set this User's Username"
+    name: account_logonscriptname
+    label: 'Logon Script Name'
+    class: big-text
+    id: account-logon-script-name
+
+##
+## Home Directory Path
+##
+homedirpath:
+    type: text
+    help: 'Home Directory Path'
+    title: 'Home Directory Path'
+    name: account_homedirpath
+    label: 'Home Directory Path'
+    class: big-text
+    id: account-homedir-path
+
+    field-ops:
+        - path-selection
+
+    field-ops-descriptor:
+        path-selection:
+            title: 'Select the Home Directory Path for this User'
+            image:
+                name: layer-select-point.png
+                alt: 'Select Path Icon'
+            link:
+                controller: share
+                action: path
+
+
+##
+## Home Directory Path
+##
+maphomedirdrive:
+    type: text
+    help: 'Map Home Directory to Drive'
+    title: 'Map Home Directory to Drive'
+    name: account_maphomedirdrive
+    label: 'Map Home to Drive'
+    class: big-text
+    id: account-homedir-path

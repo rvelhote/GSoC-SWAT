@@ -19,21 +19,54 @@
 <%namespace name="field" file="/default/component/form-fields.mako" />
 
 <%def name="write()">
-    ${h.form('', method="post", id="share-form", class_="share-configuration")}
+    ${h.form('', method="post", id="user-account-form", class_="share-configuration")}
         <ol class="tab-list">
             <li id="tab1" class="active">
                 <h3><a title="${_('Basic User Configuration')}" class="title-icon basic-tab" href="#">${_('Basic')}</a></h3>                           
-            </li>              
+            </li>
+            <li id="tab2">
+                <h3><a title="${_('Account Status')}" class="title-icon basic-tab" href="#">${_('Status')}</a></h3>                           
+            </li>
+            <li id="tab3">
+                <h3><a title="${_('User Profile Storage')}" class="title-icon basic-tab" href="#">${_('Profile')}</a></h3>                           
+            </li>
+            <li id="tab4">
+                <h3><a title="${_('Assigned Groups')}" class="title-icon basic-tab" href="#">${_('Groups')}</a></h3>                           
+            </li>
         </ol>
     
         <ul class="tab-list-items"> 
             <li id="content-tab1" class="active tab">
                 <ol class="col-1">
-                    <li>${field.put("username", "x")}</li>
-                    <li>${field.put("fullname", "y")}</li>
-                    <li>${field.put("description", "y")}</li>
-                    <li>${field.put("password", "y")}</li>
-                    <li>${field.put("confirmpassword", "y")}</li>
+                    <li>${field.put("username", c.user.username)}</li>
+                    <li>${field.put("fullname", c.user.fullname)}</li>
+                    <li>${field.put("description", c.user.description)}</li>
+                    <li>${field.put("password", "")}</li>
+                    <li>${field.put("confirmpassword", "")}</li>
+                </ol>
+            </li>
+            
+            <li id="content-tab2" class="tab">
+                <ol class="col-1">
+                    <li>${field.put("mustchange", c.user.must_change_password)}</li>
+                    <li>${field.put("cannotchange", c.user.cannot_change_password)}</li>
+                    <li>${field.put("neverexpires", c.user.password_never_expires)}</li>
+                    <li>${field.put("disabled", c.user.account_disabled)}</li>
+                    <li>${field.put("locked", c.user.account_locked_out)}</li>
+                </ol>
+            </li>
+            
+            <li id="content-tab3" class="tab">
+                <ol class="col-1">
+                    <li>${field.put("profilepath", c.user.profile_path)}</li>
+                    <li>${field.put("logonscriptname", c.user.logon_script)}</li>
+                    <li>${field.put("homedirpath", c.user.homedir_path)}</li>
+                    <li>${field.put("maphomedirdrive", c.user.map_homedir_drive)}</li>
+                </ol>
+            </li>
+
+            <li id="content-tab4" class="tab">
+                <ol class="col-1">
                 </ol>
             </li>
         </ul>

@@ -25,6 +25,19 @@ ${toolbar.write(c.config.get_toolbar_items())}
 
 ${form.write()}
 
+<script type="text/javascript">
+    window.addEvent('domready', function() {
+        tabs = new TabGroup();
+        formSubmission = new FormSubmit({formId: 'user-account-form'});
+        
+        var pathSelectors = $$("a.path-selection");
+        var popupId = "path-selector-";
+        pathSelectors.each(function(p, i) {
+            new PathSelector(popupId + "" + (i + 1), p);
+        });
+    });
+</script>
+
 <%doc></%doc>
 <%def name="page_title()">
     ${parent.page_title()} :: ${c.config.get_action_info('friendly_name')}
