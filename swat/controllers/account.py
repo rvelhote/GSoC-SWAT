@@ -158,7 +158,83 @@ class AccountController(BaseController):
                 message = _("saved group id %d" % (id))
                 SwatMessages.add(message)
                 redirect_to(controller='account', action='editgroup', id = id)
-        
+        elif type == "user":
+            id = int(request.params.get("id", -1))
+            username = request.params.get("account_username", "")
+            fullname = request.params.get("account_fullname", "")
+            description = request.params.get("account_description", "")
+            
+            password = request.params.get("account_password", "")
+            confirm_password = request.params.get("confirm_password", "")
+            
+            if len(password) > 0 and password != confirm_password:
+                message = _("Passwords do not match")
+                SwatMessages.add(message)
+                redirect_to(controller='account', action='edituser', id = id)
+
+            #
+            # FIXME too complicated
+            #
+            must_change_password = request.params.get("account_must_change_password", "no")
+            if must_change_password == "yes":
+                must_change_password = True
+            else:
+                must_change_password = True
+                
+            cannot_change_password = request.params.get("account_cannot_change_password", "no")
+            if cannot_change_password == "yes":
+                cannot_change_password = True
+            else:
+                cannot_change_password = True
+            
+            password_never_expires = request.params.get("account_password_never_expires", "no")
+            if password_never_expires == "yes":
+                password_never_expires = True
+            else:
+                password_never_expires = True
+            
+            account_disabled = request.params.get("account_account_disabled", "no")
+            if account_disabled == "yes":
+                account_disabled = True
+            else:
+                account_disabled = True
+            
+            account_locked_out = request.params.get("account_account_locked_out", "no")
+            if account_locked_out == "yes":
+                account_locked_out = True
+            else:
+                account_locked_out = True
+            
+            group_list = [Group("", "", g) for g in request.params.get("account_group_list", "").split(",")]
+            
+            profile_path = request.params.get("account_profile_path", "")
+            logon_script = request.params.get("account_logon_script", "")
+            homedir_path = request.params.get("account_homedir_path", "")
+            map_homedir_drive = request.params.get("account_map_homedir_drive", "")
+
+            user = User(username, fullname, description, id)            
+            user.password = password
+            user.must_change_password = must_change_password
+            user.cannot_change_password = cannot_change_password
+            user.password_never_expires = password_never_expires
+            user.account_disabled = account_disabled
+            user.account_locked_out = account_locked_out
+            user.group_list = group_list
+            user.profile_path = profile_path
+            user.logon_script = logon_script
+            user.homedir_path = homedir_path
+            user.map_homedir_drive = int(map_homedir_drive)
+
+            if is_new:
+                self.__manager.add_user(user)
+            else:
+                self.__manager.update_user(user)
+            
+            if action == "apply" or action == "save":
+                message = _("saved user id %d" % (id))
+                SwatMessages.add(message)
+                redirect_to(controller='account', action='editgroup', id = id)
+
         return "Not Implemented"
     
     def apply(self):

@@ -65,7 +65,7 @@ mustchange:
     type: checkbox
     help: 'Forces this User to change his password the next time he logs into the System'
     title: 'Check to force a Password Change at the next Logon'
-    name: account_mustchange
+    name: account_must_change_password
     label: 'Force Password Change at Next Logon'
     class: big-margin
     id: account-must-change
@@ -77,7 +77,7 @@ cannotchange:
     type: checkbox
     help: 'Specifies that this User cannot change his Password'
     title: 'Check to deny this User a Password Change'
-    name: account_cannotchange
+    name: account_cannot_change_password
     label: 'Cannot Change Password'
     class: big-margin
     id: account-cannot-change
@@ -89,7 +89,7 @@ neverexpires:
     type: checkbox
     help: 'When checked this means that this User will not be affected by Password Chaging policies'
     title: "Check to make sure that this User's Password will not expire"
-    name: account_neverexpires
+    name: account_password_never_expires
     label: 'Password Never Expires'
     class: big-margin
     id: account-never-expires
@@ -101,7 +101,7 @@ disabled:
     type: checkbox
     help: 'When checked this means that this Account will be disabled and the User will not the able to logon'
     title: "Check to disable this Account"
-    name: account_disabled
+    name: account_account_disabled
     label: 'Account Disabled'
     class: big-margin
     id: account-disabled
@@ -113,7 +113,7 @@ locked:
     type: checkbox
     help: 'Account Locked'
     title: "Check to lock this Account"
-    name: account_locked
+    name: account__account_locked_out
     label: 'Account Locked'
     class: big-margin
     id: account-locked
@@ -125,7 +125,7 @@ profilepath:
     type: text
     help: 'Profile Path'
     title: 'Profile Path'
-    name: account_profilepath
+    name: account_profile_path
     label: 'User Profile Path'
     class: big-text
     id: account-profile-path
@@ -150,7 +150,7 @@ logonscriptname:
     type: text
     help: 'Specify the Username that will be used to enter the Network'
     title: "Set this User's Username"
-    name: account_logonscriptname
+    name: account_logon_script
     label: 'Logon Script Name'
     class: big-text
     id: account-logon-script-name
@@ -162,7 +162,7 @@ homedirpath:
     type: text
     help: 'Home Directory Path'
     title: 'Home Directory Path'
-    name: account_homedirpath
+    name: account_homedir_path
     label: 'Home Directory Path'
     class: big-text
     id: account-homedir-path
@@ -187,7 +187,7 @@ maphomedirdrive:
     type: text
     help: 'Map Home Directory to Drive'
     title: 'Map Home Directory to Drive'
-    name: account_maphomedirdrive
+    name: account_map_homedir_drive
     label: 'Map Home to Drive'
     class: big-text
     id: account-homedir-path
@@ -199,7 +199,7 @@ groups:
     type: list
     help: 'List of Groups that this User belongs to'
     title: 'Select the Groups that this User will be a part of'
-    name: share_group_list
+    name: account_group_list
     label: 'Groups'
     class: big-text
     id: account-insert-groups
