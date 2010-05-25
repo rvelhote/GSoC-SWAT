@@ -151,6 +151,7 @@ class AccountController(BaseController):
             
             if is_new:
                 self.__manager.add_group(group)
+                id = group.rid
             else:
                 self.__manager.update_group(group)
             
