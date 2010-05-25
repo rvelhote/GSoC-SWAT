@@ -113,7 +113,7 @@ locked:
     type: checkbox
     help: 'Account Locked'
     title: "Check to lock this Account"
-    name: account__account_locked_out
+    name: account_account_locked_out
     label: 'Account Locked'
     class: big-margin
     id: account-locked
