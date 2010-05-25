@@ -108,7 +108,7 @@ class AccountController(BaseController):
                 c.group = self.__manager.fetch_group(id)
             else:
                 c.group = Group("", "", -1)
-                
+     
             return render('/default/derived/edit-group.mako')
         else:
             message = _("You did not specify the type of account you want to edit")
@@ -179,61 +179,70 @@ class AccountController(BaseController):
             if must_change_password == "yes":
                 must_change_password = True
             else:
-                must_change_password = True
+                must_change_password = False
                 
             cannot_change_password = request.params.get("account_cannot_change_password", "no")
             if cannot_change_password == "yes":
                 cannot_change_password = True
             else:
-                cannot_change_password = True
-            
+                cannot_change_password = False
+
             password_never_expires = request.params.get("account_password_never_expires", "no")
             if password_never_expires == "yes":
                 password_never_expires = True
             else:
-                password_never_expires = True
+                password_never_expires = False
             
             account_disabled = request.params.get("account_account_disabled", "no")
             if account_disabled == "yes":
                 account_disabled = True
             else:
-                account_disabled = True
+                account_disabled = False
             
             account_locked_out = request.params.get("account_account_locked_out", "no")
             if account_locked_out == "yes":
                 account_locked_out = True
             else:
-                account_locked_out = True
-            
-            group_list = [Group("", "", g) for g in request.params.get("account_group_list", "").split(",")]
-            
+                account_locked_out = False
+
+            group_list = []
+            for g in request.params.get("account_group_list", "").split(","):
+                for gg in self.__manager.group_list:
+                    if gg.name == str(g):
+                        group_list.append(gg)
+
             profile_path = request.params.get("account_profile_path", "")
             logon_script = request.params.get("account_logon_script", "")
             homedir_path = request.params.get("account_homedir_path", "")
             map_homedir_drive = request.params.get("account_map_homedir_drive", "")
 
-            user = User(username, fullname, description, id)            
+            user = User(username, fullname, description, id)
+            
             user.password = password
             user.must_change_password = must_change_password
+            
             user.cannot_change_password = cannot_change_password
             user.password_never_expires = password_never_expires
             user.account_disabled = account_disabled
+            
             user.account_locked_out = account_locked_out
             user.group_list = group_list
             user.profile_path = profile_path
+            
             user.logon_script = logon_script
             user.homedir_path = homedir_path
             user.map_homedir_drive = int(map_homedir_drive)
 
             if is_new:
                 self.__manager.add_user(user)
+                id = user.rid
             else:
                 self.__manager.update_user(user)
             
             if action == "apply" or action == "save":
                 message = _("saved user id %d" % (id))
                 SwatMessages.add(message)
-                redirect_to(controller='account', action='editgroup', id = id)
+                redirect_to(controller='account', action='edituser', id = id)
 
         return "Not Implemented"
     
@@ -416,8 +425,7 @@ class SAMPipeManager:
         else:
             info.home_drive = self.set_lsa_string(chr(user.map_homedir_drive + ord('A')) + ":")
         self.pipe.SetUserInfo(user_handle, samr.UserHomeInformation, info)
-        
-        
+
         # update user's groups
         group_list = self.rwa_list_to_group_list(self.pipe.GetGroupsForUser(user_handle).rids)
  

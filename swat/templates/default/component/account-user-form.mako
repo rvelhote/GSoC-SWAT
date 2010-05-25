@@ -70,7 +70,7 @@
                     <%
                     group_ids = []
                     for g in c.user.group_list:
-                        group_ids.append(g.rid)
+                        group_ids.append(g.name)
                     %>
                     <li>${field.put("groups", group_ids)}</li>
                 </ol>
