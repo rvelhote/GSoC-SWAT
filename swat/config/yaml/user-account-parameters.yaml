@@ -215,8 +215,8 @@ groups:
                 name: users.png
                 alt: 'Select Users/Groups Icon'
             link:
-                controller: share
-                action: users_groups
+                controller: account
+                action: show_groups
                 copy-to: account-insert-groups-list
                 
         manual-add:

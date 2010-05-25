@@ -25,6 +25,8 @@ from pylons.i18n.translation import _
 from swat.lib.helpers import ControllerConfiguration, DashboardConfiguration, \
 BreadcrumbTrail, SwatMessages, ParamConfiguration, filter_list
 
+from pylons.templating import render_mako_def
+
 from samba.dcerpc import samr, security, lsa
 from samba import credentials
 from samba import param
@@ -280,6 +282,18 @@ class AccountController(BaseController):
 
         SwatMessages.add(message)
         redirect_to(controller='account', action='user')
+        
+    def show_groups(self):
+        """ """
+        already_selected = request.params.get('as', '')
+        log.debug("These are selected: " + already_selected)
+        
+        if len(already_selected) > 0:
+            already_selected = already_selected.split(',')
+        
+        return render_mako_def('/default/component/popups.mako', \
+                               'group_list', \
+                               already_selected=already_selected)
         
 class SAMPipeManager:
     """ Support Class obtained from Calin Crisan's 2009 Summer of Code project
