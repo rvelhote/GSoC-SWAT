@@ -68,23 +68,40 @@
 </%def>
     
 <%def name="user_list(already_selected)">
-    <% users = h.get_user_list() %>
+    <%
+    #
+    # FIXME Just temporary
+    #
+    from swat.controllers.account import SAMPipeManager
+    from samba.dcerpc import samr, security, lsa
+    from samba import credentials, param
+    
+    samba_lp = param.LoadParm()
+    samba_lp.load_default()
+    
+    manager = SAMPipeManager(c.samba_lp)
+    
+    domains = manager.fetch_and_get_domain_names()
+    manager.set_current_domain(0)
+    manager.fetch_users_and_groups()
+    
+    %>
     
     <h1>${_('User List')}</h1>
     <ul class="popup-list usr-list">
-        % for g in users:
+        % for g in manager.user_list:
             <%
             
             selected = ""
             operation = "add"
             
-            if g in already_selected:
+            if g.username in already_selected:
                 selected = "selected"
                 operation = "remove"
             
             %>
             <li class="${selected}">
-                <span class="name">${g}</span>
+                <span class="name" title="${g.description}">${g.username}</span>
                 <span class="operation ${operation}"></span>
             </li>
         % endfor
@@ -92,23 +109,41 @@
 </%def>
 
 <%def name="group_list(already_selected)">
-    <% groups = h.get_group_list() %>
+    <%
+    #
+    # FIXME Just temporary
+    #
+    from swat.controllers.account import SAMPipeManager
+    from samba.dcerpc import samr, security, lsa
+    from samba import credentials, param
+    
+    samba_lp = param.LoadParm()
+    samba_lp.load_default()
+    
+    manager = SAMPipeManager(c.samba_lp)
+    
+    domains = manager.fetch_and_get_domain_names()
+    manager.set_current_domain(0)
+    manager.fetch_users_and_groups()
+
+    
+    %>
     
     <h1>${_('Group List')}</h1>
     <ul class="popup-list grp-list">
-        % for g in groups:
+        % for g in manager.group_list:
             <%
             
             selected = ""
             operation = "add"
             
-            if "@" + g.gr_name in already_selected:
+            if "@" + g.name in already_selected:
                 selected = "selected"
                 operation = "remove"
             
             %>
             <li class="${selected}">
-                <span class="name">${g.gr_name}</span>
+                <span class="name" title="${g.description}">${g.name}</span>
                 <span class="operation ${operation}"></span>
             </li>
         % endfor
