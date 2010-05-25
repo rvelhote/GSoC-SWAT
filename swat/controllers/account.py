@@ -365,12 +365,10 @@ class SAMPipeManager:
     def add_group(self, group):
         (group_handle, rid) = self.pipe.CreateDomainGroup(self.domain_handle, self.set_lsa_string(group.name), security.SEC_FLAG_MAXIMUM_ALLOWED)        
         group.rid = rid
-        group = self.fetch_group(rid, group)
-        
+
         self.update_group(group)
         group = self.fetch_group(rid, group) # just to make sure we have the updated group properties
-        
-        
+                
         self.group_list.append(group)
 
     def update_user(self, user):
