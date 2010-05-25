@@ -138,6 +138,12 @@ class AuthenticationController(BaseController):
         try:
             pipe = samr.samr("ncalrpc:", lp, credentials)
             connect_handle = pipe.Connect(None, security.SEC_FLAG_MAXIMUM_ALLOWED)
+            
+            #
+            # TODO Must find a better way!
+            #
+            session["samr_u"] = credentials.get_username()
+            session["samr_p"] = credentials.get_password()
         except Exception, e:
             self.__reason = str(e)  
         else:

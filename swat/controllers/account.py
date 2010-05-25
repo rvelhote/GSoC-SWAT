@@ -305,17 +305,13 @@ class SAMPipeManager:
     def __init__(self, lp):
         self.user_list = []
         self.group_list = []
-        
+
         #
-        # FIXME Don't know how I will store this between refreshes. Maybe the
-        # pipe/connect_handle should be stored in the session?
+        # TODO Must find a better way!
         #
-        username = "administrator"
-        password = "x"
-        
         creds = credentials.Credentials()
-        creds.set_username(username)
-        creds.set_password(password)
+        creds.set_username(session["samr_u"])
+        creds.set_password(session["samr_p"])
         creds.set_domain("")
 
         if request.environ.has_key("REMOTE_HOST"):
