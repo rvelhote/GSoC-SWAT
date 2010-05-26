@@ -78,7 +78,7 @@
         </ul>
      
         <div>
-            ${h.hidden("task", request.environ['pylons.routes_dict']['action'])}
+            ${h.hidden("task", request.environ['pylons.routes_dict']['subaction'])}
             ${h.hidden("id", c.user.rid)}
             ${h.hidden("type", "user")}
         </div>
