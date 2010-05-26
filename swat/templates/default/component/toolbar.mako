@@ -32,7 +32,11 @@
 <%def name="write_item(action)">
     <%
     
-    link = h.url_for(controller = c.config.get_controller(), action = c.config.get_action_info('link/action', action))
+    if len(c.config.get_action_info('link/subaction', action)) > 0:
+	link = h.url_for(controller = c.config.get_controller(), action = c.config.get_action_info('link/action', action), subaction = c.config.get_action_info('link/subaction', action))
+    else:
+	link = h.url_for(controller = c.config.get_controller(), action = c.config.get_action_info('link/action', action))
+	
     submit = ''
     mass_submit = ''
     confirmation = ''
