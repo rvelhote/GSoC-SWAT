@@ -211,7 +211,7 @@ class AccountController(BaseController):
             group_list = []
             for g in request.params.get("account_group_list", "").split(","):
                 for gg in self.__manager.group_list:
-                    if gg.name == str(g):
+                    if gg.name == g.strip():
                         group_list.append(gg)
 
             profile_path = request.params.get("account_profile_path", "")
