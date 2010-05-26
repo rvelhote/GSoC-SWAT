@@ -56,7 +56,8 @@ actions:
         link:
             name: 'add a new user'
             title: 'Add a New User to the Account Database'
-            action: adduser
+            action: user
+            subaction: add
 
         image:
             name: user-plus.png
@@ -154,6 +155,7 @@ actions:
            name: 'cancel'
            title: 'Cancel User/Group creation'
            action: cancel
+           submit: True
 
        image:
            name: minus-circle.png
