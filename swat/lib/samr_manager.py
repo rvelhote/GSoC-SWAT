@@ -264,6 +264,48 @@ class SAMPipeManager:
             group.description = self.get_lsa_string(query_info.description)
         
         return group
+    
+    def group_exists(self, id):
+        """ Checks if a certain Group (identified by its ID) exists in the
+        Database
+        
+        Keyword arguments:
+        id -- The ID of the Group to check
+        
+        Returns:
+        Boolean indicating if the Group exists or not
+        
+        """
+        exists = False
+        
+        try:
+            self.pipe.OpenGroup(self.domain_handle, security.SEC_FLAG_MAXIMUM_ALLOWED, id)
+            exists = True
+        except RuntimeError:
+            pass
+        
+        return exists
+    
+    def user_exists(self, id):
+        """ Checks if a certain User (identified by its ID) exists in the
+        Database
+        
+        Keyword arguments:
+        id -- The ID of the User to check
+        
+        Returns:
+        Boolean indicating if the User exists or not
+        
+        """
+        exists = False
+        
+        try:
+            self.pipe.OpenUser(self.domain_handle, security.SEC_FLAG_MAXIMUM_ALLOWED, id)
+            exists = True
+        except RuntimeError:
+            pass
+        
+        return exists
 
     @staticmethod
     def toArray((handle, array, num_entries)):
