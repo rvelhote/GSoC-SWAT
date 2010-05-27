@@ -99,7 +99,13 @@ class AccountController(BaseController):
         if subaction == "edit" or subaction == "add":
             c.p = ParamConfiguration('user-account-parameters')
             c.user = user_manager.edit(id, is_new)
-            template = "/default/derived/edit-user-account.mako"
+
+            if c.user is not None:
+                template = "/default/derived/edit-user-account.mako"
+            else:
+                message = _("Unable to get User to edit")
+                type = "critical"
+                SwatMessages.add(message, type)
         ##
         ## Save the changes made to a User
         ##
@@ -111,7 +117,12 @@ class AccountController(BaseController):
                 message = _("Sucessfuly saved the User with the ID %s" % (id))
             else:
                 type = "critical"
-                message = _("Error saving the User with the ID %s" % (id))
+                cause = ""
+                
+                if user_manager.has_message():
+                    cause = user_manager.get_message()
+                
+                message = _("Error saving the User with the ID %s: %s" % (id, cause))
                 
             SwatMessages.add(message, type)
             
@@ -372,32 +383,75 @@ class AccountController(BaseController):
                                already_selected=already_selected)
 
 class UserManager(object):
-    """ """
+    """ Manager CRUD Operations for User Accounts """
     def __init__(self, manager):
-        """ """
+        """ Class Constructor
+        
+        Keyword arguments
+        manager -- A SAMPipeManager Instance with a valid connection to Samba
+        
+        """
         self.__manager = manager
+        self.__message = ""
         
     def edit(self, id, is_new):
-        """ """
-        if not is_new:
-            user = self.__manager.fetch_user(id)
-        else:
-            user = User("", "", "", -1)
+        """ Gets a User for editing. If we are adding a new User an empty
+        User object will be returned
+        
+        Keyword arguments:
+        id -- The ID of the User we are editing
+        is_new -- Indicated if the User we are editing is new (actually means
+        we are adding one) or not
+        
+        Returns:
+        A User Object or None if there is an error
+        
+        """
+        user = None
+
+        try:
+            if not is_new:
+                user = self.__manager.fetch_user(id)
+            else:
+                user = User("", "", "", -1)
+        except RuntimeError as message:
+            log.debug(message)
+            self.__set_message(message)
             
         return user
     
     def remove(self, id):
+        """ Removes a User with a certain ID from the User Database
+        
+        Keyword arguments:
+        id -- The ID of the User to remove
+        
+        Returns:
+        Boolean indicating if the operation suceeded or not
+        
+        """
         removed = False
         
         try:
             self.__manager.delete_user(User("", "", "", id))
             removed = True
-        except RuntimeError, message:
-            pass
+        except RuntimeError as message:
+            log.debug(message)
+            self.__set_message(message)
         
         return removed
 
     def save(self, id, is_new):
+        """ Saves User Information to the Database
+        
+        Keyword arguments:
+        id -- If the User already exists this will be his ID
+        is_new -- Indicates if we are the user we are adding if new or not
+        
+        Returns:
+        Boolean indicating if the operation suceeded or not
+        
+        """
         saved = False
         
         try:
@@ -474,12 +528,130 @@ class UserManager(object):
                 self.__manager.update_user(user)
             
             saved = True
-        except RuntimeError, error:
-            log.debug(error.message)
+        except RuntimeError as message:
+            log.debug(message)
+            self.__set_message(message)
         except TypeError, error:
-            log.debug(error.message)
+            log.debug(message)
+            self.__set_message(message)
  
         return saved
+    
+    def get_message(self):
+        """ Gets the Status Message set by this Class """
+        return self.__message
+    
+    def __set_message(self, message):
+        """ Sets the Status Message for this Class """
+        self.__message = str(message[1])
+        
+    def has_message(self):
+        """ Checks if there is a Status Message to show to the User """
+        if len(self.__message) > 0:
+            return True
+        return False
 
 class GroupManager(object):
-    pass
+    def __init__(self, manager):
+        """ Class Constructor
+        
+        Keyword arguments
+        manager -- A SAMPipeManager Instance with a valid connection to Samba
+        
+        """
+        self.__manager = manager
+        self.__message = ""
+
+    def edit(self, id, is_new):
+        """ Gets a Group for editing. If we are adding a new Group an empty
+        Group object will be returned
+        
+        Keyword arguments:
+        id -- The ID of the Group we are editing
+        is_new -- Indicated if the Group we are editing is new (actually means
+        we are adding one) or not
+        
+        Returns:
+        A Group Object or None if there is an error
+        
+        """
+        group = None
+
+        try:
+            if not is_new:
+                group = self.__manager.fetch_group(id)
+            else:
+                group = Group("", "", -1)
+        except RuntimeError as message:
+            log.debug(message)
+            self.__set_message(message)
+            
+        return group
+    
+    def remove(self, id):
+        """ Removes a Group with a certain ID from the Group Database
+        
+        Keyword arguments:
+        id -- The ID of the Group to remove
+        
+        Returns:
+        Boolean indicating if the operation suceeded or not
+        
+        """
+        removed = False
+        
+        try:
+            self.__manager.delete_group(Group("", "", id))
+            removed = True
+        except RuntimeError as message:
+            log.debug(message)
+            self.__set_message(message)
+        
+        return removed
+    
+    def save(self, id, is_new):
+        """ Saves Group Information to the Database
+        
+        Keyword arguments:
+        id -- If the Group already exists this will be its ID
+        is_new -- Indicates if we are the Group we are adding if new or not
+        
+        Returns:
+        Boolean indicating if the operation suceeded or not
+        
+        """
+        saved = False
+        
+        name = request.params.get("group_name", "")
+        description = request.params.get("group_description", "")
+
+        try:
+            group = Group(name, description, id)
+            
+            if is_new:
+                self.__manager.add_group(group)
+                id = group.rid
+            else:
+                self.__manager.update_group(group)
+                
+            saved = True
+        except RuntimeError as message:
+            log.debug(message)
+            self.__set_message(message)
+            
+        return saved
+
+    """ Manager CRUD Operations for Groups """
+    def get_message(self):
+        """ Gets the Status Message set by this Class """
+        return self.__message
+    
+    def __set_message(self, message):
+        """ Sets the Status Message for this Class """
+        self.__message = str(message[1])
+        
+    def has_message(self):
+        """ Checks if there is a Status Message to show to the User """
+        if len(self.__message) > 0:
+            return True
+        return False
