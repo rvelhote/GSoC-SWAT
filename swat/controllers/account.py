@@ -104,11 +104,11 @@ class AccountController(BaseController):
         ## Save the changes made to a User
         ##
         elif subaction == "save" or subaction == "apply":
-            saved = user_manager.save(id, is_new)
+            (new_id, saved) = user_manager.save(id, is_new)
             
             if saved:
                 type = "cool"
-                message = _("Sucessfuly saved the User with the ID %s" % (id))
+                message = _("Sucessfuly saved the User with the ID %s" % (new_id))
             else:
                 type = "critical"
                 cause = _("Unkown Reason")
@@ -116,14 +116,14 @@ class AccountController(BaseController):
                 if user_manager.has_message():
                     cause = user_manager.get_message()
                 
-                message = _("Error saving the User with the ID %s: %s" % (id, cause))
+                message = _("Error saving the User with the ID %s: %s" % (new_id, cause))
                 
             SwatMessages.add(message, type)
             
             if subaction == "save":
                 redirect_to(controller='account', action='user')
             elif subaction == "apply":
-                redirect_to("account_action", action='user', subaction='edit', id=id)
+                redirect_to("account_action", action='user', subaction='edit', id=new_id)
             
         ## 
         ## Remove a Certain User
@@ -165,7 +165,7 @@ class AccountController(BaseController):
         
         if id == -1:
             is_new = True
-            
+
         ##
         ## Edit a Group
         ##
@@ -189,7 +189,7 @@ class AccountController(BaseController):
         ## Save the changes made to a Group
         ##
         elif subaction == "save" or subaction == "apply":
-            saved = group_manager.save(id, is_new)
+            (new_id, saved) = group_manager.save(id, is_new)
             
             if saved:
                 type = "cool"
@@ -204,11 +204,11 @@ class AccountController(BaseController):
                 message = _("Error saving the Group with the ID %s: %s" % (id, cause))
                 
             SwatMessages.add(message, type)
-            
+                        
             if subaction == "save":
                 redirect_to(controller='account', action='group')
             elif subaction == "apply":
-                redirect_to("account_action", action='group', subaction='edit', id=id)
+                redirect_to("account_action", action='group', subaction='edit', id=new_id)
             
         ## 
         ## Remove a Certain Group
@@ -240,7 +240,7 @@ class AccountController(BaseController):
             c.list_groups = True
             
             template = '/default/derived/account.mako'
-            
+
         return render(template)
         
     def save(self):
@@ -434,7 +434,7 @@ class UserManager(object):
             log.debug(message)
             self.__set_message(message)
  
-        return saved
+        return (id, saved)
     
     def get_message(self):
         """ Gets the Status Message set by this Class """
@@ -538,7 +538,7 @@ class GroupManager(object):
             log.debug(message)
             self.__set_message(message)
             
-        return saved
+        return (id, saved)
 
     """ Manager CRUD Operations for Groups """
     def get_message(self):
