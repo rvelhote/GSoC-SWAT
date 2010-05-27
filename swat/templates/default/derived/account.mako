@@ -156,10 +156,10 @@ ${options(c.config.get_action())}
         
             <tr id="row-group-${i}" title="${_('Edit Group')}" class="${tr_class}">
                 <td><input value="${group.name}" onchange="selectShareRow(this);" name="name" type="checkbox" id="check-row-group-${i}" /></td>
-                <td onclick="clickableRow('${h.url_for(action = 'editgroup', id = group.rid)}');">${i}</td>
-                <td onclick="clickableRow('${h.url_for(action = 'editgroup', id = group.rid)}');">${group.rid}</td>
-                <td onclick="clickableRow('${h.url_for(action = 'editgroup', id = group.rid)}');">${group.name}</td>
-                <td onclick="clickableRow('${h.url_for(action = 'editgroup', id = group.rid)}');">${group.description}</td>
+                <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='group', subaction='edit', id = group.rid)}');">${i}</td>
+                <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='group', subaction='edit', id = group.rid)}');">${group.rid}</td>
+                <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='group', subaction='edit', id = group.rid)}');">${group.name}</td>
+                <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='group', subaction='edit', id = group.rid)}');">${group.description}</td>
                 <td>${quick_tasks(group.rid, "Group", False)}</td>
             </tr>
             
