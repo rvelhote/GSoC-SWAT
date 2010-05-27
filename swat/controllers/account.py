@@ -179,8 +179,8 @@ class AccountController(BaseController):
                 type = "critical"
                 cause = _("Unkown Reason")
                 
-                if user_manager.has_message():
-                    cause = user_manager.get_message()
+                if group_manager.has_message():
+                    cause = group_manager.get_message()
                     
                 message = _("Unable to get Group to edit - %s", (cause))
                 SwatMessages.add(message, type)
@@ -223,8 +223,8 @@ class AccountController(BaseController):
                 type = "critical"
                 cause = _("Unkown Reason")
                 
-                if user_manager.has_message():
-                    cause = user_manager.get_message()
+                if group_manager.has_message():
+                    cause = group_manager.get_message()
                 
                 message = _("Error deleting the Group with the ID %s - %s" % (id, cause))
                 
