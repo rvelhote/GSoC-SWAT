@@ -72,7 +72,8 @@ actions:
         link:
             name: 'add a new group'
             title: 'Add a New Group to the Account Database'
-            action: addgroup
+            action: group
+            subaction: add
 
         image:
             name: users-plus.png
@@ -117,7 +118,7 @@ actions:
        
        image:
            name: disk.png
-           alt: 'Save Share Icon'
+           alt: 'Save User/Group Icon'
 
     #
     #   Save Account Information but return to edit mode (apply)
