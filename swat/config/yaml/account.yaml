@@ -1,10 +1,10 @@
-#
-#   Define this Controller's Actions
-#
+##
+##   Define this Controller's Actions
+##
 actions:
-    #
-    #   Default Action (index)
-    #
+    ##
+    ##   Default Action (index)
+    ##
     index:
         friendly_name: 'Account Management'
         
@@ -17,9 +17,9 @@ actions:
             name: users.png
             alt: 'List Accounts Icon'
             
-    #
-    #   Show Only Users
-    #
+    ##
+    ##   User "Sub-Controller" Index
+    ##
     user:
         friendly_name: 'User Management'
         
@@ -32,9 +32,9 @@ actions:
             name: user-white.png
             alt: 'List Users Icon'
             
-    #
-    #   Show Only Groups
-    #
+    ##
+    ##   Group "Sub-Controller" Index
+    ##
     group:
         friendly_name: 'Group Management'
         
@@ -47,9 +47,9 @@ actions:
             name: user-business.png
             alt: 'List Groups Icon'
             
-    #
-    #   Add a User
-    #
+    ##
+    ##   Add a User
+    ##
     adduser:
         friendly_name: 'Add a User'
         
@@ -63,9 +63,9 @@ actions:
             name: user-plus.png
             alt: 'Add New User Icon'
             
-    #
-    #   Add a Group
-    #
+    ##
+    ##   Add a Group
+    ##
     addgroup:
         friendly_name: 'Add a Group'
         
@@ -79,36 +79,54 @@ actions:
             name: users-plus.png
             alt: 'Add New Group Icon'
 
-    #
-    #   Add a User
-    #
+    ##
+    ##   Edit a User
+    ##
     edituser:
         friendly_name: 'Edit User'
             
-    #
-    #   Add a Group
-    #
+    ##
+    ##   Edit a Group
+    ##
     editgroup:
         friendly_name: 'Edit Group'
 
-    #
-    #   Remove a User or Group
-    #
-    remove:
-        friendly_name: 'Remove a User or Group'
+    ##
+    ##   Remove a User
+    ##
+    removeuser:
+        friendly_name: 'Remove a User'
         
         link:
-            name: 'remove user/group'
-            title: 'Remove a User or Group from the Account Database'
-            action: remove
+            name: 'remove a user'
+            title: 'Remove a User from the Account Database'
+            action: user
+            subaction: remove
 
         image:
             name: user-minus.png
-            alt: 'List Groups Icon'
+            alt: 'Remove User Icon'
             
-    #
-    #   Save Account Information (save)
-    #
+    ##
+    ##   Remove a Group
+    ##
+    removegroup:
+        friendly_name: 'Remove a Group'
+        
+        link:
+            name: 'remove a group'
+            title: 'Remove a Group from the Account Database'
+            action: group
+            subaction: remove
+
+        image:
+            name: user-minus.png
+            alt: 'Remove Group Icon'
+            
+    ##
+    ##  Save Account Information
+    ##  Works for Users and Groups 
+    ##
     save:
        link:
            name: 'save'
@@ -120,9 +138,10 @@ actions:
            name: disk.png
            alt: 'Save User/Group Icon'
 
-    #
-    #   Save Account Information but return to edit mode (apply)
-    #
+    ##
+    ##  Save Account Information but return to edit mode (apply)
+    ##  Works for Users and Groups 
+    ##
     apply:
        link:
            name: 'apply'     
@@ -134,9 +153,9 @@ actions:
            name: disk-arrow.png
            alt: 'Apply Changes Icon'
 
-    #
-    #   Save Account Information and return to the Add screen (save-add)
-    #
+    ##
+    ##  Save Account Information and return to the Add screen
+    ##
     save-add:
        link:
            name: 'save and add another'     
@@ -148,9 +167,9 @@ actions:
            name: disk-arrow.png
            alt: 'Save and Add Another Icon'
 
-    #
-    #   Cancel Add/Editing (cancel)
-    #
+    ##
+    ##   Cancel Add/Editing
+    ##
     cancel:
        link:
            name: 'cancel'
@@ -162,21 +181,23 @@ actions:
            name: minus-circle.png
            alt: 'Cancel Icon'
             
-#
-#   Toolbar Actions
-#
+##
+##   Toolbar Actions
+##
 toolbar:
     index:
         - adduser
         - addgroup
+        - user
+        - group
         
     user:
         - adduser
-        - remove
+        - removeuser
         
     group:
         - addgroup
-        - remove
+        - removegroup
         
     edituser:
         - save
@@ -200,9 +221,9 @@ toolbar:
         - apply
         - cancel
 
-#
-#   Dashboard Actions and Title
-#
+##
+##   Dashboard Actions and Title
+##
 dashboard:
     link:
         name: 'Account Management'
@@ -214,16 +235,15 @@ dashboard:
         alt: 'Account Management Icon'
 
         
-    #
-    #
-    #
+    ##
+    ##
+    ##
     actions:
-        - index
         - user
         - group
         
-#
-#   Controller Information
-#
+##
+##   Controller Information
+##
 controller:
     is_advanced: False
