@@ -32,8 +32,9 @@ def make_map():
         map.connect('/', controller='error', action='no_libs')
 
     map.connect('/{controller}/{action}')
-    map.connect('/{controller}/{action}/{subaction}', subaction='add')
-    map.connect('share_action', '/{controller}/{action}/{name}', controller='share')
-    map.connect('account_action', '/{controller}/{action}/{subaction}/{id}', controller='account')
+    map.connect('share_action', '/share/{action}/{name}', controller='share')
+    
+    map.connect('account_action', '/account/{action}/{subaction}/{id}', controller='account')
+    map.connect('with_subaction', '/{controller}/{action}/{subaction}')
 
     return map
