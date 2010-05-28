@@ -365,7 +365,7 @@ class UserManager(object):
             confirm_password = request.params.get("confirm_password", "")
             
             if len(password) > 0 and password != confirm_password:
-                return False
+                raise RuntimeError(-1, _("Passwords do not match"))
             
             user = User(username, fullname, description, id)
             
