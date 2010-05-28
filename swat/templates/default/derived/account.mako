@@ -90,7 +90,7 @@ ${options(c.config.get_action())}
             % endif
         
             <tr id="row-user-${i}" title="${_('Edit User')}" class="${tr_class}">
-                <td><input value="${user.username}" onchange="selectShareRow(this);" name="name" type="checkbox" id="check-row-user-${i}" /></td>
+                <td><input value="${user.rid}" onchange="selectShareRow(this);" name="name" type="checkbox" id="check-row-user-${i}" /></td>
                 <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='user', subaction='edit', id=user.rid)}');">${i}</td>
                 <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='user', subaction='edit', id=user.rid)}');">${user.rid}</td>
                 <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='user', subaction='edit', id=user.rid)}');">${user.username}</td>
@@ -155,7 +155,7 @@ ${options(c.config.get_action())}
             % endif
         
             <tr id="row-group-${i}" title="${_('Edit Group')}" class="${tr_class}">
-                <td><input value="${group.name}" onchange="selectShareRow(this);" name="name" type="checkbox" id="check-row-group-${i}" /></td>
+                <td><input value="${group.rid}" onchange="selectShareRow(this);" name="name" type="checkbox" id="check-row-group-${i}" /></td>
                 <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='group', subaction='edit', id = group.rid)}');">${i}</td>
                 <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='group', subaction='edit', id = group.rid)}');">${group.rid}</td>
                 <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='group', subaction='edit', id = group.rid)}');">${group.name}</td>
