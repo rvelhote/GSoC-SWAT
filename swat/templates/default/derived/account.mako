@@ -160,7 +160,7 @@ ${options(c.config.get_action())}
                 <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='group', subaction='edit', id = group.rid)}');">${group.rid}</td>
                 <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='group', subaction='edit', id = group.rid)}');">${group.name}</td>
                 <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='group', subaction='edit', id = group.rid)}');">${group.description}</td>
-                <td>${quick_tasks(group.rid, "Group", False)}</td>
+                <td style="min-width:35px;">${quick_tasks(group.rid, "Group", False)}</td>
             </tr>
             
             <% i = i + 1 %>
