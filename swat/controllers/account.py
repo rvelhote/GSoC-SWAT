@@ -88,6 +88,9 @@ class AccountController(BaseController):
         c.list_users = True
         c.list_groups = False
         
+        if len(c.filter_name) > 0:
+            c.user_list = self.__filter_users(c.user_list, c.filter_name)
+        
         if id == -1:
             is_new = True
                 
@@ -166,6 +169,9 @@ class AccountController(BaseController):
         c.group_list = self.__manager.group_list
         c.list_users = False
         c.list_groups = True
+        
+        if len(c.filter_name) > 0:
+            c.group_list = self.__filter_groups(c.group_list, c.filter_name)
         
         if id == -1:
             is_new = True
@@ -274,6 +280,28 @@ class AccountController(BaseController):
         return render_mako_def('/default/component/popups.mako', \
                                'group_list', \
                                already_selected=already_selected)
+        
+    def __filter_groups(self, items, regex='.*'):
+        """ TODO Must Improve """
+        import re
+        temp = []
+        
+        for item in items:
+            if re.search(regex, item.name, re.IGNORECASE) is not None:
+                temp.append(item)
+                
+        return temp
+    
+    def __filter_users(self, items, regex='.*'):
+        """ TODO Must Improve """
+        import re
+        temp = []
+        
+        for item in items:
+            if re.search(regex, item.username, re.IGNORECASE) is not None:
+                temp.append(item)
+                
+        return temp
 
 class UserManager(object):
     """ Manager CRUD Operations for User Accounts """
