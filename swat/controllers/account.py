@@ -33,14 +33,9 @@ from samba import param
 log = logging.getLogger(__name__)
 
 class AccountController(BaseController):
-    """ Account Management Controller.
-    
-    TODO Too many *group/user actions. I think this should be improved. No idea
-    how yet :)
-    
-    """
+    """ Account Management Controller """
     def __init__(self):
-        """ """
+        """ Initialization """
         me = request.environ['pylons.routes_dict']['controller']
         action = request.environ['pylons.routes_dict']['action']
         
@@ -76,7 +71,7 @@ class AccountController(BaseController):
         c.list_users = True
         c.list_groups = True
         
-        return render('/default/derived/account.mako')
+        return render('/default/derived/account-dashboard.mako')
     
     def user(self, subaction="index", id=-1):
         id = int(id)        
