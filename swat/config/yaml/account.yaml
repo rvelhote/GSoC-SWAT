@@ -102,6 +102,10 @@ actions:
             title: 'Remove a User from the Account Database'
             action: user
             subaction: remove
+            submit: True
+            mass_submit: True
+            require_confirm: True
+            confirm_message: 'Are you sure you want to remove the selected Users'
 
         image:
             name: user-minus.png

@@ -15,6 +15,7 @@
 # 
 import logging
 
+from formencode import variabledecode
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect_to, url_for
 
@@ -133,24 +134,37 @@ class AccountController(BaseController):
                 redirect_to("account_action", action='user', subaction='edit', id=new_id)
             
         ## 
-        ## Remove a Certain User
+        ## Remove a Certain User or a List of Users
         ## 
         elif subaction == "remove":
-            removed = user_manager.remove(id)
+            list_uid = variabledecode.variable_decode(request.params).get("uid", id)
+            ok_list = []
             
-            if removed:
-                type = "cool"
-                message = _("Sucessfuly deleted the User with the ID %s" % (id))
-            else:
-                type = "critical"
-                cause = _("Unkown Reason")
+            if not isinstance(list_uid, list):
+                list_uid = [list_uid]
+
+            for uid in list_uid:
+                uid = int(uid)
+                removed = user_manager.remove(uid)
+
+                if removed:
+                    ok_list.append(uid)
+                    log.info("Deleted " + str(uid) + " :: success: " + str(removed))
+                else:
+                    SwatMessages.add(user_manager.get_message(), "critical")
+                    
+            if len(ok_list) > 0:
+                joined = ", ".join(["%d" % v for v in ok_list])
                 
-                if user_manager.has_message():
-                    cause = user_manager.get_message()
+                if len(ok_list) == 1:
+                    message = _("The User with the ID %s was deleted sucessfuly" \
+                                % (joined))
+                else:    
+                    message = _("The Users IDs [%s] were deleted sucessfuly" \
+                                % (joined))
                 
-                message = _("Error deleting the User with the ID %s  " % (id, cause))
+                SwatMessages.add(message)
                 
-            SwatMessages.add(message, type)
             redirect_to(controller='account', action='user')
 
         return render(template)

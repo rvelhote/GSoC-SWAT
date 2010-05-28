@@ -19,6 +19,12 @@
 <%namespace name="toolbar" file="/default/component/toolbar.mako" />
 <%namespace name="pagination" file="/default/component/pagination.mako" />
 
+<script type="text/javascript">
+    window.addEvent("domready", function() {
+        formSubmission = new FormSubmit({formId: 'account-list'});
+    });
+</script>
+
 ${parent.action_title(c.config.get_action_info('friendly_name'))}
 ${toolbar.write(c.config.get_toolbar_items())}
 ${options(c.config.get_action())}
@@ -39,6 +45,8 @@ ${options(c.config.get_action())}
 
 <%doc>TODO make tabs or mix them up?</%doc>
 <%def name="user_table(users, table_id='user-list', table_class='')">
+
+${h.form('', method="post", id="account-list", class_="")}
 
     % if len(users) > 0:
         <% table_class = table_class + " not-empty" %>
@@ -101,9 +109,11 @@ ${options(c.config.get_action())}
             <% i = i + 1 %>
         % endfor
     </table>
+${h.end_form()}
 </%def>
 
 <%def name="group_table(groups, table_id='group-list', table_class='')">
+${h.form('', method="post", id="account-list", class_="")}
     % if len(groups) > 0:
         <% table_class = table_class + " not-empty" %>
     % endif
@@ -166,6 +176,7 @@ ${options(c.config.get_action())}
             <% i = i + 1 %>
         % endfor
     </table>
+${h.end_form()}
 </%def>
     
 <%def name="quick_tasks(id, type, is_disabled=False)">
