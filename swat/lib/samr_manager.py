@@ -306,6 +306,33 @@ class SAMPipeManager:
             pass
         
         return exists
+    
+    def get_users_in_group(self, gid):
+        """ Gets all users in a certain group
+        
+        Keyword arguments:
+        id -- The Group ID
+        
+        Returns:
+        A list of Users that belong to the specified Group
+        
+        """
+        list = []
+        for user in self.user_list:
+            try:
+                user_handle = self.pipe.OpenUser(self.domain_handle, security.SEC_FLAG_MAXIMUM_ALLOWED, user.rid)
+                group_list = self.rwa_list_to_group_list(self.pipe.GetGroupsForUser(user_handle).rids)
+                
+                for group in group_list:
+                    if gid == group.rid:
+                        list.append(user)
+                        break
+                
+            except RuntimeError:
+                pass
+            
+        return list
+        
 
     @staticmethod
     def toArray((handle, array, num_entries)):
