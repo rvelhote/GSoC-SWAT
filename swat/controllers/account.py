@@ -304,6 +304,9 @@ class UserManager(object):
 
         try:
             if not is_new:
+                if not self.__manager.user_exists(id):
+                    raise RuntimeError(-1, _("User does not exist in the Database"))
+                    
                 user = self.__manager.fetch_user(id)
             else:
                 user = User("", "", "", -1)
@@ -326,6 +329,9 @@ class UserManager(object):
         removed = False
         
         try:
+            if not self.__manager.user_exists(id):
+                raise RuntimeError(-1, _("User does not exist in the Database"))
+                    
             self.__manager.delete_user(User("", "", "", id))
             removed = True
         except RuntimeError as message:
@@ -418,6 +424,9 @@ class UserManager(object):
                 self.__manager.add_user(user)
                 id = user.rid
             else:
+                if not self.__manager.user_exists(id):
+                    raise RuntimeError(-1, _("User does not exist in the Database"))
+                    
                 self.__manager.update_user(user)
             
             saved = True
@@ -472,6 +481,9 @@ class GroupManager(object):
 
         try:
             if not is_new:
+                if not self.__manager.group_exists(id):
+                    raise RuntimeError(-1, _("Group does not exist in the Database"))
+                
                 group = self.__manager.fetch_group(id)
             else:
                 group = Group("", "", -1)
@@ -494,6 +506,9 @@ class GroupManager(object):
         removed = False
         
         try:
+            if not self.__manager.group_exists(id):
+                raise RuntimeError(-1, _("Group does not exist in the Database"))
+
             self.__manager.delete_group(Group("", "", id))
             removed = True
         except RuntimeError as message:
@@ -525,6 +540,9 @@ class GroupManager(object):
                 self.__manager.add_group(group)
                 id = group.rid
             else:
+                if not self.__manager.group_exists(id):
+                    raise RuntimeError(-1, _("Group does not exist in the Database"))
+
                 self.__manager.update_group(group)
                 
             saved = True
