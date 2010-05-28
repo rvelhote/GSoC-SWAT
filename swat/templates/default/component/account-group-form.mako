@@ -23,7 +23,10 @@
         <ol class="tab-list">
             <li id="tab1" class="active">
                 <h3><a title="${_('Basic Group Configuration')}" class="title-icon basic-tab" href="#">${_('Basic')}</a></h3>                           
-            </li>              
+            </li>
+            <li id="tab2">
+                <h3><a title="${_('Group Members')}" class="title-icon basic-tab" href="#">${_('Members')}</a></h3>                           
+            </li>   
         </ol>
     
         <ul class="tab-list-items"> 
@@ -33,6 +36,23 @@
                     <li>${field.put("description", c.group.description)}</li>
                 </ol>
             </li>
+            
+            <li id="content-tab2" class="tab">
+                % if c.user_group_list is not None and len(c.user_group_list) > 0:
+                    <b>${_("There are %d Users assigned to this Group" % (len(c.user_group_list)))}</b>
+                    
+                    <ol>
+                        % for user in c.user_group_list:
+                            <li style="list-style-type:decimal-leading-zero;list-style-position:inside;">
+                                <a target="_blank" title="${_('Edit this User. Will open in a New Window')}" href="${h.url_for("account_action", action="user", subaction="edit", id=user.rid)}">${user.username}</a>
+                            </li>
+                        % endfor
+                    </ol>
+                    
+                % else:
+                    ${_("There are no Users assigned to this Group")}
+                % endif
+            </li>            
         </ul>
         
         <div>

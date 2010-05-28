@@ -89,7 +89,7 @@ class AccountController(BaseController):
         
         if id == -1:
             is_new = True
-                
+
         ##
         ## Edit a User
         ##
@@ -193,6 +193,7 @@ class AccountController(BaseController):
             c.group = group_manager.edit(id, is_new)
 
             if c.group is not None:
+                c.user_group_list = self.__manager.get_users_in_group(id)
                 template = "/default/derived/edit-group.mako"
             else:
                 type = "critical"

@@ -27,6 +27,7 @@ ${form.write()}
 
 <script type="text/javascript">
     window.addEvent("domready", function() {
+        tabs = new TabGroup();
         formSubmission = new FormSubmit({formId: 'group-form'});
     });
 </script>
