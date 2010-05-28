@@ -81,8 +81,12 @@ class AccountController(BaseController):
     def user(self, subaction="index", id=-1):
         id = int(id)        
         user_manager = UserManager(self.__manager)
-
+        template = "/default/derived/account.mako"
         is_new = False
+        
+        c.user_list = self.__manager.user_list
+        c.list_users = True
+        c.list_groups = False
         
         if id == -1:
             is_new = True
@@ -97,8 +101,13 @@ class AccountController(BaseController):
             if c.user is not None:
                 template = "/default/derived/edit-user-account.mako"
             else:
-                message = _("Unable to get User to edit")
                 type = "critical"
+                cause = _("Unkown Reason")
+                
+                if group_manager.has_message():
+                    cause = group_manager.get_message()
+                
+                message = _("Unable to get User to edit - %s" % (cause))
                 SwatMessages.add(message, type)
         ##
         ## Save the changes made to a User
@@ -145,23 +154,18 @@ class AccountController(BaseController):
                 
             SwatMessages.add(message, type)
             redirect_to(controller='account', action='user')
-            
-        ##
-        ## 
-        ##
-        else:
-            c.user_list = self.__manager.user_list        
-            c.list_users = True
-            c.list_groups = False
-            template = "/default/derived/account.mako"
 
         return render(template)
     
     def group(self, subaction="index", id=-1):
         id = int(id)        
         group_manager = GroupManager(self.__manager)
-
+        template = '/default/derived/account.mako'
         is_new = False
+        
+        c.group_list = self.__manager.group_list
+        c.list_users = False
+        c.list_groups = True
         
         if id == -1:
             is_new = True
@@ -182,7 +186,7 @@ class AccountController(BaseController):
                 if group_manager.has_message():
                     cause = group_manager.get_message()
                     
-                message = _("Unable to get Group to edit - %s", (cause))
+                message = _("Unable to get Group to edit - %s" % (cause))
                 SwatMessages.add(message, type)
 
         ##
@@ -230,16 +234,6 @@ class AccountController(BaseController):
                 
             SwatMessages.add(message, type)
             redirect_to(controller='account', action='user')
-        ##
-        ## 
-        ##
-        else:        
-            c.group_list = self.__manager.group_list
-            
-            c.list_users = False
-            c.list_groups = True
-            
-            template = '/default/derived/account.mako'
 
         return render(template)
         
