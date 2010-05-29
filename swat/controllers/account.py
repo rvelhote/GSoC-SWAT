@@ -136,7 +136,9 @@ class AccountController(BaseController):
                 
             SwatMessages.add(message, type)
             
-            if subaction == "save":
+            if subaction == "save_add":
+                redirect_to(url_for("with_subaction", controller='account', action="user", subaction="add"))
+            elif subaction == "save":
                 redirect_to(controller='account', action='user')
             elif subaction == "apply":
                 redirect_to("account_action", action='user', subaction='edit', id=new_id)
@@ -227,7 +229,7 @@ class AccountController(BaseController):
         
         if id == -1:
             is_new = True
-
+        
         ##
         ## Edit a Group
         ##
@@ -251,7 +253,7 @@ class AccountController(BaseController):
         ##
         ## Save the changes made to a Group
         ##
-        elif subaction == "save" or subaction == "apply":
+        elif subaction == "save" or subaction == "apply" or subaction == "save_add":
             (new_id, saved) = group_manager.save(id, is_new)
             
             if saved:
@@ -267,8 +269,10 @@ class AccountController(BaseController):
                 message = _("Error saving the Group with the ID %s: %s" % (id, cause))
                 
             SwatMessages.add(message, type)
-                        
-            if subaction == "save":
+            
+            if subaction == "save_add":
+                redirect_to(url_for("with_subaction", controller='account', action="group", subaction="add"))
+            elif subaction == "save":
                 redirect_to(controller='account', action='group')
             elif subaction == "apply":
                 redirect_to("account_action", action='group', subaction='edit', id=new_id)
@@ -311,6 +315,9 @@ class AccountController(BaseController):
     
     def apply(self):
         """ """
+        self.save()
+        
+    def save_add(self):
         self.save()
 
     def cancel(self):

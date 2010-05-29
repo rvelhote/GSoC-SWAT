@@ -227,11 +227,13 @@ toolbar:
         - removegroup
         
     edituser:
+        - save-add
         - save
         - apply
         - cancel
         
     editgroup:
+        - save-add
         - save
         - apply
         - cancel
