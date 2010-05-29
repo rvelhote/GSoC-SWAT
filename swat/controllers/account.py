@@ -64,6 +64,7 @@ class AccountController(BaseController):
         c.current_page = int(request.params.get("page", 1))
         c.per_page =  int(request.params.get("per_page", 10))
         c.filter_name = request.params.get("filter_value", "")
+        c.filter_status = int(request.params.get("filter_status", -1))
         
     def index(self):
         c.user_list = self.__manager.user_list
@@ -86,6 +87,13 @@ class AccountController(BaseController):
         
         if len(c.filter_name) > 0:
             c.user_list = self.__filter_users(c.user_list, c.filter_name)
+        
+        if c.filter_status != -1:
+            if c.filter_status == 1:
+                c.user_list = self.__manager.filter_enabled_disabled(True)
+            elif c.filter_status == 0:
+                c.user_list = self.__manager.filter_enabled_disabled(False)
+                
         
         if id == -1:
             is_new = True

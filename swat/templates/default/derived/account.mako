@@ -64,6 +64,7 @@ ${h.form('', method="post", id="account-list", class_="")}
 		<td class="user-gid">${_('UID')}</td>
 		<td class="user-name">${_('Username')}</td>
 		<td class="user-description">${_('Description')}</td>
+                <td class="user-account-status">${_('Enabled')}</td>
 		<td class="user-quick-operations"></td>
 	    </tr>
 	</thead>
@@ -91,18 +92,34 @@ ${h.form('', method="post", id="account-list", class_="")}
         %>
         
         % for user in users[begin:end]:
-            <% tr_class = '' %>
+            <%
+            
+            tr_class = ''
+            disabled_class = ''
+            
+            %>
             
             % if i % 2 == 0:
                 <% tr_class = " alternate-row " %>
             % endif
+            
+            % if user.account_disabled:
+                <% disabled_class = " disabled-row" %>
+            % endif
         
-            <tr id="row-user-${i}" title="${_('Edit User')}" class="${tr_class}">
+            <tr id="row-user-${i}" title="${_('Edit User')}" class="${tr_class} ${disabled_class}">
                 <td><input value="${user.rid}" onchange="selectShareRow(this);" name="uid" type="checkbox" id="check-row-user-${i}" /></td>
                 <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='user', subaction='edit', id=user.rid)}');">${i}</td>
                 <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='user', subaction='edit', id=user.rid)}');">${user.rid}</td>
                 <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='user', subaction='edit', id=user.rid)}');">${user.username}</td>
                 <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='user', subaction='edit', id=user.rid)}');">${user.description}</td>
+                <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='user', subaction='edit', id=user.rid)}');">
+                    % if user.account_disabled:
+                        ${_("No")}
+                    % else:
+                        ${_("Yes")}
+                    % endif
+                </td>
                 <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='user', subaction='edit', id=user.rid)}');">${quick_tasks(user.rid, "User", False)}</td>
             </tr>
             
@@ -199,7 +216,31 @@ ${h.end_form()}
             % endif
             
             <span style="float:right;">
-                <label for="items_per_page">${_('Per Page')}:</label>
+                % if action_name == "user":
+                    <label for="show-only-status">${_("Show")}:</label>
+                    <select name="filter_status" id="show-only-status" onchange="submitForm('options');">
+                        <option
+                                % if c.filter_status == -1:
+                                    selected="selected"
+                                % endif
+                                
+                                value="-1">${_("All")}</option>
+                        <option
+                                % if c.filter_status == 1:
+                                    selected="selected"
+                                % endif
+                                
+                                value="1">${_("Enabled")}</option>
+                        <option
+                                % if c.filter_status == 0:
+                                    selected="selected"
+                                % endif
+                                
+                                value="0">${_("Disabled")}</option>
+                    </select>
+                % endif
+
+                <label style="margin-left:15px;" for="items_per_page">${_('Per Page')}:</label>
                 <select name="per_page" id="items_per_page" onchange="submitForm('options');">
                     % for i in range(5, 30, 5):
                         <option

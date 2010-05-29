@@ -316,6 +316,8 @@ class SAMPipeManager:
         Returns:
         A list of Users that belong to the specified Group
         
+        FIXME Will probably be very heavy if there are many users
+        
         """
         list = []
         for user in self.user_list:
@@ -332,7 +334,17 @@ class SAMPipeManager:
                 pass
             
         return list
+    
+    def filter_enabled_disabled(self, status):
+        list = []
         
+        for user in self.user_list:
+            if status == True and user.account_disabled == False:
+                list.append(user)
+            elif status == False and user.account_disabled == True:
+                list.append(user)
+                
+        return list
 
     @staticmethod
     def toArray((handle, array, num_entries)):
