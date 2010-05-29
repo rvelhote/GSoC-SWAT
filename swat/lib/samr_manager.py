@@ -369,6 +369,9 @@ class SAMPipeManager:
         Keyword arguments:
         id -- The ID of the User to Toggle
         
+        Returns:
+        Boolean indicating if the operation was successful
+        
         TODO Handle Exception
         
         """
