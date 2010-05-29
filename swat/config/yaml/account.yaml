@@ -98,8 +98,8 @@ actions:
         friendly_name: 'Remove a User'
         
         link:
-            name: 'remove a user'
-            title: 'Remove a User from the Account Database'
+            name: 'remove user(s)'
+            title: 'Remove a User or a list of Users from the Account Database'
             action: user
             subaction: remove
             submit: True
