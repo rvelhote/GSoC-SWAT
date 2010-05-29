@@ -63,8 +63,12 @@ and the title bar.</%doc>
                 <% actions = item.get_dashboard_items() %>
         
                 % for action in actions:
-                    <% link = h.url_for(controller = item.get_controller(), action = action) %>
-                    
+                    % if len(item.get_action_info('link/subaction', action)) > 0:
+                        <% link = h.url_for("with_subaction", controller = item.get_controller(), action = item.get_action_info('link/action', action), subaction = item.get_action_info('link/subaction', action)) %>
+                    % else:
+                        <% link = h.url_for(controller = item.get_controller(), action = action) %>
+                    % endif
+                                        
                     <li>
                         <a href="${link}" title="${item.get_action_info('link/title', action)}" class="item-icon-link">
                             <img src="/default/images/icons/${item.get_action_info('image/name', action)}" alt="${item.get_action_info('image/alt', action)}" />
