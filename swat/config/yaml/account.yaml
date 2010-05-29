@@ -180,6 +180,7 @@ actions:
            title: 'Cancel User/Group creation'
            action: cancel
            submit: True
+           skip_validation: True
 
        image:
            name: minus-circle.png

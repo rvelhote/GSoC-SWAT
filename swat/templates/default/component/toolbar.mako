@@ -40,9 +40,13 @@
     submit = ''
     mass_submit = ''
     confirmation = ''
+    skip_validation = ''
 
     if c.config.get_action_info('link/submit', action):
 	submit = ' form-submit-button '
+	
+    if c.config.get_action_info('link/skip_validation', action):
+	skip_validation = ' skip-validation '
 	
     if c.config.get_action_info('link/mass_submit', action):
 	mass_submit = ' form-mass-submit-buttton '
@@ -57,7 +61,7 @@
 	    ${h.hidden("", c.config.get_action_info('link/confirm_message', action), id="confirm-action-" + action)}
 	% endif
 	
-	<a id="action-${action}" class="item-icon-link ${submit} ${mass_submit} ${confirmation}" title="${c.config.get_action_info('link/title', action)}" href="${link}">
+	<a id="action-${action}" class="item-icon-link ${submit} ${mass_submit} ${confirmation} ${skip_validation}" title="${c.config.get_action_info('link/title', action)}" href="${link}">
 	    <img alt="${c.config.get_action_info('image/alt', action)}" src="/default/images/icons/${c.config.get_action_info('image/name', action)}"/>
 	    <span>${c.config.get_action_info('link/name', action)}</span>
 	</a>

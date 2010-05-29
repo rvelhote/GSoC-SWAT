@@ -25,14 +25,15 @@ var FormSubmit = new Class({
             el.addEvent("click", function(ev) {
                 ev = new Event(ev).preventDefault();
                 
+                skip_validation = el.hasClass("skip-validation");
                 this.changeTask(el.getProperty("href"));
                 
                 if(el.hasClass("form-require-confirm")) {
                     if(confirm($("confirm-" + el.getProperty("id")).getProperty("value"))) {
-                        this.submitForm();
+                        this.submitForm(skip_validation);
                     }
                 } else {
-                    this.submitForm();
+                    this.submitForm(skip_validation);
                 }
             }.bind(this));
         }.bind(this));
@@ -83,8 +84,8 @@ var FormSubmit = new Class({
         });
     },
     
-    submitForm: function() {
-        if(this.validator.validate()) {
+    submitForm: function(skipValidation) {
+        if(skipValidation || this.validator.validate()) {
             $(this.options.formId).submit();
         }
     }
