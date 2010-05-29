@@ -25,7 +25,7 @@
                 <h3><a title="${_('Basic Group Configuration')}" class="title-icon basic-tab" href="#">${_('Basic')}</a></h3>                           
             </li>
             <li id="tab2">
-                <h3><a title="${_('Group Members')}" class="title-icon basic-tab" href="#">${_('Members')}</a></h3>                           
+                <h3><a title="${_('Group Members')}" class="title-icon members-tab" href="#">${_('Members')}</a></h3>                           
             </li>   
         </ol>
     

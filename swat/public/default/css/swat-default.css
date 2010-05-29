@@ -675,6 +675,22 @@ ul.tab-list-items > li.active {
     background-image:url('../images/icons/servers.png');
 }
 
+.profile-tab {
+    background-image:url('../images/icons/report.png');
+}
+
+.status-tab {
+    background-image:url('../images/icons/traffic-light.png');
+}
+
+.groups-tab {
+    background-image:url('../images/icons/users.png');
+}
+
+.members-tab {
+    background-image:url('../images/icons/users.png');
+}
+
 /** Pagination */
 table.list tfoot div.pagination {
     font-size:77%;

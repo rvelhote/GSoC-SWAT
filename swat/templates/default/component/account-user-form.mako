@@ -25,13 +25,13 @@
                 <h3><a title="${_('Basic User Configuration')}" class="title-icon basic-tab" href="#">${_('Basic')}</a></h3>                           
             </li>
             <li id="tab2">
-                <h3><a title="${_('Account Status')}" class="title-icon basic-tab" href="#">${_('Status')}</a></h3>                           
+                <h3><a title="${_('Account Status')}" class="title-icon status-tab" href="#">${_('Status')}</a></h3>                           
             </li>
             <li id="tab3">
-                <h3><a title="${_('User Profile Storage')}" class="title-icon basic-tab" href="#">${_('Profile')}</a></h3>                           
+                <h3><a title="${_('User Profile Storage')}" class="title-icon profile-tab" href="#">${_('Profile')}</a></h3>                           
             </li>
             <li id="tab4">
-                <h3><a title="${_('Assigned Groups')}" class="title-icon basic-tab" href="#">${_('Groups')}</a></h3>                           
+                <h3><a title="${_('Assigned Groups')}" class="title-icon groups-tab" href="#">${_('Groups')}</a></h3>                           
             </li>
         </ol>
     
