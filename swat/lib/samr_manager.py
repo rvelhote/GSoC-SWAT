@@ -376,6 +376,7 @@ class SAMPipeManager:
         
         """
         toggled = False
+        new_status = True
         
         try:
             user_handle = self.pipe.OpenUser(self.domain_handle, security.SEC_FLAG_MAXIMUM_ALLOWED, id)
@@ -392,13 +393,14 @@ class SAMPipeManager:
             else:
                 info.acct_flags |= 0x00000001
                 
+            new_status = not current_status
+                
             self.pipe.SetUserInfo(user_handle, samr.UserControlInformation, info)
             toggled = True
         except RuntimeError:
             pass
-        pass
     
-        return toggled
+        return (toggled, new_status)
 
     @staticmethod
     def toArray((handle, array, num_entries)):
