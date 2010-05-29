@@ -103,7 +103,7 @@ ${h.form('', method="post", id="account-list", class_="")}
                 <% tr_class = " alternate-row " %>
             % endif
             
-            % if user.account_disabled:
+            % if user.account_disabled and c.filter_status == -1:
                 <% disabled_class = " disabled-row" %>
             % endif
         
