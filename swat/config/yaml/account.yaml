@@ -29,7 +29,7 @@ actions:
             action: user
 
         image:
-            name: user-white.png
+            name: user.png
             alt: 'List Users Icon'
             
     ##
@@ -44,7 +44,7 @@ actions:
             action: group
 
         image:
-            name: user-business.png
+            name: users.png
             alt: 'List Groups Icon'
             
     ##
@@ -265,7 +265,9 @@ dashboard:
     ##
     ##
     actions:
+        - adduser
         - user
+        - addgroup
         - group
         
 ##
