@@ -180,14 +180,33 @@ class AccountController(BaseController):
         ##
         elif subaction == "toggle":
             list_uid = variabledecode.variable_decode(request.params).get("uid", id)
+            enabled_list = []
+            disabled_list = []
+            
             if not isinstance(list_uid, list):
                 list_uid = [list_uid]
                 
             for uid in list_uid:
                 uid = int(uid)
-                disabled = user_manager.toggle(uid)
+                (toggled, new_status) = user_manager.toggle(uid)
+
+                if toggled:
+                    if new_status == True:
+                        disabled_list.append(uid)
+                    else:
+                        enabled_list.append(uid)
+                else:
+                    SwatMessages.add(_("Error toggling User ID %d: %s" % (uid, user_manager.get_message())), "critical")
                 
-            SwatMessages.add("Something happened :P")
+            if len(enabled_list) > 0:
+                joined = ", ".join(["%d" % v for v in enabled_list]) 
+                message = _("The following User IDs [%s] were ENABLED successfuly" % (joined))
+                SwatMessages.add(message)
+                
+            if len(disabled_list) > 0:
+                joined = ", ".join(["%d" % v for v in disabled_list]) 
+                message = _("The following User IDs [%s] were DISABLED successfuly" % (joined))
+                SwatMessages.add(message)
                 
             redirect_to(controller='account', action='user')
 
@@ -403,19 +422,19 @@ class UserManager(object):
         return removed
     
     def toggle(self, id):
-        disabled = False
+        """ """
+        toggled = False
         
         try:
             if not self.__manager.user_exists(id):
                 raise RuntimeError(-1, _("User does not exist in the Database"))
             
-            self.__manager.toggle_user(id)
-            removed = True
+            toggled = self.__manager.toggle_user(id)
         except RuntimeError as message:
             log.debug(message)
             self.__set_message(message)
         
-        return disabled
+        return toggled
 
     def save(self, id, is_new):
         """ Saves User Information to the Database
