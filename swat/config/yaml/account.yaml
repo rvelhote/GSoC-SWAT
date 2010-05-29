@@ -184,6 +184,27 @@ actions:
        image:
            name: minus-circle.png
            alt: 'Cancel Icon'
+           
+
+    ##
+    ##   Toggle User
+    ##
+    toggleuser:
+        friendly_name: "Toggle a User's Status"
+        
+        link:
+            name: 'toggle user(s)'
+            title: "Toggle a User's Status in the Database"
+            action: user
+            subaction: toggle
+            submit: True
+            mass_submit: True
+            require_confirm: True
+            confirm_message: 'Are you sure you want to toggle the status of the selected Users?'
+
+        image:
+            name: lock.png
+            alt: 'Toggle Status Icon'
             
 ##
 ##   Toolbar Actions
@@ -198,6 +219,7 @@ toolbar:
     user:
         - adduser
         - removeuser
+        - toggleuser
         
     group:
         - addgroup

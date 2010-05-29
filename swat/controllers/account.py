@@ -174,6 +174,22 @@ class AccountController(BaseController):
                 SwatMessages.add(message)
                 
             redirect_to(controller='account', action='user')
+            
+        ##
+        ## Disable a User or a List of Users
+        ##
+        elif subaction == "toggle":
+            list_uid = variabledecode.variable_decode(request.params).get("uid", id)
+            if not isinstance(list_uid, list):
+                list_uid = [list_uid]
+                
+            for uid in list_uid:
+                uid = int(uid)
+                disabled = user_manager.toggle(uid)
+                
+            SwatMessages.add("Something happened :P")
+                
+            redirect_to(controller='account', action='user')
 
         return render(template)
     
@@ -385,6 +401,21 @@ class UserManager(object):
             self.__set_message(message)
         
         return removed
+    
+    def toggle(self, id):
+        disabled = False
+        
+        try:
+            if not self.__manager.user_exists(id):
+                raise RuntimeError(-1, _("User does not exist in the Database"))
+            
+            self.__manager.toggle_user(id)
+            removed = True
+        except RuntimeError as message:
+            log.debug(message)
+            self.__set_message(message)
+        
+        return disabled
 
     def save(self, id, is_new):
         """ Saves User Information to the Database

@@ -120,7 +120,7 @@ ${h.form('', method="post", id="account-list", class_="")}
                         ${_("Yes")}
                     % endif
                 </td>
-                <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='user', subaction='edit', id=user.rid)}');">${quick_tasks(user.rid, "User", False)}</td>
+                <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='user', subaction='edit', id=user.rid)}');">${quick_tasks(user.rid, "User", user.account_disabled)}</td>
             </tr>
             
             <% i = i + 1 %>
@@ -198,8 +198,18 @@ ${h.end_form()}
     
 <%def name="quick_tasks(id, type, is_disabled=False)">
     <ul class="quick-tasks">
-        <li><a href="${h.url_for('account_action', action=type.lower(), subaction='edit', id=id)}" title="${_('Edit %s' % (type))}"><img src="/default/images/icons/folder-pencil.png" alt="${_('Edit %s Icon' % (type))}"/></a></li>
-	<li><a href="${h.url_for('account_action', action=type.lower(), subaction='remove', id=id)}" title="${_('Remove %s' % (type))}"><img src="/default/images/icons/folder-minus.png" alt="${_('Remove %s Icon' % (type))}"/></a></li>
+        <li><a href="${h.url_for('account_action', action=type.lower(), subaction='edit', id=id)}" title="${_('Edit %s' % (type))}"><img src="/default/images/icons/user-pencil.png" alt="${_('Edit %s Icon' % (type))}"/></a></li>
+	<li><a href="${h.url_for('account_action', action=type.lower(), subaction='remove', id=id)}" title="${_('Remove %s' % (type))}"><img src="/default/images/icons/user-minus.png" alt="${_('Remove %s Icon' % (type))}"/></a></li>
+        
+        % if type.lower() == "user":
+            <li><a href="${h.url_for('account_action', action=type.lower(), subaction='toggle', id=id)}" title="${_('Toggle this %s' % (type))}">
+                % if is_disabled == True:
+                    <img src="/default/images/icons/lock-unlock.png" alt="${_('Toggle (Enable) %s Icon' % (type))}"/>
+                % else:
+                    <img src="/default/images/icons/lock.png" alt="${_('Toggle (Disable) %s Icon' % (type))}"/>
+                % endif
+            </a></li>
+        % endif
     </ul>
 </%def>
 
