@@ -615,6 +615,7 @@ ol.tab-list li a {
     padding:5px 15px 5px 35px;
     background-position:10px center;
     text-decoration:none;
+    outline:none;
 }
 
 ol.tab-list li:hover,
