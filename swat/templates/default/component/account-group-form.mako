@@ -38,20 +38,42 @@
             </li>
             
             <li id="content-tab2" class="tab">
-                % if c.user_group_list is not None and len(c.user_group_list) > 0:
-                    <b>${_("There are %d Users assigned to this Group" % (len(c.user_group_list)))}</b>
-                    
-                    <ol>
-                        % for user in c.user_group_list:
-                            <li style="list-style-type:decimal-leading-zero;list-style-position:inside;">
-                                <a target="_blank" title="${_('Edit this User. Will open in a New Window')}" href="${h.url_for("account_action", action="user", subaction="edit", id=user.rid)}">${user.username}</a>
-                            </li>
-                        % endfor
-                    </ol>
-                    
-                % else:
-                    ${_("There are no Users assigned to this Group")}
-                % endif
+                <div class="group-members">
+                    % if c.user_group_list is not None and len(c.user_group_list) > 0:
+                        <p>${_("There are %d Users assigned to this Group" % (len(c.user_group_list)))}</p>
+                        
+                        <table class="list not-empty">
+                            <thead>
+                                <td class="user-gid">${_('UID')}</td>
+                                <td class="user-name">${_('Username')}</td>
+                                <td class="user-description">${_('Description')}</td>
+                                <td class="user-account-status">${_('Enabled')}</td>
+                                <td></td>
+                            </thead>
+                            
+                            <tbody>
+                                % for user in c.user_group_list:
+                                    <td>${user.rid}</td>
+                                    <td>${user.username}</td>
+                                    <td>${user.description}</td>
+                                    <td>
+                                        % if user.account_disabled:
+                                            ${_("No")}
+                                        % else:
+                                            ${_("Yes")}
+                                        % endif
+                                    </td>
+                                    <td>
+                                        <a target="_blank" href="${h.url_for('account_action', action='user', subaction='edit', id=user.rid)}" title="${_('Edit this User')}"><img src="/default/images/icons/user-pencil.png" alt="${_('Edit User Icon')}"/></a>
+                                    </td>
+                                % endfor
+                            <tbody>
+                        </table>
+                        
+                    % else:
+                        <p class="no-users">${_("There are no Users assigned to this Group")}</p>
+                    % endif
+                </div>
             </li>            
         </ul>
         
