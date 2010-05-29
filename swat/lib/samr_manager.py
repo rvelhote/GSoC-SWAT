@@ -275,6 +275,8 @@ class SAMPipeManager:
         Returns:
         Boolean indicating if the Group exists or not
         
+        TODO Handle Exception
+        
         """
         exists = False
         
@@ -295,6 +297,8 @@ class SAMPipeManager:
         
         Returns:
         Boolean indicating if the User exists or not
+        
+        TODO Handle Exception
         
         """
         exists = False
@@ -317,6 +321,7 @@ class SAMPipeManager:
         A list of Users that belong to the specified Group
         
         FIXME Will probably be very heavy if there are many users
+        TODO Handle Exception
         
         """
         list = []
@@ -336,6 +341,17 @@ class SAMPipeManager:
         return list
     
     def filter_enabled_disabled(self, status):
+        """ Filters the list of users by their Account Status (this means
+        Enabled or Disabled)
+        
+        Keyword arguments:
+        status -- Boolean indicating if we want only the Enabled Accounts (True)
+        or Disabled Accounts (False)
+        
+        Returns:
+        A list of Users with the specified status
+        
+        """
         list = []
         
         for user in self.user_list:
@@ -345,6 +361,41 @@ class SAMPipeManager:
                 list.append(user)
                 
         return list
+    
+    def toggle_user(self, id):
+        """ Toggles a User Account's disabled status. If the account if disabled
+        it will become enabled and vice-versa
+        
+        Keyword arguments:
+        id -- The ID of the User to Toggle
+        
+        TODO Handle Exception
+        
+        """
+        toggled = False
+        
+        try:
+            user_handle = self.pipe.OpenUser(self.domain_handle, security.SEC_FLAG_MAXIMUM_ALLOWED, id)
+            info = self.pipe.QueryUserInfo(user_handle, samr.UserControlInformation)
+
+            current_status = (info.acct_flags & 0x00000001) != 0
+            
+            ##
+            ## Note: current_status == True means the account is currently
+            ## disabled
+            ##
+            if (current_status == True):
+                info.acct_flags &= ~0x00000001
+            else:
+                info.acct_flags |= 0x00000001
+                
+            self.pipe.SetUserInfo(user_handle, samr.UserControlInformation, info)
+            toggled = True
+        except RuntimeError:
+            pass
+        pass
+    
+        return toggled
 
     @staticmethod
     def toArray((handle, array, num_entries)):
