@@ -878,6 +878,10 @@ ul.grp-list li span.name {
     background-image:url('/default/images/icons/users.png');
 }
 
+ul.grp-list li {
+    width:285px;
+}
+
 ul.popup-list li span.operation {
     display:inline-block;
     width:16px;
