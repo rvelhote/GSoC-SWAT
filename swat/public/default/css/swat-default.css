@@ -907,7 +907,7 @@ div.help div.topic{margin-top:25px;}
 /**
  * Validations
  */
-p.validation-message{display:none;width:394px;padding:5px;font-size:85%;font-weight:bold;margin-left:125px;margin-bottom:5px;background-color:#C24E13;color:#ffffff;}
+p.validation-message{display:none;width:371px;padding:5px;font-size:77%;font-weight:bold;margin-left:125px;padding-left:25px;margin-bottom:5px;background-color:#C24E13;color:#ffffff;background-image:url("/default/images/icons/exclamation-red-frame.png");background-position:5px center;background-repeat:no-repeat;}
 
 /** Popup Windows */
 div.popup-main-window {
