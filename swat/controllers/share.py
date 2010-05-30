@@ -263,7 +263,7 @@ class ShareController(BaseController):
         
         return render_mako_def('/default/component/popups.mako', \
                                'select_user_group', \
-                               already_selected=already_selected)
+                               already_selected=already_selected, shares=True)
         
     def remove(self, name=''):
         """ Deletes a Share from the current Backend

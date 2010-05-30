@@ -214,13 +214,9 @@ var ItemList = new Class({
         }
     },
     
-    add: function(name, type) {
+    add: function(name) {
         if(name.length == 0) {
             return;
-        }
-
-        if(type == "g") {
-            name = "@" + name;
         }
 
         if(this.exists(name)) {
@@ -577,6 +573,7 @@ var UserGroupSelector = new Class({
                         new Event(e).preventDefault();
                         
                         value = el.getElement("span.name").get("text");
+                        value = lnk.hasClass("shares-group") ? "@" + value : value;
                         
                         if(el.hasClass("selected")) {
                             el.removeClass("selected");
@@ -595,7 +592,6 @@ var UserGroupSelector = new Class({
                              */
                             if(lnk.hasClass("group")) {
                                 this.writeStatus("removed group " + value)
-                                value = "@" + value;
                             } else {
                                 this.writeStatus("removed user " + value)
                             }
@@ -609,7 +605,7 @@ var UserGroupSelector = new Class({
                             /**
                              * TODO How do I know that I really added the element?
                              */
-                            this.list.add(value, lnk.hasClass("group") ? "g" : "u");
+                            this.list.add(value);
                             
                             if(lnk.hasClass("group")) {
                                 this.writeStatus("added group " + value)

@@ -58,21 +58,21 @@
     </ul>
 </%def>
 
-<%def name="select_user_group(already_selected)">
+<%def name="select_user_group(already_selected, shares=False)">
     <%
     
-    user_list(already_selected)
-    group_list(already_selected)
+    user_list(already_selected, shares)
+    group_list(already_selected, shares)
     
     %>
 </%def>
     
-<%def name="user_list(already_selected)">
+<%def name="user_list(already_selected, shares=False)">
     <%
     #
     # FIXME Just temporary
     #
-    from swat.controllers.account import SAMPipeManager
+    from swat.lib.samr_manager import SAMPipeManager
     from samba.dcerpc import samr, security, lsa
     from samba import credentials, param
     
@@ -108,12 +108,12 @@
     </ul>
 </%def>
 
-<%def name="group_list(already_selected)">
+<%def name="group_list(already_selected, shares=False)">
     <%
     #
     # FIXME Just temporary
     #
-    from swat.controllers.account import SAMPipeManager
+    from swat.lib.samr_manager import SAMPipeManager
     from samba.dcerpc import samr, security, lsa
     from samba import credentials, param
     
@@ -126,6 +126,10 @@
     manager.set_current_domain(0)
     manager.fetch_users_and_groups()
 
+    shares_class = ""
+
+    if shares:
+        shares_class = "shares-group"
     
     %>
     
@@ -137,14 +141,14 @@
             selected = ""
             operation = "add"
             
-            if "@" + g.name in already_selected:
+            if g.name in already_selected or "@" + g.name in already_selected:
                 selected = "selected"
                 operation = "remove"
             
             %>
             <li class="${selected}">
                 <span class="name" title="${g.description}">${g.name}</span>
-                <span class="operation ${operation}"></span>
+                <span class="operation ${operation} ${shares_class}"></span>
             </li>
         % endfor
     </ul>
