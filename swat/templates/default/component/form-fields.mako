@@ -157,7 +157,7 @@
     list_values = ""
 
     if value and len(value) > 0:
-        list_values = ", ".join(["%s" % v for v in value])
+        list_values = ",".join(["%s" % v for v in value])
     
     %>
     
