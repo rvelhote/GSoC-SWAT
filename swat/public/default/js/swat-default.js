@@ -450,6 +450,12 @@ var Popup = new Class({
         var dragHandle = new Element('div', {'id': this.options.window + "-drag-handle", 'class': 'popup-main-window-drag-handle'});
         dragHandle.injectInside(mainWindow);
         
+        var statusBar = new Element('div', {'id': this.options.window + "-status-bar", 'class': 'popup-main-window-status-bar'});
+        statusBar.injectInside(mainWindow);
+        
+        var statusBarMessageHolder = new Element('span', {'id': this.options.window + "-status-bar-message"});
+        statusBarMessageHolder.injectInside(statusBar);
+        
         var titleBar = new Element('div', {'id': this.options.window + "-title-bar", 'class': 'popup-main-window-title-bar'});
         titleBar.injectInside(mainWindow);
         
@@ -484,6 +490,11 @@ var Popup = new Class({
             
             this.isActive = true;
         }
+    },
+    
+    writeStatus: function(message) {
+        $(this.options.window.getProperty("id") + "-status-bar-message").set("text", message);
+        $(this.options.window.getProperty("id") + "-status-bar-message").fade("in");
     },
     
     makeRequest: function(url) {
@@ -573,13 +584,21 @@ var UserGroupSelector = new Class({
                             lnk.removeClass("remove");
                             lnk.addClass("add");
                             
-                            value = lnk.hasClass("group") ? "@" + value : value;
-                            
                             $(this.list.options.copyTo).getElements("a").each(function(element) {
                                 if(element.get("text").trim() == value) {
                                     this.list.remove(element.getProperty("id"));
                                 }
                             }.bind(this));
+                            
+                            /**
+                             * TODO How do I know that I really removed the element?
+                             */
+                            if(lnk.hasClass("group")) {
+                                this.writeStatus("removed group " + value)
+                                value = "@" + value;
+                            } else {
+                                this.writeStatus("removed user " + value)
+                            }
                             
                         } else {
                             el.addClass("selected");
@@ -587,7 +606,16 @@ var UserGroupSelector = new Class({
                             lnk.removeClass("add");
                             lnk.addClass("remove");
                             
+                            /**
+                             * TODO How do I know that I really added the element?
+                             */
                             this.list.add(value, lnk.hasClass("group") ? "g" : "u");
+                            
+                            if(lnk.hasClass("group")) {
+                                this.writeStatus("added group " + value)
+                            } else {
+                                this.writeStatus("added user " + value)
+                            }
                         }
                         
                     }.bindWithEvent(this, [element, link]));
@@ -667,6 +695,7 @@ var PathSelector = new Class({
     add: function(path) {
         if(this.copyTo) {
             this.copyTo.setProperty("value", path);
+            this.writeStatus("copied path " + path);
         }
     },
     

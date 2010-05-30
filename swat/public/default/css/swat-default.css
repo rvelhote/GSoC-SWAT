@@ -812,6 +812,11 @@ ul.popup-list li {
     margin-bottom:5px;
     float:left;
     width:140px;
+    padding:2px;
+}
+
+ul.popup-list li:hover{
+    background-color:#E1E3DA;
 }
 
 ul.popup-list li.selected span{
@@ -950,9 +955,30 @@ div.popup-main-window-title-bar {
 	cursor:move;
 }
 
+div.popup-main-window-status-bar {
+	background-color:#EAEAE8;
+	height:17px;
+	font-size:77%;
+	border-top:1px solid #484848;
+	position:absolute;
+	bottom:0;
+	left:0;
+	width:100%;
+	padding-top:2px;
+}
+
+div.popup-main-window-status-bar span {
+    padding-left:40px;
+    background-image:url("/default/images/icons/balloon-small-left.png");
+    background-position:25px 0px;
+    background-repeat:no-repeat;
+    visibility:hidden;
+}
+
 div.popup-main-window-content {
 	/*clear:both;*/
 	padding:25px;
+	padding-top:10px;
 	overflow-y:auto;
 	text-align:left;
 	/*line-height:1.4em;*/
@@ -970,6 +996,7 @@ div.popup-main-window-drag-handle{
 	right:0;
 	bottom:0;
 	cursor:se-resize;
+	z-index:10;
 }
 
 /** User and Group List - Account Management Module */
