@@ -536,7 +536,7 @@ class UserManager(object):
         except RuntimeError as message:
             log.debug(message)
             self.__set_message(message)
-        except TypeError, error:
+        except TypeError, message:
             log.debug(message)
             self.__set_message(message)
  
