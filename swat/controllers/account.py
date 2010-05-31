@@ -538,7 +538,7 @@ class UserManager(object):
             self.__set_message(message)
         except TypeError, message:
             log.debug(message)
-            self.__set_message(message)
+            self.__set_message((-1, message))
  
         return (id, saved)
     
