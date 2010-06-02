@@ -60,13 +60,13 @@ img.samba-logo {
 }
 
 img.samba-logo-interior {
-    width:160px;
-    height:81px;
+    width:151px;
+    height:27px;
 }
 
 div.swat-content {
     border:2px double #72808B;    
-    padding:10px 25px 25px 25px;
+    padding:20px 25px 25px 25px;
     
     background-color:#ffffff;
     
@@ -88,10 +88,13 @@ div.clear-both {
     padding-bottom:10px;
     position:relative;    
     border-bottom:1px solid #cccccc;
+    height:70px;
 }
 
 #swat-top-nav {
     float:right;
+    position:relative;
+    top:7px;
 }
 
 #swat-footer {
