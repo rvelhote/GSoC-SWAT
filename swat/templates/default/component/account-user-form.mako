@@ -19,7 +19,7 @@
 <%namespace name="field" file="/default/component/form-fields.mako" />
 
 <%def name="write()">
-    ${h.form('', method="post", id="user-account-form", class_="share-configuration")}
+    ${h.secure_form('', method="post", id="user-account-form", class_="share-configuration")}
         <ol class="tab-list">
             <li id="tab1" class="active">
                 <h3><a title="${_('Basic User Configuration')}" class="title-icon basic-tab" href="#">${_('Basic')}</a></h3>                           
