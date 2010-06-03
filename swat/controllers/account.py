@@ -70,12 +70,6 @@ class AccountController(BaseController):
         c.filter_status = int(request.params.get("filter_status", -1))
         
     def index(self):
-        c.user_list = self.__manager.user_list
-        c.group_list = self.__manager.group_list
-        
-        c.list_users = True
-        c.list_groups = True
-        
         return render('/default/derived/account-dashboard.mako')
     
     def user(self, subaction="index", id=-1):
@@ -84,7 +78,7 @@ class AccountController(BaseController):
         template = "/default/derived/account.mako"
         is_new = False
         
-        c.user_list = self.__manager.user_list
+        c.user_list = self.new_man.get_users()
         c.list_users = True
         c.list_groups = False
         

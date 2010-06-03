@@ -21,8 +21,6 @@ from samba.auth import system_session
 import samba.ndr
 
 class AccountManager(samdb.SamDB):
-    __users = "CN=Users,"
-    
     def __init__(self, lp):
         super(AccountManager, self).__init__(lp=lp, session_info=system_session())
         self.get_users()
@@ -37,16 +35,31 @@ class AccountManager(samdb.SamDB):
         
         u = User(username, fullname, description, rid)
         
-        u.must_change_password = True
-        u.cannot_change_password = False
-        u.password_never_expires = False
-        u.account_disabled = False
-        u.account_locked_out = False
-        u.group_list = []
-        u.profile_path = ""
-        u.logon_script = ""
-        u.homedir_path = ""
+        uac = int(self.__get_key(user, "userAccountControl"))
+
+        u.must_change_password = uac & 0x00800000
+        u.cannot_change_password = uac & 0x00000040
+        u.password_never_expires = uac & 0x00010000
+        u.account_disabled = uac & 0x00000002
+        u.account_locked_out = uac & 0x00000010
+        
+        u.group_list = self.get_groups_for_user(username)
+        u.profile_path = self.__get_key(user, "profilePath")
+        u.logon_script = self.__get_key(user, "scriptPath")
+        u.homedir_path = self.__get_key(user, "homeDirectory")
         u.map_homedir_drive = -1
+        
+        return u
+        
+    def __convert_to_group_object(self, group):
+        rid = str(samba.ndr.ndr_unpack(security.dom_sid, str(user["objectSid"])))
+        rid = int(rid[rid.rfind("-") + 1:])
+        
+        name = self.__get_key(group, "sAMAccountName")
+        description = self.__get_key(user, "description")
+
+        return Group(name, description, rid)
+        
         
     def __get_key(self, object, key):
         try:
@@ -54,11 +67,30 @@ class AccountManager(samdb.SamDB):
         except KeyError:
             return ""
         
+    def get_groups_for_user(self, username):
+        user_group_list = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="sAMAccountName=" + username, attrs=["memberOf"])[0]
+        group_list = []
+        
+        try:
+            for g in user_group_list["memberOf"]:
+                group_list.append(self.get_group_name_by_dn(g))
+        except KeyError:
+            pass
+        
+        return group_list
+    
+    def get_group_name_by_dn(self, dn):
+        group = self.search(base=dn, scope=ldb.SCOPE_SUBTREE, attrs=["sAMAccountName"])[0]
+        return self.__get_key(group, "sAMAccountName")
+    
+    def get_users_in_group(self, groupname):
+        return []
+        
     def __get_boolean(self, value):
-        pass
+        return False
         
     def get_users(self):
-        users = self.search(base=self.__users + self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="objectClass=user")
+        users = self.search(base="CN=Users," + self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="objectClass=user")
         user_list = []
         
         for user in users:
@@ -67,22 +99,13 @@ class AccountManager(samdb.SamDB):
         return user_list
     
     def get_groups(self):
-        pass
-    #    groups = self.search(base=self.__users + self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="objectClass=group")
-    #    accounts = []
-    #    
-    #    for group in groups:
-    #        account = SambaAccount()
-    #
-    #        for k, v in group.items():
-    #            if k == "dn":
-    #                continue
-    #            
-    #            account.add(k, v)
-    #            
-    #        accounts.append(account)
-    #            
-    #    return accounts
+        groups = self.search(base="CN=Users," + self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="objectClass=group")
+        group_list = []
+        
+        for group in groups:
+            group_list.append(self.__convert_to_group_object(group))
+                
+        return group_list
 
 class SAMPipeManager:
     """ Support Class obtained from Calin Crisan's 2009 Summer of Code project
