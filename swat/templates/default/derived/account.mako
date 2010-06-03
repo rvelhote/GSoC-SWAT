@@ -109,18 +109,18 @@ ${h.form('', method="post", id="account-list", class_="")}
         
             <tr id="row-user-${i}" title="${_('Edit User')}" class="${tr_class} ${disabled_class}">
                 <td><input value="${user.rid}" onchange="selectShareRow(this);" name="uid" type="checkbox" id="check-row-user-${i}" /></td>
-                <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='user', subaction='edit', id=user.username)}');">${i}</td>
-                <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='user', subaction='edit', id=user.username)}');">${user.rid}</td>
-                <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='user', subaction='edit', id=user.username)}');">${user.username}</td>
-                <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='user', subaction='edit', id=user.username)}');">${user.description}</td>
-                <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='user', subaction='edit', id=user.username)}');">
+                <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='user', subaction='edit', name=user.username)}');">${i}</td>
+                <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='user', subaction='edit', name=user.username)}');">${user.rid}</td>
+                <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='user', subaction='edit', name=user.username)}');">${user.username}</td>
+                <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='user', subaction='edit', name=user.username)}');">${user.description}</td>
+                <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='user', subaction='edit', name=user.username)}');">
                     % if user.account_disabled:
                         ${_("No")}
                     % else:
                         ${_("Yes")}
                     % endif
                 </td>
-                <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='user', subaction='edit', id=user.username)}');">${quick_tasks(user.username, "User", user.account_disabled)}</td>
+                <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='user', subaction='edit', name=user.username)}');">${quick_tasks(user.username, "User", user.account_disabled)}</td>
             </tr>
             
             <% i = i + 1 %>
@@ -183,10 +183,10 @@ ${h.form('', method="post", id="account-list", class_="")}
         
             <tr id="row-group-${i}" title="${_('Edit Group')}" class="${tr_class}">
                 <td><input value="${group.rid}" onchange="selectShareRow(this);" name="gid" type="checkbox" id="check-row-group-${i}" /></td>
-                <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='group', subaction='edit', id = group.name)}');">${i}</td>
-                <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='group', subaction='edit', id = group.name)}');">${group.rid}</td>
-                <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='group', subaction='edit', id = group.name)}');">${group.name}</td>
-                <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='group', subaction='edit', id = group.name)}');">${group.description}</td>
+                <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='group', subaction='edit', name = group.name)}');">${i}</td>
+                <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='group', subaction='edit', name = group.name)}');">${group.rid}</td>
+                <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='group', subaction='edit', name = group.name)}');">${group.name}</td>
+                <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='group', subaction='edit', name = group.name)}');">${group.description}</td>
                 <td style="min-width:35px;">${quick_tasks(group.name, "Group", False)}</td>
             </tr>
             
@@ -198,11 +198,11 @@ ${h.end_form()}
     
 <%def name="quick_tasks(id, type, is_disabled=False)">
     <ul class="quick-tasks">
-        <li><a href="${h.url_for('account_action', action=type.lower(), subaction='edit', id=id)}" title="${_('Edit %s' % (type))}"><img src="/default/images/icons/user-pencil.png" alt="${_('Edit %s Icon' % (type))}"/></a></li>
-	<li><a href="${h.url_for('account_action', action=type.lower(), subaction='remove', id=id)}" title="${_('Remove %s' % (type))}"><img src="/default/images/icons/user-minus.png" alt="${_('Remove %s Icon' % (type))}"/></a></li>
+        <li><a href="${h.url_for('account_action', action=type.lower(), subaction='edit', name=id)}" title="${_('Edit %s' % (type))}"><img src="/default/images/icons/user-pencil.png" alt="${_('Edit %s Icon' % (type))}"/></a></li>
+	<li><a href="${h.url_for('account_action', action=type.lower(), subaction='remove', name=id)}" title="${_('Remove %s' % (type))}"><img src="/default/images/icons/user-minus.png" alt="${_('Remove %s Icon' % (type))}"/></a></li>
         
         % if type.lower() == "user":
-            <li><a href="${h.url_for('account_action', action=type.lower(), subaction='toggle', id=id)}" title="${_('Toggle this %s' % (type))}">
+            <li><a href="${h.url_for('account_action', action=type.lower(), subaction='toggle', name=id)}" title="${_('Toggle this %s' % (type))}">
                 % if is_disabled == True:
                     <img src="/default/images/icons/lock-unlock.png" alt="${_('Toggle (Enable) %s Icon' % (type))}"/>
                 % else:

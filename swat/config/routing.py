@@ -34,7 +34,7 @@ def make_map():
     map.connect('/{controller}/{action}')
     map.connect('share_action', '/share/{action}/{name}', controller='share')
     
-    map.connect('account_action', '/account/{action}/{subaction}/{id}', controller='account')
+    map.connect('account_action', '/account/{action}/{subaction}/{name}', controller='account')
     map.connect('with_subaction', '/{controller}/{action}/{subaction}')
 
     return map
