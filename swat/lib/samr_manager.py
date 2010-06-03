@@ -81,9 +81,22 @@ class AccountManager(samdb.SamDB):
     def get_group_name_by_dn(self, dn):
         group = self.search(base=dn, scope=ldb.SCOPE_SUBTREE, attrs=["sAMAccountName"])[0]
         return self.__get_key(group, "sAMAccountName")
+        
+    def get_username_by_dn(self, dn):
+        user = self.search(base=dn, scope=ldb.SCOPE_SUBTREE, attrs=["sAMAccountName"])[0]
+        return self.__get_key(user, "sAMAccountName")    
     
     def get_users_in_group(self, groupname):
-        return []
+        group_user_list = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="sAMAccountName="+groupname, attrs=["member"])[0]
+        user_list = []
+        
+        try:
+            for u in group_user_list["member"]:
+                user_list.append(self.get_user(self.get_username_by_dn(u)))
+        except KeyError:
+            pass
+        
+        return user_list
         
     def __get_boolean(self, value):
         return False
@@ -112,7 +125,7 @@ class AccountManager(samdb.SamDB):
     
     def user_exists(self, username):
         user = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="(sAMAccountName=" + username + ")(objectClass=user)", attrs=["sAMAccountName"])
-        return len(group) > 0
+        return len(user) > 0
         
     def get_group(self, groupname):
         group = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="(sAMAccountName=" + groupname + ")(objectClass=group)")[0]
