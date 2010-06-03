@@ -53,19 +53,21 @@
                             
                             <tbody>
                                 % for user in c.user_group_list:
-                                    <td>${user.rid}</td>
-                                    <td>${user.username}</td>
-                                    <td>${user.description}</td>
-                                    <td>
-                                        % if user.account_disabled:
-                                            ${_("No")}
-                                        % else:
-                                            ${_("Yes")}
-                                        % endif
-                                    </td>
-                                    <td>
-                                        <a target="_blank" href="${h.url_for('account_action', action='user', subaction='edit', id=user.rid)}" title="${_('Edit this User')}"><img src="/default/images/icons/user-pencil.png" alt="${_('Edit User Icon')}"/></a>
-                                    </td>
+                                    <tr>
+                                        <td>${user.rid}</td>
+                                        <td>${user.username}</td>
+                                        <td>${user.description}</td>
+                                        <td>
+                                            % if user.account_disabled:
+                                                ${_("No")}
+                                            % else:
+                                                ${_("Yes")}
+                                            % endif
+                                        </td>
+                                        <td>
+                                            <a target="_blank" href="${h.url_for('account_action', action='user', subaction='edit', name=user.username)}" title="${_('Edit this User')}"><img src="/default/images/icons/user-pencil.png" alt="${_('Edit User Icon')}"/></a>
+                                        </td>
+                                    </tr>
                                 % endfor
                             <tbody>
                         </table>
