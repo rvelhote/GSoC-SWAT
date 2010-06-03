@@ -71,7 +71,7 @@ class AccountController(BaseController):
         return render('/default/derived/account-dashboard.mako')
     
     def user(self, subaction="index", name=""):      
-        user_manager = UserManager(self.__manager)
+        user_manager = UserManager(self.__manager_new)
         template = "/default/derived/account.mako"
         is_new = False
         
@@ -135,7 +135,7 @@ class AccountController(BaseController):
             elif subaction == "save":
                 redirect_to(controller='account', action='user')
             elif subaction == "apply":
-                redirect_to("account_action", action='user', subaction='edit', id=new_id)
+                redirect_to("account_action", action='user', subaction='edit', name=name)
             
         ## 
         ## Remove a Certain User or a List of Users
@@ -207,7 +207,7 @@ class AccountController(BaseController):
         return render(template)
     
     def group(self, subaction="index", name=""):
-        group_manager = GroupManager(self.__manager)
+        group_manager = GroupManager(self.__manager_new)
         template = '/default/derived/account.mako'
         is_new = False
         
@@ -217,7 +217,7 @@ class AccountController(BaseController):
         
         if len(c.filter_name) > 0:
             c.group_list = self.__filter_groups(c.group_list, c.filter_name)
-        
+
         if len(name) == 0:
             is_new = True
         
@@ -245,11 +245,11 @@ class AccountController(BaseController):
         ## Save the changes made to a Group
         ##
         elif subaction == "save" or subaction == "apply" or subaction == "save_add":
-            saved = group_manager.save(name, is_new)
+            (new_name, saved) = group_manager.save(name, is_new)
             
             if saved:
                 type = "cool"
-                message = _("Sucessfuly saved the Group with the ID %s" % (name))
+                message = _("Sucessfuly saved the Group with the ID %s" % (new_name))
             else:
                 type = "critical"
                 cause = _("Unkown Reason")
@@ -257,16 +257,16 @@ class AccountController(BaseController):
                 if group_manager.has_message():
                     cause = group_manager.get_message()
                 
-                message = _("Error saving the Group with the ID %s: %s" % (name, cause))
+                message = _("Error saving the Group with the ID %s: %s" % (new_name, cause))
                 
             SwatMessages.add(message, type)
-            
+
             if subaction == "save_add":
                 redirect_to(url_for("with_subaction", controller='account', action="group", subaction="add"))
             elif subaction == "save":
                 redirect_to(controller='account', action='group')
             elif subaction == "apply":
-                redirect_to("account_action", action='group', subaction='edit', id=name)
+                redirect_to("account_action", action='group', subaction='edit', name=new_name)
             
         ## 
         ## Remove a Certain Group
@@ -287,13 +287,13 @@ class AccountController(BaseController):
                 message = _("Error deleting the Group with the ID %s - %s" % (name, cause))
                 
             SwatMessages.add(message, type)
-            redirect_to(controller='account', action='user')
+            redirect_to(controller='account', action='group')
 
         return render(template)
         
     def save(self):
         """ """
-        name = request.params.get("id", "")
+        name = request.params.get("name", "")
         
         action = request.environ['pylons.routes_dict']['action']
         task = request.params.get("task", "").strip().lower()
@@ -578,7 +578,7 @@ class GroupManager(object):
                 if not self.__manager.group_exists(name):
                     raise RuntimeError(-1, _("Group does not exist in the Database"))
                 
-                group = self.__manager.fetch_group(name)
+                group = self.__manager.get_group(name)
             else:
                 group = Group("", "", -1)
         except RuntimeError as message:
@@ -603,7 +603,7 @@ class GroupManager(object):
             if not self.__manager.group_exists(name):
                 raise RuntimeError(-1, _("Group does not exist in the Database"))
 
-            self.__manager.delete_group(Group("", "", name))
+            self.__manager.delete_group(Group(name, "", -1))
             removed = True
         except RuntimeError as message:
             log.debug(message)
@@ -644,7 +644,7 @@ class GroupManager(object):
             log.debug(message)
             self.__set_message(message)
             
-        return saved
+        return (group.name, saved)
 
     """ Manager CRUD Operations for Groups """
     def get_message(self):

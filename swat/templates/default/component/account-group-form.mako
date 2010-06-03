@@ -79,7 +79,7 @@
         
         <div>
             ${h.hidden("task", request.environ['pylons.routes_dict']['subaction'])}
-            ${h.hidden("id", c.group.rid)}
+            ${h.hidden("name", c.group.name)}
             ${h.hidden("type", "group")}
         </div>
     ${h.end_form()}
