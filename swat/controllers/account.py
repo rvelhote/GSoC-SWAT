@@ -54,12 +54,12 @@ class AccountController(BaseController):
         c.samba_lp = param.LoadParm()
         c.samba_lp.load_default()
         
-        self.__manager = SAMPipeManager(c.samba_lp)
+        #self.__manager = SAMPipeManager(c.samba_lp)
         self.__manager_new = AccountManager(c.samba_lp)
         
-        domains = self.__manager.fetch_and_get_domain_names()
-        self.__manager.set_current_domain(0)
-        self.__manager.fetch_users_and_groups()
+        #domains = self.__manager.fetch_and_get_domain_names()
+        #self.__manager.set_current_domain(0)
+        #self.__manager.fetch_users_and_groups()
         
         # FIXME just so that options may work
         c.current_page = int(request.params.get("page", 1))
@@ -70,8 +70,7 @@ class AccountController(BaseController):
     def index(self):
         return render('/default/derived/account-dashboard.mako')
     
-    def user(self, subaction="index", id=-1):
-        id = int(id)        
+    def user(self, subaction="index", name=""):      
         user_manager = UserManager(self.__manager)
         template = "/default/derived/account.mako"
         is_new = False
@@ -90,7 +89,7 @@ class AccountController(BaseController):
                 c.user_list = self.__manager.filter_enabled_disabled(False)
                 
         
-        if id == -1:
+        if len(name) == 0:
             is_new = True
 
         ##
@@ -98,7 +97,7 @@ class AccountController(BaseController):
         ##
         if subaction == "edit" or subaction == "add":
             c.p = ParamConfiguration('user-account-parameters')
-            c.user = user_manager.edit(id, is_new)
+            c.user = user_manager.edit(name, is_new)
 
             if c.user is not None:
                 template = "/default/derived/edit-user-account.mako"
@@ -115,11 +114,11 @@ class AccountController(BaseController):
         ## Save the changes made to a User
         ##
         elif subaction == "save" or subaction == "apply":
-            (new_id, saved) = user_manager.save(id, is_new)
+            saved = user_manager.save(name, is_new)
             
             if saved:
                 type = "cool"
-                message = _("Sucessfuly saved the User with the ID %s" % (new_id))
+                message = _("Sucessfuly saved the User with the ID %s" % (name))
             else:
                 type = "critical"
                 cause = _("Unkown Reason")
@@ -127,7 +126,7 @@ class AccountController(BaseController):
                 if user_manager.has_message():
                     cause = user_manager.get_message()
                 
-                message = _("Error saving the User with the ID %s: %s" % (new_id, cause))
+                message = _("Error saving the User with the ID %s: %s" % (name, cause))
                 
             SwatMessages.add(message, type)
             
@@ -142,30 +141,29 @@ class AccountController(BaseController):
         ## Remove a Certain User or a List of Users
         ## 
         elif subaction == "remove":
-            list_uid = variabledecode.variable_decode(request.params).get("uid", id)
+            list_uid = variabledecode.variable_decode(request.params).get("uid", name)
             ok_list = []
             
             if not isinstance(list_uid, list):
                 list_uid = [list_uid]
 
             for uid in list_uid:
-                uid = int(uid)
                 removed = user_manager.remove(uid)
 
                 if removed:
                     ok_list.append(uid)
-                    log.info("Deleted " + str(uid) + " :: success: " + str(removed))
+                    log.info("Deleted " + uid + " :: success: " + str(removed))
                 else:
                     SwatMessages.add(user_manager.get_message(), "critical")
                     
             if len(ok_list) > 0:
-                joined = ", ".join(["%d" % v for v in ok_list])
+                joined = ", ".join(["%s" % v for v in ok_list])
                 
                 if len(ok_list) == 1:
-                    message = _("The User with the ID %s was deleted sucessfuly" \
+                    message = _("The User %s was deleted sucessfuly" \
                                 % (joined))
                 else:    
-                    message = _("The Users IDs [%s] were deleted sucessfuly" \
+                    message = _("The following Users [%s] were deleted sucessfuly" \
                                 % (joined))
                 
                 SwatMessages.add(message)
@@ -176,7 +174,7 @@ class AccountController(BaseController):
         ## Disable a User or a List of Users
         ##
         elif subaction == "toggle":
-            list_uid = variabledecode.variable_decode(request.params).get("uid", id)
+            list_uid = variabledecode.variable_decode(request.params).get("uid", name)
             enabled_list = []
             disabled_list = []
             
@@ -184,7 +182,6 @@ class AccountController(BaseController):
                 list_uid = [list_uid]
                 
             for uid in list_uid:
-                uid = int(uid)
                 (toggled, new_status) = user_manager.toggle(uid)
 
                 if toggled:
@@ -197,20 +194,19 @@ class AccountController(BaseController):
                 
             if len(enabled_list) > 0:
                 joined = ", ".join(["%d" % v for v in enabled_list]) 
-                message = _("The following User IDs [%s] were ENABLED successfuly" % (joined))
+                message = _("The following Users [%s] were ENABLED successfuly" % (joined))
                 SwatMessages.add(message)
                 
             if len(disabled_list) > 0:
                 joined = ", ".join(["%d" % v for v in disabled_list]) 
-                message = _("The following User IDs [%s] were DISABLED successfuly" % (joined))
+                message = _("The following Users [%s] were DISABLED successfuly" % (joined))
                 SwatMessages.add(message)
                 
             redirect_to(controller='account', action='user')
 
         return render(template)
     
-    def group(self, subaction="index", id=-1):
-        id = int(id)        
+    def group(self, subaction="index", name=""):
         group_manager = GroupManager(self.__manager)
         template = '/default/derived/account.mako'
         is_new = False
@@ -222,7 +218,7 @@ class AccountController(BaseController):
         if len(c.filter_name) > 0:
             c.group_list = self.__filter_groups(c.group_list, c.filter_name)
         
-        if id == -1:
+        if len(name) == 0:
             is_new = True
         
         ##
@@ -230,10 +226,10 @@ class AccountController(BaseController):
         ##
         if subaction == "edit" or subaction == "add":
             c.p = ParamConfiguration('group-parameters')
-            c.group = group_manager.edit(id, is_new)
+            c.group = group_manager.edit(name, is_new)
 
             if c.group is not None:
-                c.user_group_list = self.__manager.get_users_in_group(id)
+                c.user_group_list = self.__manager_new.get_users_in_group(name)
                 template = "/default/derived/edit-group.mako"
             else:
                 type = "critical"
@@ -249,11 +245,11 @@ class AccountController(BaseController):
         ## Save the changes made to a Group
         ##
         elif subaction == "save" or subaction == "apply" or subaction == "save_add":
-            (new_id, saved) = group_manager.save(id, is_new)
+            saved = group_manager.save(name, is_new)
             
             if saved:
                 type = "cool"
-                message = _("Sucessfuly saved the Group with the ID %s" % (id))
+                message = _("Sucessfuly saved the Group with the ID %s" % (name))
             else:
                 type = "critical"
                 cause = _("Unkown Reason")
@@ -261,7 +257,7 @@ class AccountController(BaseController):
                 if group_manager.has_message():
                     cause = group_manager.get_message()
                 
-                message = _("Error saving the Group with the ID %s: %s" % (id, cause))
+                message = _("Error saving the Group with the ID %s: %s" % (name, cause))
                 
             SwatMessages.add(message, type)
             
@@ -270,17 +266,17 @@ class AccountController(BaseController):
             elif subaction == "save":
                 redirect_to(controller='account', action='group')
             elif subaction == "apply":
-                redirect_to("account_action", action='group', subaction='edit', id=new_id)
+                redirect_to("account_action", action='group', subaction='edit', id=name)
             
         ## 
         ## Remove a Certain Group
         ## 
         elif subaction == "remove":
-            removed = group_manager.remove(id)
+            removed = group_manager.remove(name)
             
             if removed:
                 type = "cool"
-                message = _("Sucessfuly deleted the Group with the ID %s" % (id))
+                message = _("Sucessfuly deleted the Group with the ID %s" % (name))
             else:
                 type = "critical"
                 cause = _("Unkown Reason")
@@ -288,7 +284,7 @@ class AccountController(BaseController):
                 if group_manager.has_message():
                     cause = group_manager.get_message()
                 
-                message = _("Error deleting the Group with the ID %s - %s" % (id, cause))
+                message = _("Error deleting the Group with the ID %s - %s" % (name, cause))
                 
             SwatMessages.add(message, type)
             redirect_to(controller='account', action='user')
@@ -297,16 +293,16 @@ class AccountController(BaseController):
         
     def save(self):
         """ """
-        id = request.params.get("id", -1)
+        name = request.params.get("id", "")
         
         action = request.environ['pylons.routes_dict']['action']
         task = request.params.get("task", "").strip().lower()
         type = request.params.get("type", "").strip().lower()
 
         if type == "user":
-            self.user(action, id)
+            self.user(action, name)
         elif type == "group":
-            self.group(action, id)
+            self.group(action, name)
     
     def apply(self):
         """ """
@@ -370,7 +366,7 @@ class UserManager(object):
         self.__manager = manager
         self.__message = ""
         
-    def edit(self, id, is_new):
+    def edit(self, name, is_new):
         """ Gets a User for editing. If we are adding a new User an empty
         User object will be returned
         
@@ -387,10 +383,10 @@ class UserManager(object):
 
         try:
             if not is_new:
-                if not self.__manager.user_exists(id):
+                if not self.__manager.user_exists(name):
                     raise RuntimeError(-1, _("User does not exist in the Database"))
                     
-                user = self.__manager.fetch_user(id)
+                user = self.__manager.fetch_user(name)
             else:
                 user = User("", "", "", -1)
         except RuntimeError as message:
@@ -399,7 +395,7 @@ class UserManager(object):
             
         return user
     
-    def remove(self, id):
+    def remove(self, name):
         """ Removes a User with a certain ID from the User Database
         
         Keyword arguments:
@@ -412,10 +408,10 @@ class UserManager(object):
         removed = False
         
         try:
-            if not self.__manager.user_exists(id):
+            if not self.__manager.user_exists(name):
                 raise RuntimeError(-1, _("User does not exist in the Database"))
                     
-            self.__manager.delete_user(User("", "", "", id))
+            self.__manager.delete_user(User("", "", "", name))
             removed = True
         except RuntimeError as message:
             log.debug(message)
@@ -423,22 +419,22 @@ class UserManager(object):
         
         return removed
     
-    def toggle(self, id):
+    def toggle(self, name):
         """ """
         toggled = False
         
         try:
-            if not self.__manager.user_exists(id):
+            if not self.__manager.user_exists(name):
                 raise RuntimeError(-1, _("User does not exist in the Database"))
             
-            toggled = self.__manager.toggle_user(id)
+            toggled = self.__manager.toggle_user(name)
         except RuntimeError as message:
             log.debug(message)
             self.__set_message(message)
         
         return toggled
 
-    def save(self, id, is_new):
+    def save(self, name, is_new):
         """ Saves User Information to the Database
         
         Keyword arguments:
@@ -465,7 +461,7 @@ class UserManager(object):
             if len(password) > 0 and password != confirm_password:
                 raise RuntimeError(-1, _("Passwords do not match"))
             
-            user = User(username, fullname, description, id)
+            user = User(username, fullname, description, -1)
             
             ##
             ## Account Status
@@ -535,7 +531,7 @@ class UserManager(object):
             log.debug(message)
             self.__set_message((-1, message))
  
-        return (id, saved)
+        return saved
     
     def get_message(self):
         """ Gets the Status Message set by this Class """
@@ -562,7 +558,7 @@ class GroupManager(object):
         self.__manager = manager
         self.__message = ""
 
-    def edit(self, id, is_new):
+    def edit(self, name, is_new):
         """ Gets a Group for editing. If we are adding a new Group an empty
         Group object will be returned
         
@@ -579,10 +575,10 @@ class GroupManager(object):
 
         try:
             if not is_new:
-                if not self.__manager.group_exists(id):
+                if not self.__manager.group_exists(name):
                     raise RuntimeError(-1, _("Group does not exist in the Database"))
                 
-                group = self.__manager.fetch_group(id)
+                group = self.__manager.fetch_group(name)
             else:
                 group = Group("", "", -1)
         except RuntimeError as message:
@@ -591,7 +587,7 @@ class GroupManager(object):
             
         return group
     
-    def remove(self, id):
+    def remove(self, name):
         """ Removes a Group with a certain ID from the Group Database
         
         Keyword arguments:
@@ -604,10 +600,10 @@ class GroupManager(object):
         removed = False
         
         try:
-            if not self.__manager.group_exists(id):
+            if not self.__manager.group_exists(name):
                 raise RuntimeError(-1, _("Group does not exist in the Database"))
 
-            self.__manager.delete_group(Group("", "", id))
+            self.__manager.delete_group(Group("", "", name))
             removed = True
         except RuntimeError as message:
             log.debug(message)
@@ -615,7 +611,7 @@ class GroupManager(object):
         
         return removed
     
-    def save(self, id, is_new):
+    def save(self, name, is_new):
         """ Saves Group Information to the Database
         
         Keyword arguments:
@@ -632,13 +628,13 @@ class GroupManager(object):
         description = request.params.get("group_description", "")
 
         try:
-            group = Group(name, description, id)
+            group = Group(name, description, -1)
             
             if is_new:
                 self.__manager.add_group(group)
                 id = group.rid
             else:
-                if not self.__manager.group_exists(id):
+                if not self.__manager.group_exists(name):
                     raise RuntimeError(-1, _("Group does not exist in the Database"))
 
                 self.__manager.update_group(group)
@@ -648,7 +644,7 @@ class GroupManager(object):
             log.debug(message)
             self.__set_message(message)
             
-        return (id, saved)
+        return saved
 
     """ Manager CRUD Operations for Groups """
     def get_message(self):
