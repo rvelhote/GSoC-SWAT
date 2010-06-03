@@ -55,9 +55,7 @@ class AccountController(BaseController):
         c.samba_lp.load_default()
         
         self.__manager = SAMPipeManager(c.samba_lp)
-        
-        
-        self.new_man = AccountManager(c.samba_lp)
+        self.__manager_new = AccountManager(c.samba_lp)
         
         domains = self.__manager.fetch_and_get_domain_names()
         self.__manager.set_current_domain(0)
@@ -78,7 +76,7 @@ class AccountController(BaseController):
         template = "/default/derived/account.mako"
         is_new = False
         
-        c.user_list = self.new_man.get_users()
+        c.user_list = self.__manager_new.get_users()
         c.list_users = True
         c.list_groups = False
         
@@ -217,7 +215,7 @@ class AccountController(BaseController):
         template = '/default/derived/account.mako'
         is_new = False
         
-        c.group_list = self.__manager.group_list
+        c.group_list = self.__manager_new.get_groups()
         c.list_users = False
         c.list_groups = True
         
