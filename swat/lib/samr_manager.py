@@ -52,14 +52,13 @@ class AccountManager(samdb.SamDB):
         return u
         
     def __convert_to_group_object(self, group):
-        rid = str(samba.ndr.ndr_unpack(security.dom_sid, str(user["objectSid"])))
+        rid = str(samba.ndr.ndr_unpack(security.dom_sid, str(group["objectSid"])))
         rid = int(rid[rid.rfind("-") + 1:])
         
         name = self.__get_key(group, "sAMAccountName")
-        description = self.__get_key(user, "description")
+        description = self.__get_key(group, "description")
 
         return Group(name, description, rid)
-        
         
     def __get_key(self, object, key):
         try:
