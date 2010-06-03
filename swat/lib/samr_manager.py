@@ -67,7 +67,7 @@ class AccountManager(samdb.SamDB):
             return ""
         
     def get_groups_for_user(self, username):
-        user_group_list = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="sAMAccountName=" + username, attrs=["memberOf"])[0]
+        user_group_list = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="sAMAccountName="+username, attrs=["memberOf"])[0]
         group_list = []
         
         try:
@@ -105,7 +105,90 @@ class AccountManager(samdb.SamDB):
             group_list.append(self.__convert_to_group_object(group))
                 
         return group_list
+    
+    def group_exists(self, groupname):
+        group = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="(sAMAccountName=" + groupname + ")(objectClass=group)", attrs=["sAMAccountName"])
+        return len(group) > 0
+    
+    def user_exists(self, username):
+        user = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="(sAMAccountName=" + username + ")(objectClass=user)", attrs=["sAMAccountName"])
+        return len(group) > 0
+        
+    def get_group(self, groupname):
+        group = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="(sAMAccountName=" + groupname + ")(objectClass=group)")[0]
+        return self.__convert_to_group_object(group)
+        
+    def get_user(self, username):
+        user = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="(sAMAccountName=" + username + ")(objectClass=user)")[0]
+        return self.__convert_to_user_object(user)
+        
+    def update_group(self, group):
+        group_ldb = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="(sAMAccountName=" + group.name + ")(objectClass=group)")[0]
 
+        if len(group.description) > 0:
+            changeset = """dn: %s\nchangetype:replace\nreplace:description\ndescription: %s""" % (group_ldb.dn, group.description)
+        else:
+            changeset = """dn: %s\nchangetype:replace\nreplace:description\n-""" % (group_ldb.dn)
+
+        self.modify_ldif(changeset)
+        
+    def delete_group(self, group):
+        group_ldb = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="(sAMAccountName=" + group.name + ")(objectClass=group)")[0]
+        self.delete(group_ldb.dn)
+        
+    def delete_user(self, user):
+        user_ldb = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="(sAMAccountName=" + user.username + ")(objectClass=user)")[0]
+        self.delete(user_ldb.dn)
+        
+    def add_group(self, group):
+        dn = "CN=%s,CN=Users,%s" % (group.name, self.domain_dn())
+        self.add({"dn": str(dn), "sAMAccountName": str(group.name), "description": str(group.description), "objectClass": "group"})
+
+class User:
+    """ Support Class obtained from Calin Crisan's 2009 Summer of Code project
+    Extensions to GTK Frontends
+    
+    See: http://github.com/ccrisan/samba-gtk
+    
+    """
+    def __init__(self, username, fullname, description, rid):
+        self.username = username
+        self.fullname = fullname
+        self.description = description
+        self.rid = rid
+        
+        self.password = ""
+        self.must_change_password = True
+        self.cannot_change_password = False
+        self.password_never_expires = False
+        self.account_disabled = False
+        self.account_locked_out = False
+        self.group_list = []
+        self.profile_path = ""
+        self.logon_script = ""
+        self.homedir_path = ""
+        self.map_homedir_drive = -1
+        
+        None
+
+    def list_view_representation(self):
+        return [self.username, self.fullname, self.description, self.rid]
+
+class Group:
+    """ Support Class obtained from Calin Crisan's 2009 Summer of Code project
+    Extensions to GTK Frontends
+    
+    See: http://github.com/ccrisan/samba-gtk
+    
+    """
+    def __init__(self, name, description, rid):
+        self.name = name
+        self.description = description
+        self.rid = rid
+        
+    def list_view_representation(self):
+        return [self.name, self.description, self.rid]
+        
 class SAMPipeManager:
     """ Support Class obtained from Calin Crisan's 2009 Summer of Code project
     Extensions to GTK Frontends
@@ -510,48 +593,3 @@ class SAMPipeManager:
         lsa_string.size = len(str)
         
         return lsa_string
-    
-class User:
-    """ Support Class obtained from Calin Crisan's 2009 Summer of Code project
-    Extensions to GTK Frontends
-    
-    See: http://github.com/ccrisan/samba-gtk
-    
-    """
-    def __init__(self, username, fullname, description, rid):
-        self.username = username
-        self.fullname = fullname
-        self.description = description
-        self.rid = rid
-        
-        self.password = ""
-        self.must_change_password = True
-        self.cannot_change_password = False
-        self.password_never_expires = False
-        self.account_disabled = False
-        self.account_locked_out = False
-        self.group_list = []
-        self.profile_path = ""
-        self.logon_script = ""
-        self.homedir_path = ""
-        self.map_homedir_drive = -1
-        
-        None
-
-    def list_view_representation(self):
-        return [self.username, self.fullname, self.description, self.rid]
-
-class Group:
-    """ Support Class obtained from Calin Crisan's 2009 Summer of Code project
-    Extensions to GTK Frontends
-    
-    See: http://github.com/ccrisan/samba-gtk
-    
-    """
-    def __init__(self, name, description, rid):
-        self.name = name
-        self.description = description
-        self.rid = rid
-        
-    def list_view_representation(self):
-        return [self.name, self.description, self.rid]
