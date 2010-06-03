@@ -20,7 +20,7 @@ from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect_to, url_for
 
 from swat.lib.base import BaseController, render
-from swat.lib.samr_manager import SAMPipeManager, User, Group
+from swat.lib.samr_manager import SAMPipeManager, User, Group, AccountManager
 
 from pylons.i18n.translation import _
 
@@ -55,6 +55,9 @@ class AccountController(BaseController):
         c.samba_lp.load_default()
         
         self.__manager = SAMPipeManager(c.samba_lp)
+        
+        
+        self.new_man = AccountManager(c.samba_lp)
         
         domains = self.__manager.fetch_and_get_domain_names()
         self.__manager.set_current_domain(0)

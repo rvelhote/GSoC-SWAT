@@ -15,7 +15,74 @@
 #
 from pylons import session, request
 from samba.dcerpc import samr, security, lsa
-from samba import credentials
+from samba import credentials, samdb, ldb
+from samba.auth import system_session
+
+import samba.ndr
+
+class AccountManager(samdb.SamDB):
+    __users = "CN=Users,"
+    
+    def __init__(self, lp):
+        super(AccountManager, self).__init__(lp=lp, session_info=system_session())
+        self.get_users()
+        
+    def __convert_to_user_object(self, user):
+        rid = str(samba.ndr.ndr_unpack(security.dom_sid, str(user["objectSid"])))
+        rid = int(rid[rid.rfind("-") + 1:])
+        
+        username = self.__get_key(user, "sAMAccountName")
+        fullname = self.__get_key(user, "name")
+        description = self.__get_key(user, "description")
+        
+        u = User(username, fullname, description, rid)
+        
+        u.must_change_password = True
+        u.cannot_change_password = False
+        u.password_never_expires = False
+        u.account_disabled = False
+        u.account_locked_out = False
+        u.group_list = []
+        u.profile_path = ""
+        u.logon_script = ""
+        u.homedir_path = ""
+        u.map_homedir_drive = -1
+        
+    def __get_key(self, object, key):
+        try:
+            return str(object[key])
+        except KeyError:
+            return ""
+        
+    def __get_boolean(self, value):
+        pass
+        
+    def get_users(self):
+        users = self.search(base=self.__users + self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="objectClass=user")
+        user_list = []
+        
+        for user in users:
+            user_list.append(self.__convert_to_user_object(user))
+                
+        return user_list
+    
+    def get_groups(self):
+        pass
+    #    groups = self.search(base=self.__users + self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="objectClass=group")
+    #    accounts = []
+    #    
+    #    for group in groups:
+    #        account = SambaAccount()
+    #
+    #        for k, v in group.items():
+    #            if k == "dn":
+    #                continue
+    #            
+    #            account.add(k, v)
+    #            
+    #        accounts.append(account)
+    #            
+    #    return accounts
 
 class SAMPipeManager:
     """ Support Class obtained from Calin Crisan's 2009 Summer of Code project
@@ -217,7 +284,7 @@ class SAMPipeManager:
             user.full_name = self.get_lsa_string(query_info.full_name)
             user.description = self.get_lsa_string(query_info.description)
             user.rid = query_info.rid
-        
+
         user.must_change_password = (query_info.acct_flags & 0x00020000) != 0
         user.password_never_expires = (query_info.acct_flags & 0x00000200) != 0
         user.account_disabled = (query_info.acct_flags & 0x00000001) != 0
