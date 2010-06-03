@@ -386,7 +386,7 @@ class UserManager(object):
                 if not self.__manager.user_exists(name):
                     raise RuntimeError(-1, _("User does not exist in the Database"))
                     
-                user = self.__manager.fetch_user(name)
+                user = self.__manager.get_user(name)
             else:
                 user = User("", "", "", -1)
         except RuntimeError as message:
@@ -510,7 +510,7 @@ class UserManager(object):
             ##
             user.group_list = []
             for g in request.params.get("account_group_list", "").split(","):
-                for gg in self.__manager.group_list:
+                for gg in self.__manager.get_groups():
                     if gg.name == g.strip():
                         user.group_list.append(gg)
             

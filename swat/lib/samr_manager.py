@@ -21,6 +21,7 @@ from samba.auth import system_session
 import samba.ndr
 
 class AccountManager(samdb.SamDB):
+    """ Important: This class is a big test! """
     def __init__(self, lp):
         super(AccountManager, self).__init__(lp=lp, session_info=system_session())
         self.get_users()
@@ -84,7 +85,7 @@ class AccountManager(samdb.SamDB):
         
     def get_username_by_dn(self, dn):
         user = self.search(base=dn, scope=ldb.SCOPE_SUBTREE, attrs=["sAMAccountName"])[0]
-        return self.__get_key(user, "sAMAccountName")    
+        return self.__get_key(user, "sAMAccountName")
     
     def get_users_in_group(self, groupname):
         group_user_list = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="sAMAccountName="+groupname, attrs=["member"])[0]
@@ -144,6 +145,14 @@ class AccountManager(samdb.SamDB):
             changeset = """dn: %s\nchangetype:replace\nreplace:description\n-""" % (group_ldb.dn)
 
         self.modify_ldif(changeset)
+        
+    def add_user(self, group):
+        l = self.get_groups_for_user(group.username)
+        for x in l:
+            self.get_group(x)
+        
+        
+        raise Exception
         
     def delete_group(self, group):
         group_ldb = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="(sAMAccountName=" + group.name + ")(objectClass=group)")[0]
