@@ -719,6 +719,9 @@ class ShareBackendLdb(ShareBackend):
                     continue
                 
                 if param in self._params:
+                    if len(self._params[param]) == 0:
+                        self._params[param] = []
+                       
                     modded_messages[param] = ldb.MessageElement(self._params[param], \
                                                   ldb.FLAG_MOD_REPLACE, param)
                     del self._params[param]
