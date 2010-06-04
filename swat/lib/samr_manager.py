@@ -27,38 +27,43 @@ class ExtSamDB(samdb.SamDB):
     """
     def __init__(self, lp):
         super(ExtSamDB, self).__init__(lp=lp, session_info=system_session())
-
-    def get_groups_for_user(self, username):
-        user_group_list = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="sAMAccountName="+username, attrs=["memberOf"])[0]
-        group_list = []
-        
-        try:
-            for g in user_group_list["memberOf"]:
-                group_list.append(self.get_group_name_by_dn(g))
-        except KeyError:
-            pass
-        
-        return group_list
     
-    def get_group_name_by_dn(self, dn):
-        group = self.search(base=dn, scope=ldb.SCOPE_SUBTREE, attrs=["sAMAccountName"])[0]
-        return self.__get_key(group, "sAMAccountName")
-        
-    def get_user_with_dn(self, dn):
-        """ Gets information on a user using its DN.
+    def get_object_with_dn(self, dn):
+        """ Gets information from the SAM Database using the object's DN
         
         Keyword arguments:
-        dn -- The DN of the User
+        dn -- The DN of the Object
         
         Returns:
-        LDB Elements with User information
+        LDB Elements with Object's information
         
         """
-        print dn
-        user = self.search(base=dn, scope=ldb.SCOPE_SUBTREE)
-        if len(user) > 0:
-            return user[0]
+        obj = self.search(base=dn, scope=ldb.SCOPE_SUBTREE)
+        if len(obj) > 0:
+            return obj[0]
         return None
+
+    def get_user_group_membership(self, username):
+        """ Gets the groups that a user if a part of
+        
+        Keyword arguments:
+        username -- The username that we want to get the group membership from
+        
+        Returns:
+        A list of LDB Elements with the Group's information
+        
+        """
+        user_group_list = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="sAMAccountName="+username, attrs=["memberOf"])
+        group_list = []
+        
+        if len(user_group_list) > 0:
+            try:
+                for g in user_group_list[0]["memberOf"]:
+                    group_list.append(self.get_object_with_dn(g))
+            except KeyError:
+                pass
+        
+        return group_list
     
     def get_group_members(self, groupname):
         """ Gets the group members of a certain group.
@@ -76,7 +81,7 @@ class ExtSamDB(samdb.SamDB):
         if len(members) > 0:
             try:
                 for m in members[0]["member"]:
-                    member_list.append(self.get_user_with_dn(m))
+                    member_list.append(self.get_object_with_dn(m))
             except KeyError:
                 pass
             
@@ -217,7 +222,7 @@ class AccountManager(ExtSamDB):
         u.account_disabled = uac & 0x00000002
         u.account_locked_out = uac & 0x00000010
         
-        u.group_list = []#self.get_groups_for_user(username)
+        u.group_list = self.get_user_group_membership(u.username)
         u.profile_path = self.__get_key(user, "profilePath")
         u.logon_script = self.__get_key(user, "scriptPath")
         u.homedir_path = self.__get_key(user, "homeDirectory")
@@ -243,6 +248,7 @@ class AccountManager(ExtSamDB):
             return ""
         
     def get_group(self, groupname):
+        """ """
         return self.__convert_to_group_object(super(AccountManager, self).get_group(groupname))
     
     def get_groups(self):
@@ -270,6 +276,20 @@ class AccountManager(ExtSamDB):
             user_list.append(self.__convert_to_user_object(m))
         
         return user_list
+    
+    def get_user_group_membership(self, username):
+        """ """
+        membership_group_list = super(AccountManager, self).get_user_group_membership(username)
+        group_list = []
+        
+        for m in membership_group_list:
+            ##
+            ## FIXME temporary
+            ##
+            o = self.__convert_to_group_object(m)
+            group_list.append(o.name)
+        
+        return group_list
 
 class User:
     """ Support Class obtained from Calin Crisan's 2009 Summer of Code project
