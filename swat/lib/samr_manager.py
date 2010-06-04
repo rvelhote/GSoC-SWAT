@@ -17,16 +17,189 @@ from pylons import session, request
 from samba.dcerpc import samr, security, lsa
 from samba import credentials, samdb, ldb
 from samba.auth import system_session
-
 import samba.ndr
 
-class AccountManager(samdb.SamDB):
-    """ Important: This class is a big test! """
+class ExtSamDB(samdb.SamDB):
+    """ Warning: Experimental Class
+    
+    FIXME throw exceptions or return None?
+    
+    """
     def __init__(self, lp):
-        super(AccountManager, self).__init__(lp=lp, session_info=system_session())
-        self.get_users()
+        super(ExtSamDB, self).__init__(lp=lp, session_info=system_session())
+
+    def get_groups_for_user(self, username):
+        user_group_list = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="sAMAccountName="+username, attrs=["memberOf"])[0]
+        group_list = []
         
+        try:
+            for g in user_group_list["memberOf"]:
+                group_list.append(self.get_group_name_by_dn(g))
+        except KeyError:
+            pass
+        
+        return group_list
+    
+    def get_group_name_by_dn(self, dn):
+        group = self.search(base=dn, scope=ldb.SCOPE_SUBTREE, attrs=["sAMAccountName"])[0]
+        return self.__get_key(group, "sAMAccountName")
+        
+    def get_user_with_dn(self, dn):
+        """ Gets information on a user using its DN.
+        
+        Keyword arguments:
+        dn -- The DN of the User
+        
+        Returns:
+        LDB Elements with User information
+        
+        """
+        print dn
+        user = self.search(base=dn, scope=ldb.SCOPE_SUBTREE)
+        if len(user) > 0:
+            return user[0]
+        return None
+    
+    def get_group_members(self, groupname):
+        """ Gets the group members of a certain group.
+        
+        Keyword arguments:
+        groupname -- The name of the group
+        
+        Returns:
+        A list of members for the chosen group
+        
+        """
+        members = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="sAMAccountName="+groupname, attrs=["member"])
+        member_list = []
+        
+        if len(members) > 0:
+            try:
+                for m in members[0]["member"]:
+                    member_list.append(self.get_user_with_dn(m))
+            except KeyError:
+                pass
+            
+        return member_list
+        
+    def get_users(self):
+        users = self.search(base="CN=Users," + self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="objectClass=user")
+        user_list = []
+        
+        for user in users:
+            user_list.append(self.__convert_to_user_object(user))
+                
+        return user_list
+
+    def user_exists(self, username):
+        """ Checks if a certain User exists on the SAM Database.
+        
+        Keyword arguments:
+        username -- The username to check
+        
+        Returns:
+        Boolean indicating if the User exists or not
+        
+        """
+        user = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="(sAMAccountName=" + username + ")(objectClass=user)")
+        if len(user) > 0:
+            return True
+        return False
+                
+    def get_user(self, username):
+        """ Gets a single User and all of its information from the SAM Database.
+        
+        Keyword arguments:
+        username -- The username to fetch
+        
+        Returns:
+        LDB Elements with the user information or none if the user doesn't exist
+        
+        """
+        user = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="(sAMAccountName=" + username + ")(objectClass=user)")
+        if len(user) > 0:
+            return user[0]
+        return None
+
+    def add_user(self, group):
+        l = self.get_groups_for_user(group.username)
+        for x in l:
+            self.get_group(x)
+        
+        
+        raise Exception
+
+    def delete_user(self, user):
+        user_ldb = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="(sAMAccountName=" + user.username + ")(objectClass=user)")[0]
+        self.delete(user_ldb.dn)
+        
+    def add_group(self, group):
+        dn = "CN=%s,CN=Users,%s" % (group.name, self.domain_dn())
+        self.add({"dn": str(dn), "sAMAccountName": str(group.name), "description": str(group.description), "objectClass": "group"})
+        
+    def delete_group(self, group):
+        group_ldb = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="(sAMAccountName=" + group.name + ")(objectClass=group)")[0]
+        self.delete(group_ldb.dn)
+        
+    def update_group(self, group):
+        group_ldb = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="(sAMAccountName=" + group.name + ")(objectClass=group)")[0]
+
+        if len(group.description) > 0:
+            changeset = """dn: %s\nchangetype:replace\nreplace:description\ndescription: %s""" % (group_ldb.dn, group.description)
+        else:
+            changeset = """dn: %s\nchangetype:replace\nreplace:description\n-""" % (group_ldb.dn)
+
+        self.modify_ldif(changeset)
+        
+    def group_exists(self, groupname):
+        """ Checks if a group exists in the SAM Database
+        
+        Keyword arguments:
+        groupname -- The name of the group we are searching for
+        
+        Returns:
+        Boolean indicating if the group exists or not
+        
+        """
+        group = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="(sAMAccountName=" + groupname + ")(objectClass=group)")
+        if len(group) > 0:
+            return True
+        return False
+
+    def get_group(self, groupname):
+        """ Gets a single Group from the SAM Database.
+        
+        Keyword arguments:
+        groupname -- The name of the group we want to get
+        
+        Returns:
+        An LDB element with the Group's information. If the group doesn't exist
+        it will return None
+        
+        """
+        group = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="(sAMAccountName=" + groupname + ")(objectClass=group)")
+        if len(group) > 0:
+            return group[0]
+        return None
+        
+    def get_groups(self):
+        """ Gets and returns a list of Groups from SamDB with all of the
+        available information on each of the existing groups.
+        
+        Returns:
+        A list of LDB elements with their complete information
+        
+        """
+        return self.search(base="CN=Users," + self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="objectClass=group")
+
+class AccountManager(ExtSamDB):
+    """ Warning: Highly Experimental Class """
+    def __init__(self, lp):
+        """ """
+        super(AccountManager, self).__init__(lp=lp)
+    
     def __convert_to_user_object(self, user):
+        """ """
         rid = str(samba.ndr.ndr_unpack(security.dom_sid, str(user["objectSid"])))
         rid = int(rid[rid.rfind("-") + 1:])
         
@@ -44,15 +217,16 @@ class AccountManager(samdb.SamDB):
         u.account_disabled = uac & 0x00000002
         u.account_locked_out = uac & 0x00000010
         
-        u.group_list = self.get_groups_for_user(username)
+        u.group_list = []#self.get_groups_for_user(username)
         u.profile_path = self.__get_key(user, "profilePath")
         u.logon_script = self.__get_key(user, "scriptPath")
         u.homedir_path = self.__get_key(user, "homeDirectory")
         u.map_homedir_drive = -1
         
         return u
-        
+
     def __convert_to_group_object(self, group):
+        """ """
         rid = str(samba.ndr.ndr_unpack(security.dom_sid, str(group["objectSid"])))
         rid = int(rid[rid.rfind("-") + 1:])
         
@@ -60,59 +234,26 @@ class AccountManager(samdb.SamDB):
         description = self.__get_key(group, "description")
 
         return Group(name, description, rid)
-        
+
     def __get_key(self, object, key):
+        """ """
         try:
             return str(object[key])
         except KeyError:
             return ""
         
-    def get_groups_for_user(self, username):
-        user_group_list = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="sAMAccountName="+username, attrs=["memberOf"])[0]
-        group_list = []
-        
-        try:
-            for g in user_group_list["memberOf"]:
-                group_list.append(self.get_group_name_by_dn(g))
-        except KeyError:
-            pass
-        
-        return group_list
-    
-    def get_group_name_by_dn(self, dn):
-        group = self.search(base=dn, scope=ldb.SCOPE_SUBTREE, attrs=["sAMAccountName"])[0]
-        return self.__get_key(group, "sAMAccountName")
-        
-    def get_username_by_dn(self, dn):
-        user = self.search(base=dn, scope=ldb.SCOPE_SUBTREE, attrs=["sAMAccountName"])[0]
-        return self.__get_key(user, "sAMAccountName")
-    
-    def get_users_in_group(self, groupname):
-        group_user_list = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="sAMAccountName="+groupname, attrs=["member"])[0]
-        user_list = []
-        
-        try:
-            for u in group_user_list["member"]:
-                user_list.append(self.get_user(self.get_username_by_dn(u)))
-        except KeyError:
-            pass
-        
-        return user_list
-        
-    def __get_boolean(self, value):
-        return False
-        
-    def get_users(self):
-        users = self.search(base="CN=Users," + self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="objectClass=user")
-        user_list = []
-        
-        for user in users:
-            user_list.append(self.__convert_to_user_object(user))
-                
-        return user_list
+    def get_group(self, groupname):
+        return self.__convert_to_group_object(super(AccountManager, self).get_group(groupname))
     
     def get_groups(self):
-        groups = self.search(base="CN=Users," + self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="objectClass=group")
+        """ Gets the group list from SamDB, converts them to the a Group Object
+        and returns the list
+        
+        Returns:
+        A list of the Groups that exist in the SAM database
+        
+        """
+        groups = super(AccountManager, self).get_groups();
         group_list = []
         
         for group in groups:
@@ -120,51 +261,15 @@ class AccountManager(samdb.SamDB):
                 
         return group_list
     
-    def group_exists(self, groupname):
-        group = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="(sAMAccountName=" + groupname + ")(objectClass=group)", attrs=["sAMAccountName"])
-        return len(group) > 0
-    
-    def user_exists(self, username):
-        user = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="(sAMAccountName=" + username + ")(objectClass=user)", attrs=["sAMAccountName"])
-        return len(user) > 0
+    def get_group_members(self, groupname):
+        """ """
+        members = super(AccountManager, self).get_group_members(groupname)
+        user_list = []
         
-    def get_group(self, groupname):
-        group = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="(sAMAccountName=" + groupname + ")(objectClass=group)")[0]
-        return self.__convert_to_group_object(group)
+        for m in members:
+            user_list.append(self.__convert_to_user_object(m))
         
-    def get_user(self, username):
-        user = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="(sAMAccountName=" + username + ")(objectClass=user)")[0]
-        return self.__convert_to_user_object(user)
-        
-    def update_group(self, group):
-        group_ldb = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="(sAMAccountName=" + group.name + ")(objectClass=group)")[0]
-
-        if len(group.description) > 0:
-            changeset = """dn: %s\nchangetype:replace\nreplace:description\ndescription: %s""" % (group_ldb.dn, group.description)
-        else:
-            changeset = """dn: %s\nchangetype:replace\nreplace:description\n-""" % (group_ldb.dn)
-
-        self.modify_ldif(changeset)
-        
-    def add_user(self, group):
-        l = self.get_groups_for_user(group.username)
-        for x in l:
-            self.get_group(x)
-        
-        
-        raise Exception
-        
-    def delete_group(self, group):
-        group_ldb = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="(sAMAccountName=" + group.name + ")(objectClass=group)")[0]
-        self.delete(group_ldb.dn)
-        
-    def delete_user(self, user):
-        user_ldb = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="(sAMAccountName=" + user.username + ")(objectClass=user)")[0]
-        self.delete(user_ldb.dn)
-        
-    def add_group(self, group):
-        dn = "CN=%s,CN=Users,%s" % (group.name, self.domain_dn())
-        self.add({"dn": str(dn), "sAMAccountName": str(group.name), "description": str(group.description), "objectClass": "group"})
+        return user_list
 
 class User:
     """ Support Class obtained from Calin Crisan's 2009 Summer of Code project
