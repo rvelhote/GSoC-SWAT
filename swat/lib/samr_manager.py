@@ -23,6 +23,7 @@ class ExtSamDB(samdb.SamDB):
     """ Warning: Experimental Class
     
     FIXME throw exceptions or return None?
+    TODO Better error checking and exception throwing/catching
     
     """
     def __init__(self, lp):
@@ -138,22 +139,25 @@ class ExtSamDB(samdb.SamDB):
         user_ldb = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="(sAMAccountName=" + user.username + ")(objectClass=user)")[0]
         self.delete(user_ldb.dn)
         
-    def add_group(self, group):
-        dn = "CN=%s,CN=Users,%s" % (group.name, self.domain_dn())
-        self.add({"dn": str(dn), "sAMAccountName": str(group.name), "description": str(group.description), "objectClass": "group"})
+    def add_group(self, groupname, description):
+        """ """
+        dn = "CN=%s,CN=Users,%s" % (groupname, self.domain_dn())
+        self.add({"dn": str(dn), "sAMAccountName": groupname, "description": description, "objectClass": "group"})
         
-    def delete_group(self, group):
-        group_ldb = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="(sAMAccountName=" + group.name + ")(objectClass=group)")[0]
-        self.delete(group_ldb.dn)
+    def delete_group(self, groupname):
+        """ Deletes a Group from the SAM Database """
+        dn = "CN=%s,CN=Users,%s" % (groupname, self.domain_dn())
+        self.delete(dn)
         
-    def update_group(self, group):
-        group_ldb = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="(sAMAccountName=" + group.name + ")(objectClass=group)")[0]
-
-        if len(group.description) > 0:
-            changeset = """dn: %s\nchangetype:replace\nreplace:description\ndescription: %s""" % (group_ldb.dn, group.description)
+    def update_group(self, name, description):
+        """ Updates the Group's information on the Database """
+        dn = "CN=%s,CN=Users,%s" % (name, self.domain_dn())
+        
+        if len(description) > 0:
+            changeset = """dn: %s\nchangetype:replace\nreplace:description\ndescription: %s""" % (dn, description)
         else:
-            changeset = """dn: %s\nchangetype:replace\nreplace:description\n-""" % (group_ldb.dn)
-
+            changeset = """dn: %s\nchangetype:replace\nreplace:description\n-""" % (dn)
+            
         self.modify_ldif(changeset)
         
     def group_exists(self, groupname):
@@ -290,6 +294,18 @@ class AccountManager(ExtSamDB):
             group_list.append(o.name)
         
         return group_list
+    
+    def update_group(self, group):
+        """ """
+        super(AccountManager, self).update_group(group.name, group.description)
+    
+    def add_group(self, group):
+        """ """
+        super(AccountManager, self).update_group(group.name, group.description)
+        
+    def delete_group(self, group):
+        """ """
+        super(AccountManager, self).delete_group(group.name)
 
 class User:
     """ Support Class obtained from Calin Crisan's 2009 Summer of Code project
