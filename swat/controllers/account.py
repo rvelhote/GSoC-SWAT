@@ -640,7 +640,7 @@ class GroupManager(object):
                 self.__manager.update_group(group)
                 
             saved = True
-        except RuntimeError as message:
+        except Exception as message:
             log.debug(message)
             self.__set_message(message)
             
@@ -653,7 +653,7 @@ class GroupManager(object):
     
     def __set_message(self, message):
         """ Sets the Status Message for this Class """
-        self.__message = str(message[1])
+        self.__message = str(message)
         
     def has_message(self):
         """ Checks if there is a Status Message to show to the User """
