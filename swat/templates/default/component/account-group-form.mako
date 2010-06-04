@@ -65,7 +65,7 @@
                                             % endif
                                         </td>
                                         <td>
-                                            <a target="_blank" href="${h.url_for('account_action', action='user', subaction='edit', name=user.username)}" title="${_('Edit this User')}"><img src="/default/images/icons/user-pencil.png" alt="${_('Edit User Icon')}"/></a>
+                                            <a target="_blank" href="${h.url_for('account_action', action='user', subaction='edit', id=user.rid)}" title="${_('Edit this User')}"><img src="/default/images/icons/user-pencil.png" alt="${_('Edit User Icon')}"/></a>
                                         </td>
                                     </tr>
                                 % endfor
