@@ -45,7 +45,7 @@ class ExtSamDB(samdb.SamDB):
         return None
 
     def get_user_group_membership(self, username):
-        """ Gets the groups that a user if a part of
+        """ Gets the groups that a user if a part of.
         
         Keyword arguments:
         username -- The username that we want to get the group membership from
@@ -54,7 +54,10 @@ class ExtSamDB(samdb.SamDB):
         A list of LDB Elements with the Group's information
         
         """
-        user_group_list = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="sAMAccountName="+username, attrs=["memberOf"])
+        user_group_list = self.search(base=self.domain_dn(), \
+                                      scope=ldb.SCOPE_SUBTREE, \
+                                      expression="sAMAccountName=" + username, \
+                                      attrs=["memberOf"])
         group_list = []
         
         if len(user_group_list) > 0:
@@ -76,7 +79,9 @@ class ExtSamDB(samdb.SamDB):
         A list of members for the chosen group
         
         """
-        members = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="sAMAccountName="+groupname, attrs=["member"])
+        members = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, \
+                              expression="sAMAccountName=" + groupname, \
+                              attrs=["member"])
         member_list = []
         
         if len(members) > 0:
@@ -89,7 +94,9 @@ class ExtSamDB(samdb.SamDB):
         return member_list
         
     def get_users(self):
-        users = self.search(base="CN=Users," + self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="objectClass=user")
+        users = self.search(base="CN=Users," + self.domain_dn(), \
+                            scope=ldb.SCOPE_SUBTREE, \
+                            expression="objectClass=user")
         user_list = []
         
         for user in users:
@@ -107,7 +114,9 @@ class ExtSamDB(samdb.SamDB):
         Boolean indicating if the User exists or not
         
         """
-        user = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="(sAMAccountName=" + username + ")(objectClass=user)")
+        user = self.search(base=self.domain_dn(), \
+                           scope=ldb.SCOPE_SUBTREE, \
+                           expression="(sAMAccountName=" + username + ")(objectClass=user)")
         if len(user) > 0:
             return True
         return False
@@ -122,7 +131,8 @@ class ExtSamDB(samdb.SamDB):
         LDB Elements with the user information or none if the user doesn't exist
         
         """
-        user = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="(sAMAccountName=" + username + ")(objectClass=user)")
+        user = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, \
+                           expression="(sAMAccountName=" + username + ")(objectClass=user)")
         if len(user) > 0:
             return user[0]
         return None
@@ -136,13 +146,17 @@ class ExtSamDB(samdb.SamDB):
         raise Exception
 
     def delete_user(self, user):
-        user_ldb = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="(sAMAccountName=" + user.username + ")(objectClass=user)")[0]
+        user_ldb = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, \
+                               expression="(sAMAccountName=" + user.username + ")(objectClass=user)")[0]
         self.delete(user_ldb.dn)
         
     def add_group(self, groupname, description):
         """ """
         dn = "CN=%s,CN=Users,%s" % (groupname, self.domain_dn())
-        self.add({"dn": str(dn), "sAMAccountName": groupname, "description": description, "objectClass": "group"})
+        self.add({"dn": str(dn), \
+                  "sAMAccountName": groupname, \
+                  "description": description, \
+                  "objectClass": "group"})
         
     def delete_group(self, groupname):
         """ Deletes a Group from the SAM Database """
@@ -170,7 +184,8 @@ class ExtSamDB(samdb.SamDB):
         Boolean indicating if the group exists or not
         
         """
-        group = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="(sAMAccountName=" + groupname + ")(objectClass=group)")
+        group = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, \
+                            expression="(sAMAccountName=" + groupname + ")(objectClass=group)")
         if len(group) > 0:
             return True
         return False
@@ -186,7 +201,8 @@ class ExtSamDB(samdb.SamDB):
         it will return None
         
         """
-        group = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="(sAMAccountName=" + groupname + ")(objectClass=group)")
+        group = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, \
+                            expression="(sAMAccountName=" + groupname + ")(objectClass=group)")
         if len(group) > 0:
             return group[0]
         return None
@@ -199,7 +215,9 @@ class ExtSamDB(samdb.SamDB):
         A list of LDB elements with their complete information
         
         """
-        return self.search(base="CN=Users," + self.domain_dn(), scope=ldb.SCOPE_SUBTREE, expression="objectClass=group")
+        return self.search(base="CN=Users," + self.domain_dn(), \
+                           scope=ldb.SCOPE_SUBTREE, \
+                           expression="objectClass=group")
 
 class AccountManager(ExtSamDB):
     """ Warning: Highly Experimental Class """
