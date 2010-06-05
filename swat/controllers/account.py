@@ -629,10 +629,9 @@ class GroupManager(object):
 
         try:
             group = Group(name, description, -1)
-            
+
             if is_new:
                 self.__manager.add_group(group)
-                id = group.rid
             else:
                 if not self.__manager.group_exists(name):
                     raise RuntimeError(-1, _("Group does not exist in the Database"))
@@ -640,11 +639,11 @@ class GroupManager(object):
                 self.__manager.update_group(group)
                 
             saved = True
-        except Exception as message:
+        except RuntimeError as message:
             log.debug(message)
             self.__set_message(message)
             
-        return (group.name, saved)
+        return (name, saved)
 
     """ Manager CRUD Operations for Groups """
     def get_message(self):
