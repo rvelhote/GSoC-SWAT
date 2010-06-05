@@ -53,14 +53,9 @@ class AccountController(BaseController):
             
         c.samba_lp = param.LoadParm()
         c.samba_lp.load_default()
-        
-        #self.__manager = SAMPipeManager(c.samba_lp)
-        self.__manager_new = AccountManager(c.samba_lp)
-        
-        #domains = self.__manager.fetch_and_get_domain_names()
-        #self.__manager.set_current_domain(0)
-        #self.__manager.fetch_users_and_groups()
-        
+
+        self.__manager = AccountManager(c.samba_lp)
+
         # FIXME just so that options may work
         c.current_page = int(request.params.get("page", 1))
         c.per_page =  int(request.params.get("per_page", 10))
@@ -71,11 +66,11 @@ class AccountController(BaseController):
         return render('/default/derived/account-dashboard.mako')
     
     def user(self, subaction="index", name=""):      
-        user_manager = UserManager(self.__manager_new)
+        user_manager = UserManager(self.__manager)
         template = "/default/derived/account.mako"
         is_new = False
         
-        c.user_list = self.__manager_new.get_users()
+        c.user_list = self.__manager.get_users()
         c.list_users = True
         c.list_groups = False
         
@@ -207,11 +202,11 @@ class AccountController(BaseController):
         return render(template)
     
     def group(self, subaction="index", name=""):
-        group_manager = GroupManager(self.__manager_new)
+        group_manager = GroupManager(self.__manager)
         template = '/default/derived/account.mako'
         is_new = False
         
-        c.group_list = self.__manager_new.get_groups()
+        c.group_list = self.__manager.get_groups()
         c.list_users = False
         c.list_groups = True
         
@@ -229,7 +224,7 @@ class AccountController(BaseController):
             c.group = group_manager.edit(name, is_new)
 
             if c.group is not None:
-                c.user_group_list = self.__manager_new.get_group_members(name)
+                c.user_group_list = self.__manager.get_group_members(name)
                 template = "/default/derived/edit-group.mako"
             else:
                 type = "critical"
@@ -383,7 +378,7 @@ class UserManager(object):
 
         try:
             if not is_new:
-                if not self.__manager.user_exists(name):
+                if not self.__manager.samr.user_exists(name):
                     raise RuntimeError(-1, _("User does not exist in the Database"))
                     
                 user = self.__manager.get_user(name)
@@ -408,7 +403,7 @@ class UserManager(object):
         removed = False
         
         try:
-            if not self.__manager.user_exists(name):
+            if not self.__manager.samr.user_exists(name):
                 raise RuntimeError(-1, _("User does not exist in the Database"))
                     
             self.__manager.delete_user(User("", "", "", name))
@@ -424,7 +419,7 @@ class UserManager(object):
         toggled = False
         
         try:
-            if not self.__manager.user_exists(name):
+            if not self.__manager.samr.user_exists(name):
                 raise RuntimeError(-1, _("User does not exist in the Database"))
             
             toggled = self.__manager.toggle_user(name)
@@ -518,7 +513,7 @@ class UserManager(object):
                 self.__manager.add_user(user)
                 id = user.rid
             else:
-                if not self.__manager.user_exists(id):
+                if not self.__manager.samr.user_exists(id):
                     raise RuntimeError(-1, _("User does not exist in the Database"))
                     
                 self.__manager.update_user(user)
@@ -575,7 +570,7 @@ class GroupManager(object):
 
         try:
             if not is_new:
-                if not self.__manager.group_exists(name):
+                if not self.__manager.samr.group_exists(name):
                     raise RuntimeError(-1, _("Group does not exist in the Database"))
                 
                 group = self.__manager.get_group(name)
@@ -600,7 +595,7 @@ class GroupManager(object):
         removed = False
         
         try:
-            if not self.__manager.group_exists(name):
+            if not self.__manager.samr.group_exists(name):
                 raise RuntimeError(-1, _("Group does not exist in the Database"))
 
             self.__manager.delete_group(Group(name, "", -1))
@@ -633,7 +628,7 @@ class GroupManager(object):
             if is_new:
                 self.__manager.add_group(group)
             else:
-                if not self.__manager.group_exists(name):
+                if not self.__manager.samr.group_exists(name):
                     raise RuntimeError(-1, _("Group does not exist in the Database"))
 
                 self.__manager.update_group(group)

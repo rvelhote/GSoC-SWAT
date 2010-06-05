@@ -94,15 +94,16 @@ class ExtSamDB(samdb.SamDB):
         return member_list
         
     def get_users(self):
-        users = self.search(base="CN=Users," + self.domain_dn(), \
-                            scope=ldb.SCOPE_SUBTREE, \
-                            expression="objectClass=user")
-        user_list = []
+        """ Gets and returns a list of Users from SamDB with all of the
+        available information on each of the existing users.
         
-        for user in users:
-            user_list.append(self.__convert_to_user_object(user))
-                
-        return user_list
+        Returns:
+        A list of LDB elements with their complete information
+        
+        """
+        return self.search(base="CN=Users," + self.domain_dn(), \
+                           scope=ldb.SCOPE_SUBTREE, \
+                           expression="objectClass=user")
 
     def user_exists(self, username):
         """ Checks if a certain User exists on the SAM Database.
@@ -157,14 +158,97 @@ class ExtSamDB(samdb.SamDB):
                   "sAMAccountName": groupname, \
                   "description": description, \
                   "objectClass": "group"})
+    
+    def is_member_of_group(self, username, groupname):
+        """ Checks if a user is a member of a certain group
+        
+        Keyword arguments:
+        username -- The username of the user we want to check
+        groupname -- The name of the group that we want to check
+        
+        Returns:
+        Boolean indicating if the user belongs to the group or not
+        
+        """
+        is_member = False
+        user = self.get_user(username)
+        group = self.get_group(groupname)
+        
+        if user is None or group is None:
+            return False
+        
+        groups = user["memberOf"]
+        for g in groups:
+            if group.dn == g:
+                is_member = True
+                break
+            
+        return is_member
+
+    def delete_user_group_membership(self, username, groupname):
+        """ Deletes a user's membership from a certain group
+        
+        Keyword arguments:
+        username -- The Username of the user that we want to remove the group from
+        groupname -- The name of the group that we want to remove
+        
+        Returns:
+        Boolean indicating if the operation was sucessful or not
+        
+        """
+        deleted = False
+        user = self.get_user(username)
+        group = self.get_group(groupname)
+        
+        if user is None or group is None or not self.is_member_of_group(username, groupname):
+            return False
+        
+        try:
+            new_list = []
+            groups = user["memberOf"]
+            
+            for g in groups:
+                if g != dn:
+                    new_list.append(g)
+                    
+            msg = ldb.Message(ldb.Dn(self, group.dn))
+            msg["memberOf"] = ldb.MessageElement(new_list, ldb.FLAG_MOD_REPLACE, "memberOf")
+            
+            self.modify(msg)
+            deleted = True
+        except ldb.LdbError, error_message:
+            pass
+        
+        return deleted
+    
+    def add_user_group_membership(self, username, group):
+        pass
         
     def delete_group(self, groupname):
-        """ Deletes a Group from the SAM Database """
+        """ Deletes a Group from the SAM Database and group references in each
+        of its user members.
+        
+        Keyword arguments:
+        groupname -- The name of the group we want to delete
+
+        """
         dn = "CN=%s,CN=Users,%s" % (groupname, self.domain_dn())
         self.delete(str(dn))
         
+        members = self.get_group_members(groupname)
+        for m in members:
+            self.delete_user_group_membership(self.__get_key(m, "sAMAccountName"), groupname)
+
     def update_group(self, name, description):
-        """ Updates the Group's information on the Database """
+        """ Updates the Group's information on the Database
+        
+        FIXME: The name of the group is not changeable
+        
+        Keyword arguments:
+        name -- The name of the group
+        description -- The group's description
+
+        """
         dn = "CN=%s,CN=Users,%s" % (name, self.domain_dn())
         
         if len(description) > 0:
@@ -219,11 +303,18 @@ class ExtSamDB(samdb.SamDB):
                            scope=ldb.SCOPE_SUBTREE, \
                            expression="objectClass=group")
 
-class AccountManager(ExtSamDB):
+    def __get_key(self, object, key):
+        """ """
+        try:
+            return str(object[key])
+        except KeyError:
+            return ""
+
+class AccountManager(object):
     """ Warning: Highly Experimental Class """
     def __init__(self, lp):
         """ """
-        super(AccountManager, self).__init__(lp=lp)
+        self.samr = ExtSamDB(lp)
     
     def __convert_to_user_object(self, user):
         """ """
@@ -238,17 +329,19 @@ class AccountManager(ExtSamDB):
         
         uac = int(self.__get_key(user, "userAccountControl"))
 
-        u.must_change_password = uac & 0x00800000
-        u.cannot_change_password = uac & 0x00000040
-        u.password_never_expires = uac & 0x00010000
-        u.account_disabled = uac & 0x00000002
-        u.account_locked_out = uac & 0x00000010
+        u.must_change_password = (uac & 0x00800000) != 0
+        u.cannot_change_password = (uac & 0x00000040) != 0
+        u.password_never_expires = (uac & 0x00010000) != 0
+        u.account_disabled = (uac & 0x00000002) != 0
+        u.account_locked_out = (uac & 0x00000010) != 0
         
-        u.group_list = self.get_user_group_membership(u.username)
+        u.group_list = self.get_user_group_membership(username)
         u.profile_path = self.__get_key(user, "profilePath")
         u.logon_script = self.__get_key(user, "scriptPath")
         u.homedir_path = self.__get_key(user, "homeDirectory")
         u.map_homedir_drive = -1
+        
+        print u.account_disabled
         
         return u
 
@@ -271,7 +364,11 @@ class AccountManager(ExtSamDB):
         
     def get_group(self, groupname):
         """ """
-        return self.__convert_to_group_object(super(AccountManager, self).get_group(groupname))
+        return self.__convert_to_group_object(self.samr.get_group(groupname))
+        
+    def get_user(self, username):
+        """ """
+        return self.__convert_to_user_object(self.samr.get_user(username))
     
     def get_groups(self):
         """ Gets the group list from SamDB, converts them to the a Group Object
@@ -281,7 +378,7 @@ class AccountManager(ExtSamDB):
         A list of the Groups that exist in the SAM database
         
         """
-        groups = super(AccountManager, self).get_groups();
+        groups = self.samr.get_groups();
         group_list = []
         
         for group in groups:
@@ -289,9 +386,25 @@ class AccountManager(ExtSamDB):
                 
         return group_list
     
+    def get_users(self):
+        """ Gets the user list from SamDB, converts them to the a User Object
+        and returns the list
+        
+        Returns:
+        A list of the Users that exist in the SAM database
+        
+        """
+        users = self.samr.get_users();
+        user_list = []
+        
+        for user in users:
+            user_list.append(self.__convert_to_user_object(user))
+                
+        return user_list
+    
     def get_group_members(self, groupname):
         """ """
-        members = super(AccountManager, self).get_group_members(groupname)
+        members = self.samr.get_group_members(groupname)
         user_list = []
         
         for m in members:
@@ -301,7 +414,7 @@ class AccountManager(ExtSamDB):
     
     def get_user_group_membership(self, username):
         """ """
-        membership_group_list = super(AccountManager, self).get_user_group_membership(username)
+        membership_group_list = self.samr.get_user_group_membership(username)
         group_list = []
         
         for m in membership_group_list:
@@ -315,15 +428,15 @@ class AccountManager(ExtSamDB):
     
     def update_group(self, group):
         """ """
-        super(AccountManager, self).update_group(group.name, group.description)
+        self.samr.update_group(group.name, group.description)
     
     def add_group(self, group):
         """ """
-        super(AccountManager, self).add_group(group.name, group.description)
+        self.samr.add_group(group.name, group.description)
         
     def delete_group(self, group):
         """ """
-        super(AccountManager, self).delete_group(group.name)
+        self.samr.delete_group(group.name)
 
 class User:
     """ Support Class obtained from Calin Crisan's 2009 Summer of Code project
