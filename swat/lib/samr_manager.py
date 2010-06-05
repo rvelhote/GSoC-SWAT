@@ -147,7 +147,7 @@ class ExtSamDB(samdb.SamDB):
     def delete_group(self, groupname):
         """ Deletes a Group from the SAM Database """
         dn = "CN=%s,CN=Users,%s" % (groupname, self.domain_dn())
-        self.delete(dn)
+        self.delete(str(dn))
         
     def update_group(self, name, description):
         """ Updates the Group's information on the Database """
@@ -301,7 +301,7 @@ class AccountManager(ExtSamDB):
     
     def add_group(self, group):
         """ """
-        super(AccountManager, self).update_group(group.name, group.description)
+        super(AccountManager, self).add_group(group.name, group.description)
         
     def delete_group(self, group):
         """ """
