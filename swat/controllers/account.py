@@ -512,9 +512,8 @@ class UserManager(object):
             
             if is_new:
                 self.__manager.add_user(user)
-                id = user.rid
             else:
-                if not self.__manager.samr.user_exists(id):
+                if not self.__manager.samr.user_exists(name):
                     raise RuntimeError(-1, _("User does not exist in the Database"))
                     
                 self.__manager.update_user(user)
