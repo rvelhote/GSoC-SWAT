@@ -417,17 +417,18 @@ class UserManager(object):
     def toggle(self, name):
         """ """
         toggled = False
+        new_status = False
         
         try:
             if not self.__manager.samr.user_exists(name):
                 raise RuntimeError(-1, _("User does not exist in the Database"))
             
-            toggled = self.__manager.toggle_user(name)
+            (toggled, new_status) = self.__manager.toggle_user(name)
         except RuntimeError as message:
             log.debug(message)
             self.__set_message(message)
         
-        return toggled
+        return (toggled, new_status)
 
     def save(self, name, is_new):
         """ Saves User Information to the Database
