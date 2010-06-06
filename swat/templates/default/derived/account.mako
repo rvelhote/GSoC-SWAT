@@ -108,7 +108,7 @@ ${h.form('', method="post", id="account-list", class_="")}
             % endif
         
             <tr id="row-user-${i}" title="${_('Edit User')}" class="${tr_class} ${disabled_class}">
-                <td><input value="${user.rid}" onchange="selectShareRow(this);" name="uid" type="checkbox" id="check-row-user-${i}" /></td>
+                <td><input value="${user.username}" onchange="selectShareRow(this);" name="uid" type="checkbox" id="check-row-user-${i}" /></td>
                 <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='user', subaction='edit', name=user.username)}');">${i}</td>
                 <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='user', subaction='edit', name=user.username)}');">${user.rid}</td>
                 <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='user', subaction='edit', name=user.username)}');">${user.username}</td>
@@ -182,7 +182,7 @@ ${h.form('', method="post", id="account-list", class_="")}
             % endif
         
             <tr id="row-group-${i}" title="${_('Edit Group')}" class="${tr_class}">
-                <td><input value="${group.rid}" onchange="selectShareRow(this);" name="gid" type="checkbox" id="check-row-group-${i}" /></td>
+                <td><input value="${group.name}" onchange="selectShareRow(this);" name="gid" type="checkbox" id="check-row-group-${i}" /></td>
                 <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='group', subaction='edit', name = group.name)}');">${i}</td>
                 <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='group', subaction='edit', name = group.name)}');">${group.rid}</td>
                 <td onclick="clickableRow('${h.url_for('account_action', controller='account', action='group', subaction='edit', name = group.name)}');">${group.name}</td>
