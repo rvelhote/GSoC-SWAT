@@ -18,6 +18,7 @@ from samba.dcerpc import samr, security, lsa
 from samba import credentials, samdb, ldb
 from samba.auth import system_session
 import samba.ndr
+import base64
 
 class ExtSamDB(samdb.SamDB):
     """ Warning: Experimental Class
@@ -139,35 +140,127 @@ class ExtSamDB(samdb.SamDB):
             return user[0]
         return None
 
-    def add_user(self, username, password, must_change_password=True, description="", \
+    def add_user(self, username, password, description="", fullname="", must_change_password=True, \
                  cannot_change_password=False, password_never_expires=False, \
                  account_disabled=False, account_locked_out=False, \
                  group_list=[], profile_path="", logon_script="", homedir_path="", map_homedir_drive=""):
-        """ """
+        """ Adds a new user to the SAM database
         
-        password = "x"
+        Keyword arguments:
+        username --
+        password -- 
+        must_change_password --
+        description --
+        cannot_change_password --
+        password_never_expires -- 
+        account_disabled --
+        account_locked_out --
+        group_list --
+        profile_path --
+        logon_script --
+        homedir_path --
+        map_homedir_drive --
+        
+        Returns:
+        
+        
+        """
+        
+        password = ")aM_aVEryCompl3xPassw0rd"
         
         self.newuser(str(username), password, must_change_password)
-        self.update_user(username, password, must_change_password, description, \
+        self.update_user(username, password, description, fullname, must_change_password, \
                          cannot_change_password, password_never_expires, \
                          account_disabled, account_locked_out, group_list, \
                          profile_path, logon_script, homedir_path, \
                          map_homedir_drive)
         
-    def update_user(self, username, password, must_change_password, description, \
-                         cannot_change_password, password_never_expires, \
-                         account_disabled, account_locked_out, group_list, \
-                         profile_path, logon_script, homedir_path, \
-                         map_homedir_drive):
-        pass
+    def update_user(self, username, password, description, fullname, must_change_password, \
+                    cannot_change_password, password_never_expires, \
+                    account_disabled, account_locked_out, group_list, \
+                    profile_path, logon_script, homedir_path, \
+                    map_homedir_drive):
+        """ Updates user information in the SAM databse
+        
+        Keyword arguments:
+        username --
+        password -- 
+        must_change_password --
+        description --
+        cannot_change_password --
+        password_never_expires -- 
+        account_disabled --
+        account_locked_out --
+        group_list --
+        profile_path --
+        logon_script --
+        homedir_path --
+        map_homedir_drive --
+        
+        Returns:
+        
+        
+        """
+        user = self.get_user(username)
+        uac = int(self.__get_key(user, "userAccountControl"))
+
+        if must_change_password:
+            uac |= 0x00800000
+        else:
+            uac &= ~0x00800000
+            
+        if cannot_change_password:
+            uac |= 0x00000040
+        else:
+            uac &= ~0x00000040
+
+        if password_never_expires:
+            uac |= 0x00010000
+        else:
+            uac &= ~0x00010000
+            
+        if account_disabled:
+            uac |= 0x00000002
+        else:
+            uac &= ~0x00000002
+
+        if account_locked_out:
+            uac |= 0x00000010
+        else:
+            uac &= ~0x00000010
+        
+        password = ")aM_aVEryCompl3xPassw0rd"
+        password = base64.b64encode(password)
+        
+        changeset = """dn: %s\nchangetype: modify\nreplace: userAccountControl\nuserAccountControl: %u\nreplace: description\ndescription: %s\nreplace: userPassword\nuserPassword: %s""" % (user.dn, uac, description, password)
+        self.modify_ldif(changeset)
 
     def delete_user(self, user):
+        """ Deletes a user and all group membership information that's related
+        to the user from each group
+        
+        Keyword arguments:
+        user -- The username of the user to delete
+        
+        Returns:
+        
+        
+        """
         user_ldb = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, \
                                expression="(sAMAccountName=" + user.username + ")(objectClass=user)")[0]
         self.delete(user_ldb.dn)
         
     def add_group(self, groupname, description):
-        """ """
+        """ Adds a new group to the SAM database
+        
+        Keyword arguments:
+        groupname -- The name of the group we want to add
+        description -- The description of the group we want to add
+        
+        Returns:
+        
+        
+        """
         dn = "CN=%s,CN=Users,%s" % (groupname, self.domain_dn())
         self.add({"dn": str(dn), \
                   "sAMAccountName": groupname, \
@@ -456,7 +549,21 @@ class AccountManager(object):
         
     def add_user(self, user):
         """ """
-        self.samr.add_user(user.username, user.password);
+        self.samr.add_user(user.username, user.password, user.description, \
+                           user.fullname, user.must_change_password, \
+                           user.fullname, user.password_never_expires, \
+                           user.account_disabled, user.account_locked_out, \
+                           user.group_list, user.profile_path, \
+                           user.logon_script, user.homedir_path, \
+                           user.map_homedir_drive)
+
+    def update_user(self, user):
+        """ """
+        self.samr.update_user(user.username, user.password, user.description, user.fullname, \
+                              user.must_change_password, user.fullname, user.password_never_expires, \
+                              user.account_disabled, user.account_locked_out, user.group_list, \
+                              user.profile_path, user.logon_script, user.homedir_path, \
+                              user.map_homedir_drive)
     
     def add_group(self, group):
         """ """
