@@ -248,6 +248,39 @@ scriptPath: %s
 replace: homeDirectory
 homeDirectory: %s""" % (user.dn, uac, description, password, profile_path, logon_script, homedir_path)
 
+        ##
+        ## FIXME 
+        ##
+        #msg = ldb.Message(ldb.Dn(self, str(user.dn)))
+        #new_list = []
+        #
+        #for g in group_list:
+        #    if len(g) == 0:
+        #        continue
+        #    
+        #    group = self.get_group(g)
+        #    new_list.append(str(group.dn))
+        #    
+        #msg["memberOf"] = ldb.MessageElement(new_list, ldb.FLAG_MOD_REPLACE, "memberOf")
+        #self.modify(msg)
+        
+        ##
+        ## FIXME 
+        ##
+        
+        for g in group_list:
+            new_member_list = [str(user.dn)]
+            members = self.get_group_members(g)
+            group = self.get_group(g)
+            
+            for m in members:
+                new_member_list.append(str(m.dn))
+        
+            msg = ldb.Message(ldb.Dn(self, str(group.dn)))
+            msg["member"] = ldb.MessageElement(new_member_list, ldb.FLAG_MOD_REPLACE, "member")
+            self.modify(msg)        
+
+
         self.modify_ldif(changeset)
 
     def delete_user(self, user):
@@ -302,7 +335,7 @@ homeDirectory: %s""" % (user.dn, uac, description, password, profile_path, logon
         
         groups = user["memberOf"]
         for g in groups:
-            if group.dn == g:
+            if str(group.dn) == g:
                 is_member = True
                 break
             
@@ -344,9 +377,16 @@ homeDirectory: %s""" % (user.dn, uac, description, password, profile_path, logon
         
         return deleted
     
-    def add_user_group_membership(self, username, group):
-        pass
-        
+    def add_user_group_membership(self, username, groupname):
+        """ """
+        user = self.get_user(username)
+        group = self.get_group(groupname)
+        msg_user = ldb.Message(ldb.Dn(self, str(user.dn)))
+                               
+        if not self.is_member_of_group(username, groupname):
+            msg_user["memberOf"] = ldb.MessageElement(str(group.dn), ldb.FLAG_MOD_ADD, "memberOf")
+            self.modify(msg_user)
+
     def delete_group(self, groupname):
         """ Deletes a Group from the SAM Database and group references in each
         of its user members.
@@ -472,8 +512,6 @@ class AccountManager(object):
         u.logon_script = self.__get_key(user, "scriptPath")
         u.homedir_path = self.__get_key(user, "homeDirectory")
         u.map_homedir_drive = -1
-        
-        print u.account_disabled
         
         return u
 
