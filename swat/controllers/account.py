@@ -185,15 +185,15 @@ class AccountController(BaseController):
                     else:
                         enabled_list.append(uid)
                 else:
-                    SwatMessages.add(_("Error toggling User ID %d: %s" % (uid, user_manager.get_message())), "critical")
+                    SwatMessages.add(_("Error toggling User ID %s: %s" % (uid, user_manager.get_message())), "critical")
                 
             if len(enabled_list) > 0:
-                joined = ", ".join(["%d" % v for v in enabled_list]) 
+                joined = ", ".join(["%s" % v for v in enabled_list]) 
                 message = _("The following Users [%s] were ENABLED successfuly" % (joined))
                 SwatMessages.add(message)
                 
             if len(disabled_list) > 0:
-                joined = ", ".join(["%d" % v for v in disabled_list]) 
+                joined = ", ".join(["%s" % v for v in disabled_list]) 
                 message = _("The following Users [%s] were DISABLED successfuly" % (joined))
                 SwatMessages.add(message)
                 

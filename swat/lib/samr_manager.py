@@ -24,6 +24,7 @@ class ExtSamDB(samdb.SamDB):
     
     FIXME throw exceptions or return None?
     TODO Better error checking and exception throwing/catching
+    TODO Perhaps LDAP filters should be used like in the SamDB class
     
     """
     def __init__(self, lp):
@@ -302,6 +303,15 @@ class ExtSamDB(samdb.SamDB):
         return self.search(base="CN=Users," + self.domain_dn(), \
                            scope=ldb.SCOPE_SUBTREE, \
                            expression="objectClass=group")
+        
+    def disable_account(self, username):
+        user = self.get_user(username)
+        
+        uac = int(self.__get_key(user, "userAccountControl"))
+        uac |= 0x00000002
+        
+        mod = """dn: %s\nchangetype: modify\nreplace: userAccountControl\nuserAccountControl: %u""" % (user.dn, uac)
+        self.modify_ldif(mod)
 
     def __get_key(self, object, key):
         """ """
@@ -437,6 +447,25 @@ class AccountManager(object):
     def delete_group(self, group):
         """ """
         self.samr.delete_group(group.name)
+        
+    def toggle_user(self, username):
+        """ Toggles a User Account's disabled status. If the account if disabled
+        it will become enabled and vice-versa
+        
+        Keyword arguments:
+        username -- The username of the user to toggle
+        
+        Returns:
+        Boolean indicating if the operation was successful
+        
+        """
+        user = self.__convert_to_user_object(self.samr.get_user(username))
+        if user.account_disabled:
+            self.samr.enable_account("sAMAccountName=%s" % (username))
+        else:
+            self.samr.disable_account(username)
+            
+        return (True, not user.account_disabled)
 
 class User:
     """ Support Class obtained from Calin Crisan's 2009 Summer of Code project
