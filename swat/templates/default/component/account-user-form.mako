@@ -61,7 +61,7 @@
                     <li>${field.put("profilepath", c.user.profile_path)}</li>
                     <li>${field.put("logonscriptname", c.user.logon_script)}</li>
                     <li>${field.put("homedirpath", c.user.homedir_path)}</li>
-                    <!-- <li>${field.put("maphomedirdrive", c.user.map_homedir_drive)}</li> -->
+                    <li>${field.put("maphomedirdrive", c.user.map_homedir_drive)}</li>
                 </ol>
             </li>
 
