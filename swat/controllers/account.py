@@ -504,11 +504,7 @@ class UserManager(object):
             ##
             ## Groups
             ##
-            user.group_list = []
-            for g in request.params.get("account_group_list", "").split(","):
-                for gg in self.__manager.get_groups():
-                    if gg.name == g.strip():
-                        user.group_list.append(gg)
+            user.group_list = request.params.get("account_group_list", "").split(",")
             
             if is_new:
                 self.__manager.add_user(user)
