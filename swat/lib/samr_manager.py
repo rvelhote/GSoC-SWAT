@@ -139,13 +139,27 @@ class ExtSamDB(samdb.SamDB):
             return user[0]
         return None
 
-    def add_user(self, group):
-        l = self.get_groups_for_user(group.username)
-        for x in l:
-            self.get_group(x)
+    def add_user(self, username, password, must_change_password=True, description="", \
+                 cannot_change_password=False, password_never_expires=False, \
+                 account_disabled=False, account_locked_out=False, \
+                 group_list=[], profile_path="", logon_script="", homedir_path="", map_homedir_drive=""):
+        """ """
         
+        password = "x"
         
-        raise Exception
+        self.newuser(str(username), password, must_change_password)
+        self.update_user(username, password, must_change_password, description, \
+                         cannot_change_password, password_never_expires, \
+                         account_disabled, account_locked_out, group_list, \
+                         profile_path, logon_script, homedir_path, \
+                         map_homedir_drive)
+        
+    def update_user(self, username, password, must_change_password, description, \
+                         cannot_change_password, password_never_expires, \
+                         account_disabled, account_locked_out, group_list, \
+                         profile_path, logon_script, homedir_path, \
+                         map_homedir_drive):
+        pass
 
     def delete_user(self, user):
         user_ldb = self.search(base=self.domain_dn(), scope=ldb.SCOPE_SUBTREE, \
@@ -439,6 +453,10 @@ class AccountManager(object):
     def update_group(self, group):
         """ """
         self.samr.update_group(group.name, group.description)
+        
+    def add_user(self, user):
+        """ """
+        self.samr.add_user(user.username, user.password);
     
     def add_group(self, group):
         """ """
