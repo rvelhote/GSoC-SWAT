@@ -72,24 +72,19 @@
     #
     # FIXME Just temporary
     #
-    from swat.lib.samr_manager import SAMPipeManager
-    from samba.dcerpc import samr, security, lsa
-    from samba import credentials, param
+    from swat.lib.samr_manager import AccountManager
+    from samba import param
     
     samba_lp = param.LoadParm()
     samba_lp.load_default()
     
-    manager = SAMPipeManager(c.samba_lp)
-    
-    domains = manager.fetch_and_get_domain_names()
-    manager.set_current_domain(0)
-    manager.fetch_users_and_groups()
+    manager = AccountManager(c.samba_lp)
     
     %>
     
     <h1>${_('User List')}</h1>
     <ul class="popup-list usr-list">
-        % for g in manager.user_list:
+        % for g in manager.get_users():
             <%
             
             selected = ""
@@ -113,19 +108,13 @@
     #
     # FIXME Just temporary
     #
-    from swat.lib.samr_manager import SAMPipeManager
-    from samba.dcerpc import samr, security, lsa
-    from samba import credentials, param
+    from swat.lib.samr_manager import AccountManager
+    from samba import param
     
     samba_lp = param.LoadParm()
     samba_lp.load_default()
     
-    manager = SAMPipeManager(c.samba_lp)
-    
-    domains = manager.fetch_and_get_domain_names()
-    manager.set_current_domain(0)
-    manager.fetch_users_and_groups()
-
+    manager = AccountManager(c.samba_lp)
     shares_class = ""
 
     if shares:
@@ -135,7 +124,7 @@
     
     <h1>${_('Group List')}</h1>
     <ul class="popup-list grp-list">
-        % for g in manager.group_list:
+        % for g in manager.get_groups():
             <%
             
             selected = ""
