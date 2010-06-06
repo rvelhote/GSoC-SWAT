@@ -61,7 +61,7 @@
                     <li>${field.put("profilepath", c.user.profile_path)}</li>
                     <li>${field.put("logonscriptname", c.user.logon_script)}</li>
                     <li>${field.put("homedirpath", c.user.homedir_path)}</li>
-                    <li>${field.put("maphomedirdrive", c.user.map_homedir_drive)}</li>
+                    <!-- <li>${field.put("maphomedirdrive", c.user.map_homedir_drive)}</li> -->
                 </ol>
             </li>
 
@@ -71,6 +71,26 @@
                 </ol>
             </li>
         </ul>
+        
+	<div class="widget share-comment round-2px">
+	    <div class="title-bar">
+		<h2 class="title-icon" style="background-image:url('/default/images/icons/balloon.png');">${_('Additional Information')} -- (placeholder only for now)</h2>
+	    </div>
+	    <div class="content" style="font-size:85%;">
+		<ul>
+                    <style type="text/css">
+
+                        div.share-comment ul li{float:left;width:220px;display:block;margin-bottom:10px;}
+                    </style>
+                    
+                    <li><b>Created Date:&nbsp;</b>01/01/2010</li>
+                    <li><b>Last Logon:&nbsp;</b>01/01/2010</li>
+                    <li><b>Last Logoff:&nbsp;</b>01/01/2010</li>
+                    <li><b>Logon Count:&nbsp;</b>1</li>
+                    <li><b>Bad Password Tries:&nbsp;</b>100</li>
+                </ul>
+	    </div>
+	</div>
      
         <div>
             ${h.hidden("task", request.environ['pylons.routes_dict']['subaction'])}
