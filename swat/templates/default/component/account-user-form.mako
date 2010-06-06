@@ -74,6 +74,7 @@
      
         <div>
             ${h.hidden("task", request.environ['pylons.routes_dict']['subaction'])}
+            ${h.hidden("name", c.user.username)}
             ${h.hidden("id", c.user.rid)}
             ${h.hidden("type", "user")}
         </div>
