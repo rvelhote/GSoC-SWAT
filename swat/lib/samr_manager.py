@@ -232,7 +232,22 @@ class ExtSamDB(samdb.SamDB):
         password = ")aM_aVEryCompl3xPassw0rd"
         password = base64.b64encode(password)
         
-        changeset = """dn: %s\nchangetype: modify\nreplace: userAccountControl\nuserAccountControl: %u\nreplace: description\ndescription: %s\nreplace: userPassword\nuserPassword: %s""" % (user.dn, uac, description, password)
+        changeset = """
+dn: %s
+changetype: modify
+replace: userAccountControl
+userAccountControl: %u
+replace: description
+description: %s
+replace: userPassword
+userPassword: %s
+replace: profilePath
+profilePath: %s
+replace: scriptPath
+scriptPath: %s
+replace: homeDirectory
+homeDirectory: %s""" % (user.dn, uac, description, password, profile_path, logon_script, homedir_path)
+
         self.modify_ldif(changeset)
 
     def delete_user(self, user):
