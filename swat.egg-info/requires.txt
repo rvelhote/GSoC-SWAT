@@ -1,5 +1,2 @@
 Pylons>=0.9.7
 PyYAML>=3.0.8
-Pam>=0.1.3
-repoze.who-friendlyform
-repoze.who
